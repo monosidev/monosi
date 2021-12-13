@@ -1,0 +1,3 @@
+mashumaro==2.9
+PyYAML==6.0
+snowflake-connector-python==2.7.2
