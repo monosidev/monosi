@@ -63,6 +63,11 @@ class TableMetricsMonitor(Monitor):
                 column_name = metric.column_name
                 metric_name = metric.metric_type._value_
 
+                try:
+                    value = float(row[alias])
+                except TypeError:
+                    value = None
+
                 if column_name not in pivot:
                     pivot.update({column_name: {}})
                 if metric_name not in pivot[column_name]:
@@ -74,7 +79,7 @@ class TableMetricsMonitor(Monitor):
                     metric=metric_name,
                     window_start=window_start,
                     window_end=window_end,
-                    value=float(row[alias]),
+                    value=value,
                 )
                 pivot[column_name][metric_name].append(stat)
 
@@ -308,7 +313,7 @@ class MetricStat:
     metric: str
     window_start: str
     window_end: str
-    value: float
+    value: Optional[float] = None
     z_score: Optional[float] = None
     std_dev: Optional[float] = None
     granularity: str = 'HOUR'

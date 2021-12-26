@@ -13,11 +13,11 @@ class AnomalyDetector:
 
 class ZScoreAnomalyDetector(AnomalyDetector):
     @classmethod
-    def _mean(cls, values: List[Any]):
+    def _mean(cls, values: List[float]):
         return round(sum(values) / len(values), 2)
 
     @classmethod
-    def _std_dev(cls, values: List[Any]):
+    def _std_dev(cls, values: List[float]):
         values_mean = cls._mean(values)
 
         distances = [((value - values_mean) ** 2) for value in values]
@@ -27,19 +27,30 @@ class ZScoreAnomalyDetector(AnomalyDetector):
         return std_dev
 
     @classmethod
-    def _z_scores(cls, stats: List[Any]):
-        values = [stat.value for stat in stats]
+    def _z_scores(cls, stats: List[MetricStat], filter_none=True):
+        stats_to_calc = stats
 
-        mean = cls._mean(values)
-        std_dev = cls._std_dev(values)
+        if filter_none:
+            stats_to_calc = [stat for stat in stats if stat.value != None]
+
+        values = [stat.value for stat in stats_to_calc]
+
+        try:
+            mean = cls._mean(values)
+            std_dev = cls._std_dev(values)
+        except ZeroDivisionError:
+            return []
 
         if (std_dev == 0): return []
 
-        for stat in stats:
+        for stat in stats_to_calc:
             stat.std_dev = std_dev
-            stat.z_score = round(((stat.value - mean) / std_dev), 2) 
+            try:
+                stat.z_score = round(((stat.value - mean) / std_dev), 2) 
+            except TypeError:
+                return []
 
-        return stats
+        return stats_to_calc
 
     @classmethod
     def anomalies(cls, stats, sensitivity: float = 3.0) -> List[Any]:
@@ -56,4 +67,3 @@ class ZScoreAnomalyDetector(AnomalyDetector):
                         anomalistic_stats.append(stat)
 
         return anomalistic_stats
-
