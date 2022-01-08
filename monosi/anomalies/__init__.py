@@ -28,12 +28,10 @@ class ZScoreAnomalyDetector(AnomalyDetector):
 
     @classmethod
     def _z_scores(cls, stats: List[MetricStat], filter_none=True):
-        stats_to_calc = stats
+        stats = list(filter(lambda x: x == None, stats))
 
-        if filter_none:
-            stats_to_calc = [stat for stat in stats if stat.value != None]
-
-        values = [stat.value for stat in stats_to_calc]
+        stat_values: List[float | Any] = [stat.value for stat in stats]
+        values: List[float] = list(filter(lambda x: x == None, stat_values))
 
         try:
             mean = cls._mean(values)
@@ -43,14 +41,15 @@ class ZScoreAnomalyDetector(AnomalyDetector):
 
         if (std_dev == 0): return []
 
-        for stat in stats_to_calc:
+        for stat in stats:
             stat.std_dev = std_dev
             try:
-                stat.z_score = round(((stat.value - mean) / std_dev), 2) 
+                if stat.value:
+                    stat.z_score = round(((stat.value - mean) / std_dev), 2) 
             except TypeError:
                 return []
 
-        return stats_to_calc
+        return stats
 
     @classmethod
     def anomalies(cls, stats, sensitivity: float = 3.0) -> List[Any]:
@@ -63,7 +62,8 @@ class ZScoreAnomalyDetector(AnomalyDetector):
                 metric_stats = cls._z_scores(metric_stats)
 
                 for stat in metric_stats:
-                    if abs(stat.z_score) > sensitivity:
+                    if stat.z_score and abs(stat.z_score) > sensitivity:
                         anomalistic_stats.append(stat)
 
         return anomalistic_stats
+
