@@ -3,7 +3,7 @@ import sys
 from argparse import ArgumentParser
 from monosi.config.project import ProjectConfiguration
 
-from monosi.jobs.run import MonitorsJob
+from monosi.tasks.test import TestMonitorsTask
 from monosi.utils.yaml import write_file
 
 class CliParser(object):
@@ -48,8 +48,8 @@ class CliParser(object):
 
     def run(self):
         args = None
-        job = MonitorsJob.from_args(args)
-        job.run()
+        task = TestMonitorsTask.from_args(args)
+        task.run()
 
 def get_installation_info():
     import pkg_resources
