@@ -20,10 +20,6 @@ class Project:
     def add_monitor(self, monitor: Monitor):
         self.monitors.append(monitor)
 
-    def run_all_monitors(self):
-        for monitor in self.monitors:
-            print(monitor.compile())
-
     @classmethod
     def from_configuration(cls, configuration: Configuration) -> 'Project':
         project = Project(configuration)
