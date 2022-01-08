@@ -85,6 +85,10 @@ class MonitorTask(TaskBase):
             ))
 
 class MonitorsTask(ProjectTask):
+    def __init__(self, args, config):
+        super().__init__(args, config)
+        self.task_queue: List[MonitorTask] = []
+
     def _create_tasks(self):
         if self.project is None:
             raise Exception("Project was not loaded before running monitors.")
