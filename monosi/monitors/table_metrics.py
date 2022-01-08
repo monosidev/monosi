@@ -13,8 +13,7 @@ class TableMetricsMonitor(Monitor):
     timestamp_field: str = field(default_factory=str)
     columns: Optional[List[str]] = field(default_factory=list)
     metrics: Optional[List[str]] = field(default_factory=list)
-    # timestamp_field_expression: str = ''
-    # where: str = ''
+    where: str = field(default_factory=str)
 
     @classmethod # TODO: Implement validation
     def validate(cls, monitor_dict):
