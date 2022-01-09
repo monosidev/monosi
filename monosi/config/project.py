@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 import os
 import glob
 from typing import Any, Dict, List, Optional
+from monosi.reporter import Reporter
 
 import monosi.utils.yaml as yaml
 
@@ -13,6 +14,7 @@ class ProjectConfigurationDefaults:
     monitor_paths: List[str] = field(default_factory=lambda: ['./monitors'])
     log_path: str = "~/.monosi/logs"
     project_env_vars: Dict[str, Any] = field(default_factory=dict)
+    reporter: Reporter = field(default_factory=Reporter)
 
 @dataclass
 class ProjectConfigurationBase:

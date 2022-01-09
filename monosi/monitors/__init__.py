@@ -11,4 +11,3 @@ def load_monitor_cls(monitor_dict) -> Type[Monitor]:
         return TableMetricsMonitor
 
     return Monitor
-

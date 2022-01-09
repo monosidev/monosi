@@ -55,6 +55,7 @@ class Configuration(ProjectConfiguration, CollectionConfiguration, Configuration
             project_env_vars=project.project_env_vars,
             collection_name=project.collection_name,
             source_name=project.source_name,
+            reporter=project.reporter,
             config=collection.config,
             collection_env_vars=collection.collection_env_vars,
             args=args)

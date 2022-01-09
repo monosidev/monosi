@@ -1,7 +1,6 @@
 import abc
 from typing import List, Optional
 
-from monosi.anomalies import ZScoreAnomalyDetector
 from monosi.config.configuration import Configuration
 from monosi.project import Project
 
@@ -58,31 +57,13 @@ class MonitorTask(TaskBase):
         super().__init__(args, config)
         self.monitor = monitor
 
-    def compile_and_execute(self):
-        driver_config = self.config.config
-
-        return self.monitor.execute(driver_config)
-
-    def detect_anomalies(self, stats):
-        anomalies = ZScoreAnomalyDetector.anomalies(stats)
-
-        return anomalies
-
     @classmethod
     def run_task(cls, *args):
         task = cls(*args)
-        results = task.run()
+        task.run()
 
     def run(self):
-        stats = self.compile_and_execute()
-        anomalies = self.detect_anomalies(stats)
-        for anomaly in anomalies:
-            print("There was an anomaly with table {table}'s column {column} and a value of {value} for the metric {metric}".format(
-                table=anomaly.table,
-                column=anomaly.column,
-                value=str(anomaly.value),
-                metric=anomaly.metric,
-            ))
+        self.monitor.run(self.config)
 
 class MonitorsTask(ProjectTask):
     def __init__(self, args, config):
@@ -94,3 +75,4 @@ class MonitorsTask(ProjectTask):
             raise Exception("Project was not loaded before running monitors.")
 
         return [MonitorTask(self.args, self.config, monitor) for monitor in self.project.monitors]
+
