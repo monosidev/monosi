@@ -1,17 +1,8 @@
+from dataclasses import dataclass
 from math import sqrt
-from os import wait
-from typing import Any, List, Optional
+from typing import List
 
-from monosi.monitors.table_metrics import MetricStat
-
-class ZScoreMetricStat(MetricStat):
-    mean: Optional[float]
-    std_dev: Optional[float]
-
-class AnomalyDetector:
-    pass
-
-class ZScoreAnomalyDetector(AnomalyDetector):
+class ZScoreAlgorithm:
     @classmethod
     def _mean(cls, values: List[float]):
         return round(sum(values) / len(values), 2)
@@ -27,12 +18,18 @@ class ZScoreAnomalyDetector(AnomalyDetector):
         return std_dev
 
     @classmethod
-    def _z_scores(cls, stats: List[MetricStat], filter_none=True):
-        stats = list(filter(lambda x: x == None, stats))
+    def anomalies(cls, values: List[float], sensitivity: float = 3.0):
+        z_scores = cls.run(values)
 
-        stat_values: List[float | Any] = [stat.value for stat in stats]
-        values: List[float] = list(filter(lambda x: x == None, stat_values))
+        anomaly_scores = []
+        for z_score in z_scores:
+            if abs(z_score) > sensitivity:
+                anomaly_scores.append(z_score)
 
+        return anomaly_scores
+
+    @classmethod
+    def run(cls, values: List[float]):
         try:
             mean = cls._mean(values)
             std_dev = cls._std_dev(values)
@@ -41,29 +38,42 @@ class ZScoreAnomalyDetector(AnomalyDetector):
 
         if (std_dev == 0): return []
 
-        for stat in stats:
-            stat.std_dev = std_dev
+        z_scores = []
+        for value in values:
             try:
-                if stat.value:
-                    stat.z_score = round(((stat.value - mean) / std_dev), 2) 
+                z_score = round(((value - mean) / std_dev), 2) 
+                z_scores.append(z_score)
             except TypeError:
                 return []
 
-        return stats
+        return z_scores
 
-    @classmethod
-    def anomalies(cls, stats, sensitivity: float = 3.0) -> List[Any]:
-        if len(stats) == 0: return [] # guard
+@dataclass
+class AnomalyDetectorTest:
+    column: str
+    metric: str
+    stats: List['MetricStat']
+    values: List[float]
 
-        anomalistic_stats = []
-        for column in stats.keys():
-            for metric in stats[column].keys():
-                metric_stats = stats[column][metric]
-                metric_stats = cls._z_scores(metric_stats)
+    def __init__(self, column, metric, stats):
+        self.column = column
+        self.metric = metric
+        self.stats = stats
+        self.values = list(filter(
+            lambda x: x == None, 
+            [stat.value for stat in stats]
+        ))
 
-                for stat in metric_stats:
-                    if stat.z_score and abs(stat.z_score) > sensitivity:
-                        anomalistic_stats.append(stat)
-
-        return anomalistic_stats
+    def run(self, reporter):
+        reporter.test_started(self)
+        try:
+            anomalies = ZScoreAlgorithm.anomalies(self.values)
+            result = len(anomalies) == 0
+            if result:
+                reporter.test_passed(self)
+            else:
+                reporter.test_failed(self)
+        finally:
+            reporter.test_finished(self)
+        
 

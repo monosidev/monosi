@@ -15,6 +15,9 @@ class TableMetricsMonitor(Monitor):
     metrics: Optional[List[str]] = field(default_factory=list)
     where: str = field(default_factory=str)
 
+    def info(self):
+        return "{}: {}".format(self.table, self.TYPE.value)
+
     @classmethod # TODO: Implement validation
     def validate(cls, monitor_dict):
         pass
@@ -27,9 +30,10 @@ class TableMetricsMonitor(Monitor):
 
     def _execute_sql(self, config):
         from monosi.drivers.factory import load_driver
-        driver_cls = load_driver(config)
+        driver_config = config.config
+        driver_cls = load_driver(driver_config)
 
-        driver = driver_cls(config)
+        driver = driver_cls(driver_config)
         compiler = driver_cls.get_compiler()
 
         columns = driver.describe_table(self.table)

@@ -45,4 +45,3 @@ def load_config(name: str):
 
 def load_driver(config: DriverConfig):
     return FACTORY.load_driver_class(config)
-
