@@ -50,7 +50,6 @@ class Configuration(ProjectConfiguration, CollectionConfiguration, Configuration
             project_name=project.project_name,
             version=project.version,
             root_path=project.root_path,
-            log_path=project.log_path,
             monitor_paths=project.monitor_paths,
             project_env_vars=project.project_env_vars,
             collection_name=project.collection_name,

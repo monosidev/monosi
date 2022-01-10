@@ -12,7 +12,6 @@ class ProjectConfigurationDefaults:
     collection_name: Optional[str] = None
     source_name: Optional[str] = None
     monitor_paths: List[str] = field(default_factory=lambda: ['./monitors'])
-    log_path: str = "~/.monosi/logs"
     project_env_vars: Dict[str, Any] = field(default_factory=dict)
     reporter: Reporter = field(default_factory=Reporter)
 
@@ -85,7 +84,6 @@ class ProjectConfiguration(ProjectConfigurationDefaults, ProjectConfigurationBas
             root_path=root_path,
             collection_name=collection_name,
             source_name=source_name,
-            log_path=log_path,
             project_env_vars=project_env_vars,
             monitor_paths=monitor_paths,
         )
@@ -96,7 +94,6 @@ class ProjectConfiguration(ProjectConfigurationDefaults, ProjectConfigurationBas
         config_dict = {
             "name": self.project_name,
             "version": self.version,
-            "log-path": self.log_path,
             "monitor-paths": self.monitor_paths,
         }
         if self.collection_name:
