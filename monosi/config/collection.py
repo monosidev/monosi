@@ -20,7 +20,6 @@ class CollectionConfiguration:
         config: DriverConfig,
     ):
         self.config = config
-        self.collection_env_vars = {}
 
     @classmethod
     def from_driver_config(
