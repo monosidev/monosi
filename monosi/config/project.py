@@ -12,7 +12,6 @@ class ProjectConfigurationDefaults:
     collection_name: Optional[str] = None
     source_name: Optional[str] = None
     monitor_paths: List[str] = field(default_factory=lambda: ['./monitors'])
-    project_env_vars: Dict[str, Any] = field(default_factory=dict)
     reporter: Reporter = field(default_factory=Reporter)
 
 @dataclass
@@ -74,7 +73,6 @@ class ProjectConfiguration(ProjectConfigurationDefaults, ProjectConfigurationBas
         collection_name = project_dict.get('collection')
         source_name = project_dict.get('source')
         log_path: str = project_dict.get('log-path') or 'logs'
-        project_env_vars: Dict[str, Any] = {}
 
         monitor_paths: List[str] = project_dict.get('monitor-paths') or []
 
