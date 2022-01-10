@@ -3,7 +3,7 @@ from enum import Enum
 from time import time
 from monosi.anomalies import AnomalyDetectorTest
 
-from monosi.formatters.base import ProgressFormatter
+from .formatters.base import ProgressFormatter
 
 class NotificationType(Enum):
     MONITOR_STARTED = 'monitor_started'
