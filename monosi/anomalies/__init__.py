@@ -8,17 +8,12 @@ from .zscore import ZScoreAlgorithm
 class AnomalyDetectorTest:
     column: str
     metric: str
-    stats: List['MetricStat']
     values: List[float]
 
-    def __init__(self, column, metric, stats):
+    def __init__(self, column, metric, values):
         self.column = column
         self.metric = metric
-        self.stats = stats
-        self.values = list(filter(
-            lambda x: x == None, 
-            [stat.value for stat in stats]
-        ))
+        self.values = values
 
     def run(self, reporter):
         reporter.test_started(self)
