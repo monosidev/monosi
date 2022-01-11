@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from math import sqrt
-from typing import List
+from typing import List, Optional
 
 from .zscore import ZScoreAlgorithm
 

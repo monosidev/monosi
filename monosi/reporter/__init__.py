@@ -1,7 +1,8 @@
 from datetime import datetime
 from time import time
 
-from .formatters.base import ProgressFormatter
+from monosi.reporter.formatters.progress import ProgressFormatter
+
 from .notifications import NotificationType
 
 class Reporter:
@@ -31,6 +32,7 @@ class Reporter:
 
     def _reset(self):
         self.tests = []
+        self.failed_tests = []
         self.load_time = None
         self.start_time = None
         self.stop_time = None

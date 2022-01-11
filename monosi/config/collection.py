@@ -11,7 +11,6 @@ DEFAULT_COLLECTIONS_DIR = os.path.join(os.path.expanduser('~'), '.monosi')
 @dataclass(init=False)
 class CollectionConfigurationBase:
     config: DriverConfig
-    collection_env_vars: Dict[str, Any]
 
 @dataclass(init=False)
 class CollectionConfiguration:

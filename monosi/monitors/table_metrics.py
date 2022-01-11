@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 from monosi.drivers.column import ColumnDataType
 from monosi.monitors.base import Monitor, MonitorType
@@ -34,7 +34,8 @@ class TableMetricsMonitor(Monitor):
         driver_cls = load_driver(driver_config)
 
         driver = driver_cls(driver_config)
-        compiler = driver_cls.get_compiler()
+        compiler_cls = driver_cls.get_compiler()
+        compiler = compiler_cls()
 
         columns = driver.describe_table(self.table)
         compiled_sql = compiler.build_query(self, columns)
@@ -42,13 +43,12 @@ class TableMetricsMonitor(Monitor):
         results = driver.execute_sql(compiled_sql)
         metrics = compiler.interpret_results(results)
 
-        return results
+        return metrics
 
     def execute(self, config):
-        results = self._execute_sql(config)
-        stats = self.interpret_results(results)
+        metrics = self._execute_sql(config)
 
-        return stats
+        return metrics
 
 class MetricType(Enum):
     COMPLETENESS = 'completeness'
@@ -115,7 +115,7 @@ class MetricType(Enum):
 
 @dataclass
 class MetricDataPoint:
-    value: Any
+    value: float
     window_start: str
     window_end: str
 
@@ -141,23 +141,26 @@ class Metric:
         return metric_sql
 
     @classmethod
-    def parse_alias(cls, alias: str) -> 'Metric':
+    def parse_alias(cls, alias: str):
         # TODO: This assumes no previous "__", which we can't
         parts = alias.lower().split("__")
         
         if len(parts) != 2:
             raise Exception("Could not parse metric alias")
 
-        column_name = parts[0]
-        metric_type = MetricType(parts[1])
-
-        return cls(
-            column_name=column_name,
-            metric_type=metric_type,
-        )
+        column_name = parts[0].lower()
+        metric_name = parts[1].lower()
+        
+        return (column_name, metric_name)
 
     def nonnull_values(self):
-        return list(filter(lambda x: x.value == None, metric.values))
+        for point in self.values:
+            try:
+                point.value = float(point.value)
+            except Exception:
+                pass
+
+        return list(filter(lambda x: x.value != None, self.values))
 
     @property
     def alias(self):
@@ -278,7 +281,7 @@ class Metric:
 
 @dataclass
 class MetricCompiler:
-    metrics: List[Metric]
+    metrics: List[Metric] = field(default_factory=list)
     
     SPECIAL_KEYS = ['window_start', 'window_end', 'row_count']
 
@@ -317,14 +320,14 @@ class MetricCompiler:
 
         return metrics
 
-    @classmethod
-    def build_query(cls, monitor, columns):
-        metrics = cls._create_metrics(monitor.table, columns)
-        metric_sql = ",\n".join([metric.sql() for metric in metrics])
+    def build_query(self, monitor, columns):
+        self.metrics = MetricCompiler._create_metrics(monitor.table, columns)
+        metric_sql = ",\n".join([metric.sql() for metric in self.metrics])
 
-        days_ago = -8570
+        # TODO: Set to reasonable default
+        days_ago = -85788
 
-        query = cls.BASE_SQL.format(
+        query = MetricCompiler.BASE_SQL.format(
             metric_sql=metric_sql,
             timestamp_field=monitor.timestamp_field,
             table=monitor.table,
@@ -336,8 +339,8 @@ class MetricCompiler:
         metric_map = {}
 
         for metric in self.metrics:
-            column_name = metric.column_name
-            metric_name = metric.metric_type._value_
+            column_name = metric.column_name.lower()
+            metric_name = metric.metric_type._value_.lower()
 
             if column_name not in metric_map:
                 metric_map[column_name] = {}
@@ -346,7 +349,7 @@ class MetricCompiler:
         
         return metric_map
 
-    def interpret_results(self, results) -> Dict[str, Dict[str, 'MetricStat']]:
+    def interpret_results(self, results) -> List[Metric]:
         metric_map = self._metric_map()
 
         pivot = {}
@@ -359,9 +362,7 @@ class MetricCompiler:
                 if "__" not in alias: # TODO: Not durable
                     continue
 
-                metric_name = Metric.parse_alias(alias)
-                column_name = metric.column_name
-                metric_name = metric.metric_type._value_
+                column_name, metric_name = Metric.parse_alias(alias)
                 metric = metric_map[column_name][metric_name]
 
                 # TODO: Issue here! Can't assume float.
@@ -380,6 +381,7 @@ class MetricCompiler:
         metrics = []
         for column in metric_map.keys():
             for metric in metric_map[column]:
-                metrics.append(metric)
+                metrics.append(metric_map[column][metric])
 
         return metrics
+

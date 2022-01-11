@@ -1,4 +1,4 @@
-from .base import baseFormatter
+from .base import BaseFormatter, Color
 
 class TextFormatter(BaseFormatter):
     def message(self, notification):
@@ -6,23 +6,28 @@ class TextFormatter(BaseFormatter):
 
     def dump_failures(self, failed_tests):
         # TODO: Consider Failures Formatter
+        if len(failed_tests) == 0:
+            self.write("\n\nAll tests passed.\n", Color.GREEN)
+        else:
+            self.write("\nFailures\n", Color.RED)
+
         for failed_test in failed_tests:
-            self.write("Column: {}\n".format(failed_test.column), Color.RED)
-            self.write("Metric: {}\n".format(failed_test.metric), Color.RED)
+            self.write("\tColumn: {}\n".format(failed_test.column), Color.RED)
+            self.write("\tMetric: {}\n".format(failed_test.metric), Color.RED)
+            self.write("\tAnomalies: {}\n".format(len(failed_test.anomalies)), Color.RED)
             self.write("\n", Color.RED)
-            self.write("\tAnomalies:\n", Color.RED)
-            for anomaly in failed_test.anomalies:
-                self.write("\tValue: {value}, Expected Range: {start}-{stop}\n\n".format(
-                    value=anomaly.point.value,
-                    start=anomaly.expected_range_start,
-                    stop=anomaly.expected_range_stop,
-                ))
+            # for anomaly in failed_test.anomalies:
+            #     self.write("\tValue: {value}\n\tExpected Range: {start} - {stop}\n\tTime Window: {time_start} - {time_end}\n\n".format(
+            #         value=anomaly.point.value,
+            #         start=anomaly.expected_range_start,
+            #         stop=anomaly.expected_range_end,
+            #         time_start=anomaly.point.window_start,
+            #         time_end=anomaly.point.window_end,
+            #     ), Color.RED)
 
         # if len(notification.failure_notifications) == 0: 
         #     return
 
-        if len(failed_tests) == 0:
-            self.write("\n\nAll tests passed.\n", Color.GREEN)
 
     def dump_summary(self, summary):
         # print(summary.fully_formatted)
@@ -35,7 +40,7 @@ class TextFormatter(BaseFormatter):
         if summary['failed_count'] > 0:
             color = Color.RED
 
-        self.write('{test_count} metrics, {failed_count} failures\n'.format(
+        self.write('{test_count} metrics, {failed_count} failures\n\n\n'.format(
             test_count=summary['test_count'],
             failed_count=summary['failed_count'],
         ), color)
