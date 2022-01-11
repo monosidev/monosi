@@ -1,3 +1,4 @@
+from .base import Color
 from .text import TextFormatter
 
 class ProgressFormatter(TextFormatter):

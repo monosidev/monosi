@@ -1,4 +1,4 @@
-from .base import BaseFormatter
+from .base import BaseFormatter, Color
 
 class FailureListFormatter(BaseFormatter):
     def example_failed(self, failure):
