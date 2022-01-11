@@ -5,8 +5,19 @@ class TextFormatter(BaseFormatter):
         self.write('message', Color.ENDC)
 
     def dump_failures(self, failed_tests):
+        # TODO: Consider Failures Formatter
         for failed_test in failed_tests:
-            self.write("Column: {column}\nMetric: {metric}\n\n".format(column=failed_test.column, metric=failed_test.metric), Color.RED)
+            self.write("Column: {}\n".format(failed_test.column), Color.RED)
+            self.write("Metric: {}\n".format(failed_test.metric), Color.RED)
+            self.write("\n", Color.RED)
+            self.write("\tAnomalies:\n", Color.RED)
+            for anomaly in failed_test.anomalies:
+                self.write("\tValue: {value}, Expected Range: {start}-{stop}\n\n".format(
+                    value=anomaly.point.value,
+                    start=anomaly.expected_range_start,
+                    stop=anomaly.expected_range_stop,
+                ))
+
         # if len(notification.failure_notifications) == 0: 
         #     return
 

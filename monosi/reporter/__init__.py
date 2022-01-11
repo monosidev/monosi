@@ -52,7 +52,7 @@ class Reporter:
 
     def test_failed(self, test):
         self.failed_tests.append(test)
-        self.notify(NotificationType.TEST_FAILED)
+        self.notify(NotificationType.TEST_FAILED, test)
 
     def notify_non_test_exception(self, exception, context_description):
         pass

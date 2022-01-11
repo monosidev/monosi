@@ -157,10 +157,7 @@ class Metric:
         )
 
     def nonnull_values(self):
-        vals = map(lambda x: x.value, metric.values)
-        nonnull_vals = list(filter(lambda x: x == None, vals))
-
-        return nonnull_vals
+        return list(filter(lambda x: x.value == None, metric.values))
 
     @property
     def alias(self):
