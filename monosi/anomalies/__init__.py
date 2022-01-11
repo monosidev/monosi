@@ -26,3 +26,11 @@ class AnomalyDetectorTest:
                 reporter.test_failed(self)
         finally:
             reporter.test_finished(self)
+
+    @classmethod
+    def from_metric(cls, metric):
+        # TODO: Deal with null values
+        return cls(
+            column=metric.column_name,
+            metric=metric.metric_type._value_,
+            values=metric.nonnull_values())

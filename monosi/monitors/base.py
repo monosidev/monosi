@@ -18,19 +18,6 @@ class Schedule(DataClassDictMixin):
     minutes: int = 720
     type: ScheduleType = ScheduleType.INTERVAL
 
-def temp_transform_to_tests(metric_stats) -> List[AnomalyDetectorTest]:
-    tests = []
-
-    for column in metric_stats.keys():
-        for metric in metric_stats[column].keys():
-            values = metric_stats[column][metric]
-
-            values: List[float] = list(filter(lambda x: x == None, values))
-            test = AnomalyDetectorTest(column, metric, values)
-            tests.append(test)
-    
-    return tests
-
 @dataclass
 class Monitor(DataClassDictMixin):
     description: Optional[str] = None
@@ -57,9 +44,9 @@ class Monitor(DataClassDictMixin):
 
         reporter.monitor_started(self)
         try:
-            metric_stats = self.execute(config)
-            metric_tests = temp_transform_to_tests(metric_stats)
-            [metric_test.run(reporter) for metric_test in metric_tests]
+            metrics = self.execute(config)
+            tests = [AnomalyDetectorTest.from_metric(metric) for metric in metrics]
+            [test.run(reporter) for test in tests]
         finally:
             reporter.monitor_finished(self)
             reporter.finish()

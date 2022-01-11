@@ -40,57 +40,13 @@ class TableMetricsMonitor(Monitor):
         compiled_sql = compiler.build_query(self, columns)
 
         results = driver.execute_sql(compiled_sql)
+        metrics = compiler.interpret_results(results)
 
         return results
 
     def execute(self, config):
         results = self._execute_sql(config)
         stats = self.interpret_results(results)
-
-        return stats
-
-    # TODO: Move function
-    def _pivot_results(self, results):
-        pivot = {}
-        for row in results['rows']:
-            window_start = row['WINDOW_START']
-            window_end = row['WINDOW_END']
-            row_count = row['ROW_COUNT']
-            
-            for alias in row.keys():
-                if "__" not in alias: # TODO: Not durable
-                    continue
-
-                metric = Metric.parse_alias(alias)
-
-                column_name = metric.column_name
-                metric_name = metric.metric_type._value_
-
-                try:
-                    value = float(row[alias])
-                except TypeError:
-                    value = None
-
-                if column_name not in pivot:
-                    pivot.update({column_name: {}})
-                if metric_name not in pivot[column_name]:
-                    pivot[column_name].update({metric_name: []})
-
-                stat = MetricStat(
-                    table=self.table,
-                    column=column_name,
-                    metric=metric_name,
-                    window_start=window_start,
-                    window_end=window_end,
-                    value=value,
-                )
-                pivot[column_name][metric_name].append(stat)
-
-        return pivot
-
-    def interpret_results(self, results) -> Dict[str, Dict[str, 'MetricStat']]:
-        # metrics = self._columns_to_metrics(results['columns'])
-        stats = self._pivot_results(results)
 
         return stats
 
@@ -157,12 +113,20 @@ class MetricType(Enum):
     def all(cls):
         return cls.__members__.values()
 
+@dataclass
+class MetricDataPoint:
+    value: Any
+    window_start: str
+    window_end: str
+
 # TODO: Type Check
 # TODO: Driver should override metric implementation, not resoultion of metric
 @dataclass
 class Metric:
+    table_name: str
     column_name: str
     metric_type: MetricType
+    values: List[Any]
 
     METRIC_COLUMN = "{sql} AS {alias}"
 
@@ -191,6 +155,12 @@ class Metric:
             column_name=column_name,
             metric_type=metric_type,
         )
+
+    def nonnull_values(self):
+        vals = map(lambda x: x.value, metric.values)
+        nonnull_vals = list(filter(lambda x: x == None, vals))
+
+        return nonnull_vals
 
     @property
     def alias(self):
@@ -310,18 +280,6 @@ class Metric:
         return "STDDEV(CAST({} as double))"
 
 @dataclass
-class MetricStat:
-    table: str
-    column: str
-    metric: str
-    window_start: str
-    window_end: str
-    value: Optional[float] = None
-    z_score: Optional[float] = None
-    std_dev: Optional[float] = None
-    granularity: str = 'HOUR'
-
-@dataclass
 class MetricCompiler:
     metrics: List[Metric]
     
@@ -344,7 +302,7 @@ class MetricCompiler:
     """
 
     @classmethod
-    def _create_metrics(cls, columns):
+    def _create_metrics(cls, table_name, columns):
         metrics = []
 
         for column in columns:
@@ -353,8 +311,10 @@ class MetricCompiler:
 
             for metric_type in MetricType.default_for(column_data_type):
                 metric = Metric(
+                    table_name=table_name,
                     column_name=column_name, 
                     metric_type=metric_type,
+                    values=[],
                 )
                 metrics.append(metric)
 
@@ -362,7 +322,7 @@ class MetricCompiler:
 
     @classmethod
     def build_query(cls, monitor, columns):
-        metrics = cls._create_metrics(columns)
+        metrics = cls._create_metrics(monitor.table, columns)
         metric_sql = ",\n".join([metric.sql() for metric in metrics])
 
         days_ago = -8570
@@ -375,3 +335,54 @@ class MetricCompiler:
         )
         return query
 
+    def _metric_map(self):
+        metric_map = {}
+
+        for metric in self.metrics:
+            column_name = metric.column_name
+            metric_name = metric.metric_type._value_
+
+            if column_name not in metric_map:
+                metric_map[column_name] = {}
+            
+            metric_map[column_name][metric_name] = metric
+        
+        return metric_map
+
+    def interpret_results(self, results) -> Dict[str, Dict[str, 'MetricStat']]:
+        metric_map = self._metric_map()
+
+        pivot = {}
+        for row in results['rows']:
+            window_start = row['WINDOW_START']
+            window_end = row['WINDOW_END']
+            row_count = row['ROW_COUNT']
+            
+            for alias in row.keys():
+                if "__" not in alias: # TODO: Not durable
+                    continue
+
+                metric_name = Metric.parse_alias(alias)
+                column_name = metric.column_name
+                metric_name = metric.metric_type._value_
+                metric = metric_map[column_name][metric_name]
+
+                # TODO: Issue here! Can't assume float.
+                try:
+                    value = float(row[alias])
+                except TypeError:
+                    value = None
+
+                data_point = MetricDataPoint(
+                    window_start=window_start,
+                    window_end=window_end,
+                    value=value,
+                )
+                metric.values.append(data_point)
+
+        metrics = []
+        for column in metric_map.keys():
+            for metric in metric_map[column]:
+                metrics.append(metric)
+
+        return metrics
