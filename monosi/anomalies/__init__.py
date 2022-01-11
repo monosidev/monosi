@@ -8,18 +8,14 @@ from .zscore import ZScoreAlgorithm
 class AnomalyDetectorTest:
     column: str
     metric: str
-    values: List[float]
-
-    def __init__(self, column, metric, values):
-        self.column = column
-        self.metric = metric
-        self.values = values
+    data: List['MetricDataPoint']
+    anomalies: Optional[List['Anomaly']] = None
 
     def run(self, reporter):
         reporter.test_started(self)
         try:
-            anomalies = ZScoreAlgorithm.anomalies(self.values)
-            result = len(anomalies) == 0
+            self.anomalies = ZScoreAlgorithm.anomalies(self.data)
+            result = len(self.anomalies) == 0
             if result:
                 reporter.test_passed(self)
             else:
@@ -33,4 +29,4 @@ class AnomalyDetectorTest:
         return cls(
             column=metric.column_name,
             metric=metric.metric_type._value_,
-            values=metric.nonnull_values())
+            data=metric.nonnull_values())
