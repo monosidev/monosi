@@ -1,3 +1,9 @@
+@dataclass
+class Anomaly:
+    point: MetricDataPoint
+    expected_range_start: float
+    expected_range_end: float
+
 class ZScoreAlgorithm:
     @classmethod
     def _mean(cls, values: List[float]):
@@ -13,16 +19,38 @@ class ZScoreAlgorithm:
 
         return std_dev
 
-    @classmethod
-    def anomalies(cls, values: List[float], sensitivity: float = 3.0):
-        z_scores = cls.run(values)
+    def anomalies(cls, data: List['MetricDataPoint'], sensitivity: float = 3.0):
+        values = [point.value for point in data]
 
-        anomaly_scores = []
-        for z_score in z_scores:
-            if abs(z_score) > sensitivity:
-                anomaly_scores.append(z_score)
+        try:
+            mean = cls._mean(values)
+            std_dev = cls._std_dev(values)
+        except ZeroDivisionError:
+            return []
 
-        return anomaly_scores
+        if (std_dev == 0): return []
+
+        anomalies = []
+        for point in data:
+            try:
+                z_score = round(((point.value - mean) / std_dev), 2)
+
+                expected_range_start = point.value + std_dev * sensitivity
+                expected_range_stop = point.value - std_dev * sensitivity
+
+                if abs(z_score) > sensitivity:
+                    anomaly = Anomaly(
+                        point=point, 
+                        expected_range_start=expected_range_start, 
+                        expected_range_stop=expected_range_stop
+                    )
+                    anomalies.append(anomaly)
+
+            except TypeError:
+                return []
+
+        return anomalies
+
 
     @classmethod
     def run(cls, values: List[float]):
