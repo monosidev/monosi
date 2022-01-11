@@ -1,6 +1,10 @@
+from dataclasses import dataclass
+from math import sqrt
+from typing import List
+
 @dataclass
 class Anomaly:
-    point: MetricDataPoint
+    point: 'MetricDataPoint'
     expected_range_start: float
     expected_range_end: float
 
@@ -19,6 +23,7 @@ class ZScoreAlgorithm:
 
         return std_dev
 
+    @classmethod
     def anomalies(cls, data: List['MetricDataPoint'], sensitivity: float = 3.0):
         values = [point.value for point in data]
 
@@ -35,14 +40,14 @@ class ZScoreAlgorithm:
             try:
                 z_score = round(((point.value - mean) / std_dev), 2)
 
-                expected_range_start = point.value + std_dev * sensitivity
-                expected_range_stop = point.value - std_dev * sensitivity
+                expected_range_start = round(mean - std_dev * sensitivity, 2)
+                expected_range_stop = round(mean + std_dev * sensitivity, 2)
 
                 if abs(z_score) > sensitivity:
                     anomaly = Anomaly(
                         point=point, 
                         expected_range_start=expected_range_start, 
-                        expected_range_stop=expected_range_stop
+                        expected_range_end=expected_range_stop
                     )
                     anomalies.append(anomaly)
 

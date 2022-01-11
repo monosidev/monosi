@@ -82,7 +82,6 @@ class ProjectConfiguration(ProjectConfigurationDefaults, ProjectConfigurationBas
             root_path=root_path,
             collection_name=collection_name,
             source_name=source_name,
-            project_env_vars=project_env_vars,
             monitor_paths=monitor_paths,
         )
 
