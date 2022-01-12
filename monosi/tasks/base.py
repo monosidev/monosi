@@ -1,5 +1,6 @@
 import abc
 from typing import List, Optional
+from monosi.events import track_event
 
 from monosi.config.configuration import Configuration
 from monosi.project import Project
@@ -74,5 +75,7 @@ class MonitorsTask(ProjectTask):
         if self.project is None:
             raise Exception("Project was not loaded before running monitors.")
 
-        return [MonitorTask(self.args, self.config, monitor) for monitor in self.project.monitors]
+        results = [MonitorTask(self.args, self.config, monitor) for monitor in self.project.monitors]
+        track_event(self.config, action="run_finish", label=str(len(self.project.monitors)))
+        return results
 

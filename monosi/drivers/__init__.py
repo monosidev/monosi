@@ -31,6 +31,10 @@ class DriverConfig:
         raise NotImplementedError
 
     @abc.abstractmethod
+    def to_dict(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def from_dict(self, config_dict):
         raise NotImplementedError
 

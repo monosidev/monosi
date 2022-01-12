@@ -3,18 +3,18 @@ from typing import Any, Tuple
 import os
 
 from .project import ProjectConfiguration, ProjectConfigurationBase, ProjectConfigurationDefaults
-from .collection import CollectionConfiguration, CollectionConfigurationBase
+from .collection import CollectionConfiguration, CollectionConfigurationBase, CollectionConfigurationDefaults
 
 @dataclass
 class ConfigurationBase(ProjectConfigurationBase, CollectionConfigurationBase):
     pass
 
 @dataclass
-class ConfigurationDefaults(ProjectConfigurationDefaults):
+class ConfigurationDefaults(ProjectConfigurationDefaults, CollectionConfigurationDefaults):
     args: Any = None
 
 @dataclass
-class Configuration(ProjectConfiguration, CollectionConfiguration, ConfigurationBase, ConfigurationDefaults):
+class Configuration(ConfigurationDefaults, ConfigurationBase):
     def __post_init__(self):
         try:
             Configuration.validate(self)

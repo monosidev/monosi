@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List, Type
 import snowflake.connector
+from monosi.config.configuration import Configuration
+from monosi.events import track_event
 
 from monosi.drivers import BaseDriver, DriverConfig
 from monosi.drivers.column import Column, ColumnDataType
@@ -80,12 +82,21 @@ def resolve_to_type_from_str(type_str):
 
     return ColumnDataType.STRING
 
+@dataclass
+class SnowflakeConfiguration(Configuration):
+    config: SnowflakeConfig
+
 class SnowflakeDriver(BaseDriver):
-    def __init__(self, config: SnowflakeConfig):
-        self.config = config
-        self._instance = snowflake.connector.connect(
-            **config.to_dict()
-        )
+    def __init__(self, config: SnowflakeConfiguration):
+        self.config = config.config
+        try:
+            connection_details = self.config.to_dict()
+            self._instance = snowflake.connector.connect(
+                **connection_details
+            )
+            track_event(config, action="database_connection_success", label="snowflake")
+        except Exception as e:
+            track_event(config, action="database_connection_fail", label="snowflake")
 
     @classmethod
     def get_compiler(cls) -> Type[MetricCompiler]:
@@ -135,8 +146,6 @@ class SnowflakeDriver(BaseDriver):
 
             cs.execute(sql, params)
             results = self._retrieve_results(cs)
-        except Exception as e:
-            raise e
         finally:
             cs.close()
 
