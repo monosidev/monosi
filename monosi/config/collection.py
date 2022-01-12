@@ -11,22 +11,27 @@ DEFAULT_COLLECTIONS_DIR = os.path.join(os.path.expanduser('~'), '.monosi')
 @dataclass(init=False)
 class CollectionConfigurationBase:
     config: DriverConfig
+    send_anonymous_stats: bool
 
 @dataclass(init=False)
 class CollectionConfiguration:
     def __init__(
         self,
         config: DriverConfig,
+        send_anonymous_stats: bool = True
     ):
         self.config = config
+        self.send_anonymous_stats = send_anonymous_stats
 
     @classmethod
     def from_driver_config(
         cls,
         config: DriverConfig,
+        send_anonymous_stats: bool,
     ) -> 'CollectionConfiguration':
         collection = cls(
-            config=config
+            config=config,
+            send_anonymous_stats=send_anonymous_stats,
         )
         collection.validate()
         return collection
@@ -83,8 +88,12 @@ class CollectionConfiguration:
         source_dict = cls._get_source_dict(collection_dict, source_name)
         config = cls._config_from_source(source_dict)
 
+        send_anonymous_stats = collection_dict['send_anonymous_stats'] if 'send_anonymous_stats' in collection_dict else True
+
         return cls.from_driver_config(
-            config=config)
+            config=config,
+            send_anonymous_stats=send_anonymous_stats
+        )
 
     @classmethod
     def _retrieve_collections_path(cls, collections_dir):
