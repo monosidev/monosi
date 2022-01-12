@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from monosi.config.project import ProjectConfiguration
 
 from monosi.tasks.test import TestMonitorsTask
+from monosi.tasks.server import ServerTask
 from monosi.utils.yaml import write_file
 
 class CliParser(object):
@@ -49,6 +50,11 @@ class CliParser(object):
     def run(self):
         args = None
         task = TestMonitorsTask.from_args(args)
+        task.run()
+
+    def server(self):
+        args = None
+        task = ServerTask.from_args(args)
         task.run()
 
 def get_installation_info():
