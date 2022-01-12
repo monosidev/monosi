@@ -1,28 +1,46 @@
 from dataclasses import dataclass
+import logging
 from typing import Any, Dict, Optional, Tuple
 import glob
 import os
+import uuid
 
 from monosi.drivers import DriverConfig
+import monosi.events as events
 import monosi.utils.yaml as yaml
 
 DEFAULT_COLLECTIONS_DIR = os.path.join(os.path.expanduser('~'), '.monosi')
 
-@dataclass(init=False)
+def read_user_id(user_filepath: str):
+    user_data = yaml.parse_file(user_filepath)
+    return user_data['id']
+
+def write_user_id(user_filepath: str):
+    user_id = str(uuid.uuid4())
+
+    if not os.path.exists(user_filepath):
+        user_data = {"id": user_id}
+        yaml.write_file(user_filepath, user_data)
+
+    return user_id
+
+def convert_to_bool(val):
+    if val and val.lower() == "true":
+        return True
+    
+    return False
+
+@dataclass 
+class CollectionConfigurationDefaults:
+    collections_dir: str = DEFAULT_COLLECTIONS_DIR # TODO: Update to args
+    send_anonymous_stats: bool = True
+
+@dataclass
 class CollectionConfigurationBase:
     config: DriverConfig
-    send_anonymous_stats: bool
 
-@dataclass(init=False)
-class CollectionConfiguration:
-    def __init__(
-        self,
-        config: DriverConfig,
-        send_anonymous_stats: bool = True
-    ):
-        self.config = config
-        self.send_anonymous_stats = send_anonymous_stats
-
+@dataclass
+class CollectionConfiguration(CollectionConfigurationDefaults, CollectionConfigurationBase):
     @classmethod
     def from_driver_config(
         cls,
@@ -34,7 +52,22 @@ class CollectionConfiguration:
             send_anonymous_stats=send_anonymous_stats,
         )
         collection.validate()
+        collection._initialize_events()
         return collection
+    
+    def _initialize_events(self):
+        if not self.send_anonymous_stats:
+            return
+
+        user_filepath = os.path.join(self.collections_dir, '.cookie.yml')
+        try:
+            if os.path.exists(user_filepath):
+                user_id = read_user_id(user_filepath)
+            else:
+                user_id = write_user_id(user_filepath)
+            events.set_user_id(user_id)
+        except:
+            logging.error("There was an issue sending anonymous usage stats with a user id.")
 
     @staticmethod
     def _config_from_source(source_dict: Dict[str, Any]) -> DriverConfig:
@@ -61,7 +94,7 @@ class CollectionConfiguration:
         sources = collection_dict['sources']
 
         if source_name not in sources:
-            raise Exception
+            raise Exception("Source name not found")
         source_dict = sources[source_name]
 
         if not isinstance(source_dict, dict):
@@ -81,14 +114,17 @@ class CollectionConfiguration:
         return collection_dict
 
     def validate(self):
-        pass
+        if not os.path.exists(self.collections_dir):
+            raise Exception("Collections directory does not exist.")
+
+        return True
 
     @classmethod
     def from_dict(cls, collection_dict: Dict[str, Any], source_name: str = 'default') -> 'CollectionConfiguration':
         source_dict = cls._get_source_dict(collection_dict, source_name)
         config = cls._config_from_source(source_dict)
 
-        send_anonymous_stats = collection_dict['send_anonymous_stats'] if 'send_anonymous_stats' in collection_dict else True
+        send_anonymous_stats = convert_to_bool(collection_dict['send_anonymous_stats']) if 'send_anonymous_stats' in collection_dict else True
 
         return cls.from_driver_config(
             config=config,

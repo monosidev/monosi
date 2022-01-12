@@ -33,7 +33,7 @@ class TableMetricsMonitor(Monitor):
         driver_config = config.config
         driver_cls = load_driver(driver_config)
 
-        driver = driver_cls(driver_config)
+        driver = driver_cls(config)
         compiler_cls = driver_cls.get_compiler()
         compiler = compiler_cls()
 
