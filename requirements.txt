@@ -1,5 +1,4 @@
 mashumaro==2.9
-monosi-scheduler==0.0.1
-monosi-server==0.0.1
 PyYAML==6.0
 snowflake-connector-python==2.7.2
+snowplow-tracker==0.10.0
