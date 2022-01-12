@@ -31,7 +31,7 @@ setup(
     url='https://github.com/monosidev/monosi',
     license=license,
     install_requires=install_requires,
-    packages=find_namespace_packages(include=['monosi', 'monosi.*', 'monosi_drivers'], exclude=('tests', 'docs')),
+    packages=find_namespace_packages(include=['monosi', 'monosi.*', 'monosi_drivers', 'monosi_drivers.*'], exclude=('tests', 'docs')),
     entry_points = {
         'console_scripts': [
             'monosi=monosi.__main__:main',
