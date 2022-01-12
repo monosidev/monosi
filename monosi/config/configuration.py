@@ -54,8 +54,8 @@ class Configuration(ProjectConfiguration, CollectionConfiguration, Configuration
             source_name=project.source_name,
             reporter=project.reporter,
             config=collection.config,
+            send_anonymous_stats=collection.send_anonymous_stats,
             args=args)
-
 
     @classmethod
     def from_args(cls, args: Any) -> 'Configuration':
