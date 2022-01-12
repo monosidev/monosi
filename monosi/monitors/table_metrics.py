@@ -115,7 +115,7 @@ class MetricType(Enum):
 
 @dataclass
 class MetricDataPoint:
-    value: float
+    value: Optional[float]
     window_start: str
     window_end: str
 
@@ -154,13 +154,14 @@ class Metric:
         return (column_name, metric_name)
 
     def nonnull_values(self):
-        for point in self.values:
+        nonnull_vals = list(filter(lambda x: x.value != None, self.values))
+        for point in nonnull_vals:
             try:
                 point.value = float(point.value)
             except Exception:
                 pass
 
-        return list(filter(lambda x: x.value != None, self.values))
+        return nonnull_vals
 
     @property
     def alias(self):
