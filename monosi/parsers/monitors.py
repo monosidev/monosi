@@ -23,6 +23,9 @@ class MonitorParser(YamlParser):
         return ".".join(table_parts)
 
     def _resolve_table(self, monitor_dict):
+        if 'type' not in monitor_dict or monitor_dict['type'] != 'table':
+            return
+
         fqn = self._fqtablename(monitor_dict['table'])
         monitor_dict['table'] = fqn
 
