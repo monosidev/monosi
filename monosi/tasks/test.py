@@ -1,12 +1,9 @@
 from monosi.events import track_event
 
-from .base import MonitorsTask
+from .run import RunMonitorsTask
 
-class TestMonitorsTask(MonitorsTask):
-    def __init__(self, args, config):
-        track_event(config, action='run_start', label='manual')
-        super().__init__(args, config)
-
+class TestMonitorsTask(RunMonitorsTask):
     def _process_tasks(self):
-        results = [task.run() for task in self.task_queue]
-        return results
+        track_event(config, action='run_start', label='manual')
+        super()._process_tasks()
+        track_event(self.config, action="run_finish", label=str(len(self.monitors)))

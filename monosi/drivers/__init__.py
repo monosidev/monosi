@@ -1,7 +1,9 @@
 import abc
 from dataclasses import dataclass
 from typing import List, Optional, Type
-from monosi.drivers.column import Column
+
+from .column import Column
+from .dialect import Dialect
 
 @dataclass
 class DriverConfig:
@@ -39,6 +41,8 @@ class DriverConfig:
         raise NotImplementedError
 
 class BaseDriver:
+    dialect: Type[Dialect]
+
     @abc.abstractmethod
     def test_connection(self):
         raise NotImplementedError
