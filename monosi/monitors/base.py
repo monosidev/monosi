@@ -2,13 +2,13 @@ import abc
 from dataclasses import dataclass, field
 from enum import Enum
 from mashumaro import DataClassDictMixin
-from typing import List, Optional, Dict
-from monosi.config.configuration import Configuration
+from typing import Any, List, Optional, Dict
 
-from monosi.anomalies import AnomalyDetectorTest
+from .metrics import MetricBase
 
 class MonitorType(Enum):
-    TableMetrics = 'table_metrics'
+    TABLE = 'table'
+    CUSTOM = 'custom'
 
 class ScheduleType(Enum):
     INTERVAL = 'interval'
@@ -19,9 +19,13 @@ class Schedule(DataClassDictMixin):
     type: ScheduleType = ScheduleType.INTERVAL
 
 @dataclass
-class Monitor(DataClassDictMixin):
+class Monitor:
+    metrics: List[MetricBase]
     description: Optional[str] = None
     schedule: Schedule = field(default_factory=Schedule)
+
+    def base_sql_statement(self, select_sql):
+        raise NotImplementedError
 
     @abc.abstractmethod
     def info(self):
@@ -30,28 +34,7 @@ class Monitor(DataClassDictMixin):
     @abc.abstractclassmethod
     def validate(cls, monitor_dict):
         raise NotImplementedError
-
-    @abc.abstractclassmethod
-    def execute(cls, config):
-        raise NotImplementedError
     
     @abc.abstractclassmethod
-    def from_dict(cls, value: Dict[str, int]) -> 'Monitor':
+    def from_dict(cls, value: Dict[str, Any]) -> 'Monitor':
         raise NotImplementedError
-
-    def run(self, config: Configuration):
-        reporter = config.reporter
-
-        reporter.monitor_started(self)
-        try:
-            metrics = self.execute(config)
-            tests = [AnomalyDetectorTest.from_metric(metric) for metric in metrics]
-            [test.run(reporter) for test in tests]
-        finally:
-            reporter.monitor_finished(self)
-            reporter.finish()
-
-    @abc.abstractmethod
-    def compile(self):
-        raise NotImplementedError
-
