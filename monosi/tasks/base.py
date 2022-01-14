@@ -1,6 +1,5 @@
 import abc
 from typing import List, Optional
-from monosi.events import track_event
 
 from monosi.config.configuration import Configuration
 from monosi.project import Project
@@ -52,30 +51,4 @@ class ProjectTask(TaskBase):
     def run(self):
         self._initialize()
         return self._process_tasks()
-
-class MonitorTask(TaskBase):
-    def __init__(self, args, config, monitor):
-        super().__init__(args, config)
-        self.monitor = monitor
-
-    @classmethod
-    def run_task(cls, *args):
-        task = cls(*args)
-        task.run()
-
-    def run(self):
-        self.monitor.run(self.config)
-
-class MonitorsTask(ProjectTask):
-    def __init__(self, args, config):
-        super().__init__(args, config)
-        self.task_queue: List[MonitorTask] = []
-
-    def _create_tasks(self):
-        if self.project is None:
-            raise Exception("Project was not loaded before running monitors.")
-
-        results = [MonitorTask(self.args, self.config, monitor) for monitor in self.project.monitors]
-        track_event(self.config, action="run_finish", label=str(len(self.project.monitors)))
-        return results
 

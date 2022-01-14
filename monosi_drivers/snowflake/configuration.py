@@ -6,7 +6,8 @@ from monosi.events import track_event
 
 from monosi.drivers import BaseDriver, DriverConfig
 from monosi.drivers.column import Column, ColumnDataType
-from monosi.monitors.table_metrics import MetricCompiler
+
+from .dialect import SnowflakeDialect
 
 @dataclass
 class SnowflakeConfig(DriverConfig):
@@ -68,9 +69,6 @@ SNOWFLAKE_TYPES = {
     13: ColumnDataType.BOOLEAN,
 }
 
-class SnowflakeCompiler(MetricCompiler):
-    pass
-
 def resolve_to_type_from_str(type_str):
     type_str = type_str.lower()
     if 'varchar' in type_str:
@@ -89,6 +87,7 @@ class SnowflakeConfiguration(Configuration):
 class SnowflakeDriver(BaseDriver):
     def __init__(self, config: SnowflakeConfiguration):
         self.config = config.config
+        self.dialect = SnowflakeDialect
         try:
             connection_details = self.config.to_dict()
             self._instance = snowflake.connector.connect(
@@ -97,10 +96,6 @@ class SnowflakeDriver(BaseDriver):
             track_event(config, action="database_connection_success", label="snowflake")
         except Exception as e:
             track_event(config, action="database_connection_fail", label="snowflake")
-
-    @classmethod
-    def get_compiler(cls) -> Type[MetricCompiler]:
-        return SnowflakeCompiler
 
     def _before_execute(self, cs):
         if self.config.warehouse is not None: 
