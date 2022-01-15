@@ -7,7 +7,8 @@ class TextFormatter(BaseFormatter):
     def dump_failures(self, failed_tests):
         # TODO: Consider Failures Formatter
         if len(failed_tests) == 0:
-            self.write("\n\nAll tests passed.\n", Color.GREEN)
+            self.write('', Color.ENDC)
+            # self.write("\n\nAll tests passed.\n", Color.GREEN)
         else:
             self.write("\nFailures\n", Color.RED)
 
@@ -31,7 +32,7 @@ class TextFormatter(BaseFormatter):
 
     def dump_summary(self, summary):
         # print(summary.fully_formatted)
-        self.write('\nFinished in {total_time} seconds (SQL results took {load_time} seconds to load)\n'.format(
+        self.write('\n\nFinished in {total_time} seconds (SQL results took {load_time} seconds to load)\n'.format(
             total_time=summary['total_time'],
             load_time=summary['load_time'],
         ), Color.ENDC)

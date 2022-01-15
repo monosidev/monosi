@@ -82,6 +82,12 @@ class TableMonitor(Monitor):
             days_ago=self.days_ago,
         )
 
+    def info(self):
+        info_str = "Table Health Monitor: {}".format(self.table)
+        if self.description:
+            info_str += "\n{}".format(self.description)
+        return info_str
+
     @classmethod
     def validate(cls, monitor_dict):
         pass
