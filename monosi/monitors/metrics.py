@@ -8,3 +8,6 @@ class MetricType(Enum):
 class MetricBase:
     type: MetricType
 
+    def alias(self):
+        return self.type._value_
+

@@ -3,6 +3,8 @@ from enum import Enum
 from typing import Any, List, Dict
 
 import operator as py_operator
+from monosi.monitors.base import Schedule
+# from monosi.monitors.base import Schedule
 
 from monosi.monitors.metrics import MetricType
 
@@ -79,9 +81,18 @@ class CustomMetric(MetricBase):
             thresholds=thresholds,
         )
 
+def extract_or_default(obj, key, default):
+    return obj[key] if key in obj else default
+
 @dataclass
 class CustomMonitor(Monitor):
     metrics: List[CustomMetric] = field(default_factory=list)
+
+    def info(self):
+        info_str = "Custom Monitor"
+        if self.description:
+            info_str += ": {}".format(self.description)
+        return info_str
 
     @classmethod
     def validate(cls, monitor_dict):
@@ -90,22 +101,15 @@ class CustomMonitor(Monitor):
     @classmethod
     def from_dict(cls, value: Dict[str, Any]) -> 'CustomMonitor':
         metric = CustomMetric.from_dict(value)
+        description = extract_or_default(value, 'description', None)
+        schedule = Schedule.from_dict(extract_or_default(value, 'schedule', {}))
 
-        return cls(metrics=[metric])
+        return cls(
+            metrics=[metric],
+            description=description,
+            schedule=schedule,
+        )
 
     def base_sql_statement(self, select_sql):
-        return "{select_sql}".format(select_sql=select_sql)
-
-class ThresholdTest:
-    metric: CustomMetric
-    values: List[float] 
-
-    def run(self):
-        anomalies = []
-        thresholds = self.metric.thresholds
-
-        for value in self.values:
-            for threshold in thresholds:
-                if not threshold.evaluate(value):
-                    anomalies.append(value)
+        return "WITH custom_metric AS ({select_sql}) SELECT 1 AS custom FROM custom_metric".format(select_sql=select_sql)
 
