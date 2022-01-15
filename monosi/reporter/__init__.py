@@ -41,6 +41,7 @@ class Reporter:
     def monitor_finished(self, monitor):
         self.monitor_finished_time = time()
         self.notify(NotificationType.MONITOR_FINISHED)
+        self.finish()
 
     def test_started(self, test):
         self.tests.append(test)

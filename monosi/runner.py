@@ -1,3 +1,4 @@
+from monosi.analyzer import Analyzer
 from monosi.config.configuration import Configuration
 from monosi.compiler import Compiler
 from monosi.events import track_event
@@ -36,15 +37,17 @@ class Runner:
 
         reporter = self.config.reporter
         compiler = self.get_compiler()
+        analyzer = Analyzer(reporter)
 
         for monitor in self.monitors:
             reporter.monitor_started(monitor)
             try:
                 sql_stmt = compiler.compile(monitor)
                 results = self.execute(sql_stmt)
-                # run tests
+
+                analyzer.analyze(monitor, results)
             finally:
                 reporter.monitor_finished(monitor)
                 
-        reporter.finish()
+        # reporter.finish()
 
