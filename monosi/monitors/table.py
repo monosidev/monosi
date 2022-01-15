@@ -110,6 +110,7 @@ class TableMonitor(Monitor):
     def from_dict(cls, value: Dict[str, Any]) -> 'Monitor':
         table = value['table']
         timestamp_field = value['timestamp_field']
+        description = extract_or_default(value, 'description', None)
         where = extract_or_default(value, 'where', '')
         days_ago = extract_or_default(value, 'days_ago', -100)
 
@@ -121,6 +122,7 @@ class TableMonitor(Monitor):
         return cls(
             table=table,
             metrics=metrics,
+            description=description,
             timestamp_field=timestamp_field,
             where=where,
             days_ago=days_ago,
