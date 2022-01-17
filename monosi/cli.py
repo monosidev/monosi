@@ -3,6 +3,7 @@ import sys
 from argparse import ArgumentParser
 from monosi.config.project import ProjectConfiguration
 
+from monosi.tasks.profile import ProfileTask
 from monosi.tasks.run import RunMonitorsTask
 from monosi.tasks.server import ServerTask
 from monosi.utils.yaml import write_file
@@ -45,7 +46,9 @@ class CliParser(object):
         print("Successfully initialized monosi project.")
 
     def profile(self):
-        print("This profiles the existing configuration for monitors you may want to set.")
+        args = None
+        task = ProfileTask.from_args(args)
+        task.run()
 
     def run(self):
         args = None

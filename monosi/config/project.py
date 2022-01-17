@@ -13,6 +13,19 @@ class ProjectConfigurationDefaults:
     source_name: Optional[str] = None
     monitor_paths: List[str] = field(default_factory=lambda: ['./monitors'])
     reporter: Reporter = field(default_factory=Reporter)
+    
+    @classmethod
+    def _retrieve_project_config_path(cls, root_path):
+        root_path = os.path.normpath(root_path)
+
+        config_path_selector = os.path.join(root_path, 'monosi_project.y*ml')
+        matches = glob.glob(config_path_selector)
+
+        if len(matches) != 1:
+            raise Exception("No project configuration file found.")
+
+        project_config_path = matches[0]
+        return project_config_path
 
 @dataclass
 class ProjectConfigurationBase:
@@ -29,19 +42,6 @@ class ProjectConfiguration(ProjectConfigurationDefaults, ProjectConfigurationBas
             project_name=project_name,
             root_path=root_path,
         )
-    
-    @classmethod
-    def _retrieve_project_config_path(cls, root_path):
-        root_path = os.path.normpath(root_path)
-
-        config_path_selector = os.path.join(root_path, 'monosi_project.y*ml')
-        matches = glob.glob(config_path_selector)
-
-        if len(matches) != 1:
-            raise Exception("No project configuration file found.")
-
-        project_config_path = matches[0]
-        return project_config_path
 
     @classmethod
     def from_root_path(cls, root_path: str) -> 'ProjectConfiguration':
@@ -99,4 +99,5 @@ class ProjectConfiguration(ProjectConfigurationDefaults, ProjectConfigurationBas
             config_dict.update({"source": self.source_name})
 
         return config_dict
+
 

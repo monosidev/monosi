@@ -128,3 +128,11 @@ class TableMonitor(Monitor):
             days_ago=days_ago,
         )
 
+    def to_dict(self): # TODO: Add columns
+        return {
+            'table': self.table,
+            'timestamp_field': self.timestamp_field,
+        }
+
+
+

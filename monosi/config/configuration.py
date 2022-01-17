@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Any, Tuple
 import os
 
+import monosi.utils.yaml as yaml
+
 from .project import ProjectConfiguration, ProjectConfigurationBase, ProjectConfigurationDefaults
 from .collection import CollectionConfiguration, CollectionConfigurationBase, CollectionConfigurationDefaults
 
@@ -68,3 +70,24 @@ class Configuration(ConfigurationDefaults, ConfigurationBase):
 
         return configuration
 
+    def project_dict(self):
+        config_dict = {
+            "name": self.project_name,
+            "version": self.version,
+            "monitor-paths": self.monitor_paths,
+        }
+        if self.collection_name:
+            config_dict.update({"collection": self.collection_name})
+        if self.source_name:
+            config_dict.update({"source": self.source_name})
+
+        return config_dict
+
+    def add_monitor_path(self, path):
+        if path not in self.monitor_paths:
+            self.monitor_paths.append(path)
+            
+            project_config_path = self._retrieve_project_config_path(self.root_path)
+            project_dict = self.project_dict()
+
+            yaml.write_file(project_config_path, project_dict)
