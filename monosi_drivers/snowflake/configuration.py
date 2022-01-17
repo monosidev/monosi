@@ -69,6 +69,9 @@ SNOWFLAKE_TYPES = {
     13: ColumnDataType.BOOLEAN,
 }
 
+def system_tables():
+    return ['databases', 'external_tables', 'file_formats', 'functions', 'load_history', 'object_privileges', 'table_privileges', 'pipes', 'procedures', 'referential_constraints', 'replication_databases', 'schemata', 'sequences', 'stages', 'table_constraints', 'table_storage_metrics', 'tables', 'usage_privileges', 'views']
+
 def resolve_to_type_from_str(type_str):
     type_str = type_str.lower()
     if 'varchar' in type_str:
@@ -164,9 +167,16 @@ class SnowflakeDriver(BaseDriver):
             {database}.INFORMATION_SCHEMA.TABLES t
                 ON c.TABLE_NAME = t.TABLE_NAME
                 AND c.TABLE_SCHEMA = t.TABLE_SCHEMA;
-        """
+        """.format(database=self.config.database)
         results = self.execute_sql(DATABASE_METADATA_SQL)
+        filtered_results = {}
+        filtered_results['columns'] = results['columns']
+        filtered_results['rows'] = []
+        rows = results['rows']
+        for row in rows:
+            if row['NAME'].lower() not in system_tables():
+                filtered_results['rows'].append(row)
 
-        return results
+        return filtered_results
 
 
