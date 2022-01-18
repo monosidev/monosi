@@ -18,22 +18,25 @@ class CliParser(object):
     def _add_arguments(self):
         """Adds arguments to parser."""
         self._parser.add_argument(
+            'command', type=str
+        )
+        self._parser.add_argument(
             '-v', '--version',
             action='version', 
             version=self.version(),
             help='Show the version number.'
         )
-        self._parser.add_argument('-c','--command', help='Subcommand to run')
 
     def parse(self, argv):
         args = self._parser.parse_args(argv[1:])
-        getattr(self, args.command)()
+        getattr(self, args.command)(argv[1:])
         
     # Commands
-    def version(self):
+    def version(self, args=None):
         return format_program_version(get_installation_info().version, sys.version.split()[0])
 
-    def init(self):
+    def init(self, args):
+        args = None
         project_name = "project"
         project_configuration = ProjectConfiguration.create_new(project_name)
 
@@ -45,17 +48,17 @@ class CliParser(object):
 
         print("Successfully initialized monosi project.")
 
-    def profile(self):
+    def profile(self, args):
         args = None
         task = ProfileTask.from_args(args)
         task.run()
 
-    def run(self):
+    def run(self, args):
         args = None
         task = RunMonitorsTask.from_args(args)
         task.run()
 
-    def server(self):
+    def server(self, args):
         args = None
         task = ServerTask.from_args(args)
         task.run()
