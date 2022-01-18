@@ -172,12 +172,10 @@ class TableMonitor(Monitor):
         )
 
     def to_dict(self):
+        # Used for output on bootstrap right now.
         return {
             'table': self.table,
-            'description': self.description,
             'timestamp_field': self.timestamp_field,
-            'columns': self.columns,
-            'metrics': self.metrics,
         }
 
     def retrieve_metrics(self):
