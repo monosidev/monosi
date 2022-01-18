@@ -154,9 +154,6 @@ class TableMonitor(Monitor):
     
     @classmethod
     def from_dict(cls, value: Dict[str, Any]) -> 'Monitor':
-        if not cls.validate(value):
-            raise Exception("The monitor definition is not defined correctly.")
-
         table = value['table']
         timestamp_field = value['timestamp_field']
         description = extract_or_default(value, 'description', None)
