@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from math import sqrt
 from typing import List
 from monosi.analyzer.data import DataPoint
@@ -53,7 +53,7 @@ class ZScoreAlgorithm:
                 z_score = round(((point.value - mean) / std_dev), 2) 
                 error = abs(z_score) > sensitivity 
                 zscore_point = ZScoreDataPoint(
-                    **point.to_dict(),
+                    value=point.value,
                     expected_range_start=point.value-sensitivity,
                     expected_range_end=point.value+sensitivity,
                     error=error,
@@ -61,23 +61,27 @@ class ZScoreAlgorithm:
                 )
                 zscore_points.append(zscore_point)
 
-            except TypeError:
-                return []
+            except Exception as e:
+                pass
+                # return []
 
-        return ZScoreTestResult(data=zscore_points)
+        return zscore_points
 
 @dataclass
 class ZScoreTest(Test):
     sensitivity: float = 3.0
     data: List[DataPoint]
+    anomalies: List[DataPoint] = field(default_factory=list)
 
     @classmethod
     def from_metric(cls, metric: ColumnMetric, data: Data):
         metric_data = data.for_metric(metric)
-        return cls(data=metric_data)
+        return cls(data=metric_data, column=metric.column, metric=metric.type.value)
 
     def run(self):
         z_scores = ZScoreAlgorithm.run(self.data, self.sensitivity)
+        result = ZScoreTestResult(z_scores)
+        self.anomalies = result.anomalies()
 
-        return ZScoreTestResult(z_scores)
+        return result
 

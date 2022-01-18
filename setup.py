@@ -4,7 +4,7 @@ from os import path
 import pkg_resources
 from setuptools import setup, find_namespace_packages
 
-VERSION = '0.0.2.post1'
+VERSION = '0.0.2.post2'
 
 with open('README.md') as f:
     readme = f.read()
@@ -25,7 +25,7 @@ setup(
     name='monosi',
     version=VERSION,
     description='Monosi - Data observability & monitoring toolkit',
-    long_description=readme,
+    # long_description=readme,
     author='Vocable Inc.',
     author_email='support@monosi.dev',
     url='https://github.com/monosidev/monosi',
