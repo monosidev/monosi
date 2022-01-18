@@ -23,7 +23,9 @@ class Runner:
         if self.driver is None:
             raise Exception("Initialize runner before compilation")
 
-        return Compiler(self.driver.dialect)
+        metadata = self.driver.metadata()
+
+        return Compiler(self.driver.dialect, metadata)
 
     def execute(self, sql: str):
         if self.driver is None:
@@ -42,6 +44,7 @@ class Runner:
         for monitor in self.monitors:
             reporter.monitor_started(monitor)
             try:
+
                 sql_stmt = compiler.compile(monitor)
                 results = self.execute(sql_stmt)
 

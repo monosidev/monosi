@@ -88,6 +88,9 @@ def extract_or_default(obj, key, default):
 class CustomMonitor(Monitor):
     metrics: List[CustomMetric] = field(default_factory=list)
 
+    def retrieve_metrics(self):
+        return self.metrics
+
     def info(self):
         info_str = "Custom Monitor"
         if self.description:
