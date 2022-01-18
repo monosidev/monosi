@@ -39,7 +39,7 @@ class Analyzer:
         data = Data.from_results(results)
         results = {}
 
-        for metric in monitor.metrics:
+        for metric in monitor.retrieve_metrics():
             result = self.test(metric, data)
             results[metric.alias()] = result
 

@@ -1,7 +1,10 @@
 from dataclasses import dataclass
-from typing import List
+from typing import Any, List
+from monosi.drivers.column import Column
+from monosi.profiler import DatabaseTable
+from monosi.monitors.table import TableMonitor
 
-from monosi.drivers.dialect import Dialect, GenericDialect
+from monosi.drivers.dialect import Dialect
 from monosi.monitors.base import Monitor
 from monosi.monitors.metrics import MetricBase
 from monosi.monitors.custom import CustomMetric
@@ -10,6 +13,7 @@ from monosi.monitors.table import ColumnMetric, ColumnMetricType
 @dataclass
 class Compiler:
     dialect: Dialect
+    metadata: Any
 
     def _retrieve_unformatted_sql(self, metric_type: ColumnMetricType) -> str:
         attr = getattr(self.dialect, metric_type._value_)
@@ -47,14 +51,18 @@ class Compiler:
 
         return ",\n\t".join(select_body)
 
+    def _add_cols(self, monitor: TableMonitor):
+        tables = DatabaseTable.from_metadata(self.metadata)
+        for table in tables:
+            if table.name.lower() in monitor.table:
+                monitor.columns = table.columns
+
     def compile(self, monitor: Monitor):
-        select_sql = self.compile_select(monitor.metrics)
+        if isinstance(monitor, TableMonitor):
+            self._add_cols(monitor)
+
+        select_sql = self.compile_select(monitor.retrieve_metrics())
         sql = monitor.base_sql_statement(select_sql)
         
         return sql
-
-    @classmethod
-    def compile_monitor(cls, monitor: Monitor, dialect: Dialect = GenericDialect()):
-        compiler = cls(dialect)
-        return compiler.compile(monitor)
 

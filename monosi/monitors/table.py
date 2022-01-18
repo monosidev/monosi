@@ -1,14 +1,25 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List
+from monosi.drivers.column import ColumnDataType
+
+from monosi.drivers.column import Column
 
 from .base import Monitor
 from .metrics import MetricBase
 
 def extract_or_default(obj, key, default):
     return obj[key] if key in obj else default
-    
-class StringColumnMetricTypeDefaults:
+
+class ColumnMetricType(Enum):
+    APPROX_DISTINCTNESS = 'approx_distinctness'
+    COMPLETENESS = 'completeness'
+    ZERO_RATE = 'zero_rate'
+    NEGATIVE_RATE = 'negative_rate'
+    NUMERIC_MEAN = 'numeric_mean'
+    NUMERIC_MIN = 'numeric_min'
+    NUMERIC_MAX = 'numeric_max'
+    NUMERIC_STD = 'numeric_std'
     APPROX_DISTINCT_COUNT = 'approx_distinct_count'
     MEAN_LENGTH = 'mean_length'
     MAX_LENGTH = 'max_length'
@@ -20,25 +31,61 @@ class StringColumnMetricTypeDefaults:
     TEXT_ALL_SPACES_RATE = 'text_all_spaces_rate'
     TEXT_NULL_KEYWORD_RATE = 'text_null_keyword_rate'
 
-class NumericColumnMetricTypeDefaults:
-    ZERO_RATE = 'zero_rate'
-    NEGATIVE_RATE = 'negative_rate'
-    NUMERIC_MEAN = 'numeric_mean'
-    NUMERIC_MIN = 'numeric_min'
-    NUMERIC_MAX = 'numeric_max'
-    NUMERIC_STD = 'numeric_std'
-
-class ColumnMetricType(StringColumnMetricTypeDefaults, NumericColumnMetricTypeDefaults, Enum):
-    APPROX_DISTINCTNESS = 'approx_distinctness'
-    COMPLETENESS = 'completeness'
-
     @classmethod
     def default(cls):
         return [cls.APPROX_DISTINCTNESS, cls.COMPLETENESS]
 
     @classmethod
     def all(cls):
-        return cls.__members__.values()
+        return [
+            cls.APPROX_DISTINCTNESS, 
+            cls.COMPLETENESS,
+            cls.ZERO_RATE,
+            cls.NEGATIVE_RATE,
+            cls.NUMERIC_MEAN,
+            cls.NUMERIC_MIN,
+            cls.NUMERIC_MAX,
+            cls.NUMERIC_STD,
+            cls.APPROX_DISTINCT_COUNT,
+            cls.MEAN_LENGTH,
+            cls.MAX_LENGTH,
+            cls.MIN_LENGTH,
+            cls.STD_LENGTH,
+            cls.TEXT_INT_RATE,
+            cls.TEXT_NUMBER_RATE,
+            cls.TEXT_UUID_RATE,
+            cls.TEXT_ALL_SPACES_RATE,
+            cls.TEXT_NULL_KEYWORD_RATE,
+        ]
+
+    @classmethod
+    def default_for(cls, data_type: ColumnDataType): 
+        if data_type == ColumnDataType.FLOAT or data_type == ColumnDataType.INTEGER:
+            return [
+                cls.ZERO_RATE,
+                cls.NEGATIVE_RATE,
+                cls.NUMERIC_MEAN,
+                cls.NUMERIC_MIN,
+                cls.NUMERIC_MAX,
+                cls.NUMERIC_STD,
+            ]
+        elif data_type == ColumnDataType.STRING:
+            return [
+                cls.APPROX_DISTINCT_COUNT,
+                cls.MEAN_LENGTH,
+                cls.MAX_LENGTH,
+                cls.MIN_LENGTH,
+                cls.STD_LENGTH,
+                cls.TEXT_INT_RATE,
+                cls.TEXT_NUMBER_RATE,
+                cls.TEXT_UUID_RATE,
+                cls.TEXT_ALL_SPACES_RATE,
+                cls.TEXT_NULL_KEYWORD_RATE,
+            ]
+            
+
+        return cls.default()
+
 
 @dataclass
 class ColumnMetric(MetricBase):
@@ -54,8 +101,8 @@ class TableMonitor(Monitor):
     timestamp_field: str = field(default_factory=str)
     where: str = field(default_factory=str)
     days_ago: int = -100
-
-    metrics: List[ColumnMetric] = field(default_factory=list)
+    metrics: List[ColumnMetricType] = field(default_factory=lambda: ColumnMetricType.all())
+    columns: List[Column] = field(default_factory=list)
 
     # TODO: BASE_SQL should be delegated to Dialect
     BASE_SQL = """
@@ -96,15 +143,14 @@ class TableMonitor(Monitor):
         # TODO: Better validation
         return True
 
-    @classmethod
-    def _create_metrics(cls, columns, allowed_metrics):
+    def _create_metrics(self):
         metrics = []
-        for column in columns:
-            for metric_type in ColumnMetricType.default():
-                if metric_type in allowed_metrics:
+        for column in self.columns:
+            for metric_type in ColumnMetricType.default_for(column.data_type):
+                if metric_type in self.metrics:
                     metric = ColumnMetric(
-                        column=column,
-                        type=metric_type,
+                        column=column.name,
+                        type=ColumnMetricType(metric_type),
                     )
                     metrics.append(metric)
 
@@ -120,15 +166,9 @@ class TableMonitor(Monitor):
         description = extract_or_default(value, 'description', None)
         where = extract_or_default(value, 'where', '')
         days_ago = extract_or_default(value, 'days_ago', -100)
-
-        # TODO: columns
-        user_columns = extract_or_default(value, 'columns', [])
-        user_metrics = extract_or_default(value, 'metrics', ColumnMetricType.default())
-        metrics = cls._create_metrics(user_columns, user_metrics)
-
+        
         return cls(
             table=table,
-            metrics=metrics,
             description=description,
             timestamp_field=timestamp_field,
             where=where,
@@ -141,5 +181,7 @@ class TableMonitor(Monitor):
             'timestamp_field': self.timestamp_field,
         }
 
+    def retrieve_metrics(self):
+        return self._create_metrics()
 
 

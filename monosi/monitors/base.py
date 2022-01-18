@@ -27,6 +27,9 @@ class Monitor:
     def base_sql_statement(self, select_sql):
         raise NotImplementedError
 
+    def retrieve_metrics(self):
+        raise NotImplementedError
+
     @abc.abstractmethod
     def info(self):
         raise NotImplementedError
