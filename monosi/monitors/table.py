@@ -90,7 +90,11 @@ class TableMonitor(Monitor):
 
     @classmethod
     def validate(cls, monitor_dict):
-        pass
+        if 'columns' not in monitor_dict or len(monitor_dict['columns']) == 0:
+            return False
+
+        # TODO: Better validation
+        return True
 
     @classmethod
     def _create_metrics(cls, columns, allowed_metrics):
@@ -108,6 +112,9 @@ class TableMonitor(Monitor):
     
     @classmethod
     def from_dict(cls, value: Dict[str, Any]) -> 'Monitor':
+        if not cls.validate(value):
+            raise Exception("The monitor definition is not defined correctly.")
+
         table = value['table']
         timestamp_field = value['timestamp_field']
         description = extract_or_default(value, 'description', None)
