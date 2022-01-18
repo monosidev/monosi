@@ -8,7 +8,7 @@ import monosi.utils.yaml as yaml
 
 @dataclass 
 class ProjectConfigurationDefaults:
-    version: str = '0.0.2.post2' # TODO: Update to automatic
+    version: str = '0.0.2.post3' # TODO: Update to automatic
     collection_name: Optional[str] = None
     source_name: Optional[str] = None
     monitor_paths: List[str] = field(default_factory=lambda: ['./monitors'])
@@ -69,7 +69,7 @@ class ProjectConfiguration(ProjectConfigurationDefaults, ProjectConfigurationBas
             raise e
 
         project_name = str(project_dict.get('name'))
-        version = project_dict.get('version') or '0.0.2.post2'
+        version = project_dict.get('version') or '0.0.2.post3'
         collection_name = project_dict.get('collection')
         source_name = project_dict.get('source')
         log_path: str = project_dict.get('log-path') or 'logs'
