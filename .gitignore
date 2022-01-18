@@ -89,4 +89,4 @@ ENV/
 # Rope project settings
 .ropeproject
 tags
-.DS_Store/
+.DS_Store
