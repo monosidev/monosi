@@ -1,13 +1,15 @@
 import pkg_resources
 
 from monosi.drivers import DriverConfig
+import monosi.drivers.snowflake
 
 class DriverFactory:
     def __init__(self):
         self._drivers = {}
 
-        for entry_point in pkg_resources.iter_entry_points('monosi_drivers'):
-            self._drivers[entry_point.name] = entry_point.load()
+        self._drivers['snowflake'] = monosi.drivers.snowflake
+        # for entry_point in pkg_resources.iter_entry_points('monosi_drivers'):
+        #     self._drivers[entry_point.name] = entry_point.load()
 
     def load_config_class(self, name: str):
         if name not in self._drivers.keys():
