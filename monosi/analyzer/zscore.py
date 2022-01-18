@@ -17,6 +17,9 @@ class ZScoreDataPointFields:
 class ZScoreDataPoint(TableDataPoint, ZScoreDataPointFields):
     pass
 
+class ZScoreTestResult(TestResult):
+    data: List[ZScoreDataPoint]
+
 class ZScoreAlgorithm:
     @classmethod
     def _mean(cls, values: List[float]):
@@ -61,10 +64,7 @@ class ZScoreAlgorithm:
             except TypeError:
                 return []
 
-        return zscore_points
-
-class ZScoreTestResult(TestResult):
-    data: List[ZScoreDataPoint]
+        return ZScoreTestResult(data=zscore_points)
 
 @dataclass
 class ZScoreTest(Test):
