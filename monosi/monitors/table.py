@@ -137,11 +137,7 @@ class TableMonitor(Monitor):
 
     @classmethod
     def validate(cls, monitor_dict):
-        if 'columns' not in monitor_dict or len(monitor_dict['columns']) == 0:
-            return False
-
-        # TODO: Better validation
-        return True
+        pass
 
     def _create_metrics(self):
         metrics = []
@@ -175,10 +171,13 @@ class TableMonitor(Monitor):
             days_ago=days_ago,
         )
 
-    def to_dict(self): # TODO: Add columns
+    def to_dict(self):
         return {
             'table': self.table,
+            'description': self.description,
             'timestamp_field': self.timestamp_field,
+            'columns': self.columns,
+            'metrics': self.metrics,
         }
 
     def retrieve_metrics(self):
