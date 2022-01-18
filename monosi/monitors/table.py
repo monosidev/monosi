@@ -173,6 +173,7 @@ class TableMonitor(Monitor):
         return {
             'table': self.table,
             'timestamp_field': self.timestamp_field,
+            'type': 'table',
         }
 
     def retrieve_metrics(self):
