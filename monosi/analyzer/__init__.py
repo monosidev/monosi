@@ -27,9 +27,9 @@ class Analyzer:
             self.reporter.test_started(self)
             result = test.run()
             if not len(result.anomalies()) > 0:
-                self.reporter.test_passed(result)
+                self.reporter.test_passed(test)
             else:
-                self.reporter.test_failed(result)
+                self.reporter.test_failed(test)
         finally:
             self.reporter.test_finished(metric)
         

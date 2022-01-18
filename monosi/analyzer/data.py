@@ -47,8 +47,12 @@ class Data:
         for row in results['rows']:
             for col in row.keys():
                 if row[col]:
-                    point = DataPoint(value=float(row[col]))
-                    points[col.lower()].append(point)
+                    try:
+                        point = DataPoint(value=float(row[col]))
+                        points[col.lower()].append(point)
+                    except TypeError:
+                        pass
+                        # logging.info("Can't convert other rows, including window_start for example.")
         
         return cls(points)
 
@@ -71,5 +75,7 @@ class CustomData(Data):
 
 @dataclass
 class Test:
+    column: str
+    metric: str
     data: List[DataPoint]
 
