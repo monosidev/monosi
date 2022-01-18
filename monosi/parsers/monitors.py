@@ -15,10 +15,10 @@ class MonitorParser(YamlParser):
         if len(table_parts) > 3:
             raise Exception("Can't resolve table name: {}".format(table))
         
-        if len(table_parts) == 1:
-            table_parts.prepend(self.default_schema)
-        if len(table_parts) == 2:
-            table_parts.prepend(self.default_database)
+        if len(table_parts) == 1 and self.default_schema:
+            table_parts.insert(0, self.default_schema)
+        if len(table_parts) == 2 and self.default_database:
+            table_parts.insert(0, self.default_database)
 
         return ".".join(table_parts)
 
