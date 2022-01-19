@@ -58,7 +58,10 @@ class DatabaseTable:
                 name=row['COL_NAME'], 
                 data_type=resolve_to_type_from_str(row['COL_TYPE']),
             )
-            tables = cls._insert_in_table(tables, row['NAME'], column)
+            table_name_elements = [row['DATABASE'], row['SCHEMA'], row['NAME']]
+            table_name = '.'.join(table_name_elements)
+
+            tables = cls._insert_in_table(tables, table_name, column)
 
         return tables.values()
 
