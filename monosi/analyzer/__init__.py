@@ -31,7 +31,7 @@ class Analyzer:
             else:
                 self.reporter.test_failed(test)
         finally:
-            self.reporter.test_finished(metric)
+            self.reporter.test_finished(test)
         
         return result
 

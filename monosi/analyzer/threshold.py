@@ -14,7 +14,7 @@ class ThresholdTest(Test):
     def run(self):
         for point in self.data:
             for threshold in self.thresholds:
-                point.error = threshold.evaluate(point.value)
+                point.error = not threshold.evaluate(point.value)
 
         result = TestResult(self.data)
         self.anomalies = result.anomalies()
