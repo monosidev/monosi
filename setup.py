@@ -4,7 +4,7 @@ from os import path
 import pkg_resources
 from setuptools import setup, find_namespace_packages
 
-VERSION = '0.0.2.post3'
+VERSION = '0.0.2.post4'
 
 with open('README.md') as f:
     readme = f.read()
