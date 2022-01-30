@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h1 align="center">Open Source Data Observability & Monitoring Framework</h1>
+<h1 align="center">Open Source Data Observability Platform</h1>
 
 <p align="center">
   <a href="https://monosi.dev/slack">Join the community</a>
@@ -19,10 +19,15 @@
 </p>
 
 
-Monosi is an extensible data observability platform that ensures teams achieve data reliability. It gives data teams the missing tools for ensuring data quality, similarly to what NewRelic or DataDog provide for SWE's. In turn, less time is spent fighting fires in the data. Monosi offers an alternative to proprietary data quality and observability systems to further build an open, and modular data stack.
+Monosi is an extensible data observability platform that ensures teams achieve data reliability. It provides:
+
+- Data monitoring setup in [less than 10 minutes](https://docs.monosi.dev/introduction/getting-started)
+
+- OSS alternative to proprietary data quality and observability systems 
+
 
 ## Installation
-*Compatible with Python 3.*
+*Compatible with Python 3.6+*
 
 ```
 pip install monosi
