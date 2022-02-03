@@ -2,6 +2,10 @@ from core.common.drivers.base import BaseDialect
 
 class PostgresDialect(BaseDialect):
     @classmethod
+    def numeric_std(cls):
+        return "STDDEV(CAST({} as double precision))"
+    
+    @classmethod
     def text_int_rate(cls):
         return "SUM(CASE WHEN CAST({} AS varchar) ~ '^([-+]?[0-9]+)$' THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
 
@@ -19,11 +23,11 @@ class PostgresDialect(BaseDialect):
 
     @classmethod
     def text_null_keyword_rate(cls):
-        return "SUM(CASE WHEN UPPER({}) IN ('NULL', 'NONE', 'NIL', 'NOTHING') THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(CASE WHEN UPPER(CAST({} as varchar)) IN ('NULL', 'NONE', 'NIL', 'NOTHING') THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
 
     @classmethod
     def zero_rate(cls): # TODO: ?
-        return "SUM(CASE WHEN UPPER({}) IN ('NULL', 'NONE', 'NIL', 'NOTHING') THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(CASE WHEN UPPER(CAST({} as varchar)) IN ('NULL', 'NONE', 'NIL', 'NOTHING') THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
 
     @classmethod
     def negative_rate(cls):
@@ -49,10 +53,24 @@ class PostgresDialect(BaseDialect):
             INFORMATION_SCHEMA.TABLES t
                 ON c.TABLE_NAME = t.TABLE_NAME
                 AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
-        WHERE LOWER( name ) = '{table_name}'
-          AND LOWER( schema ) = '{schema_name}'
-          AND LOWER( database ) = '{database_name}'"""
+        WHERE LOWER( c.table_name ) = '{table_name}'
+          AND LOWER( c.table_schema ) = '{schema_name}'
+          AND LOWER( c.table_catalog ) = '{database_name}'"""
 
     @classmethod
     def table_query(cls):
-        raise NotImplementedError # TODO
+        return """
+            SELECT 
+                DATE_TRUNC('HOUR', {timestamp_field}) as window_start, 
+                DATE_TRUNC('HOUR', {timestamp_field}) + interval '1 hour' as window_end,
+
+                COUNT(*) as row_count,
+
+                {select_sql}
+
+            FROM {table}
+            WHERE 
+                DATE_TRUNC('HOUR', {timestamp_field}) >= CURRENT_TIMESTAMP + interval '{days_ago} days' 
+            GROUP BY window_start, window_end 
+            ORDER BY window_start ASC;
+        """
