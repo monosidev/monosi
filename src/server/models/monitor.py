@@ -132,6 +132,10 @@ class Monitor(MonitorDefinition, Base, CrudMixin):
         self.schedule()
         # self.run()
 
+    def delete(self):
+        manager.remove_job(self.id)
+        return super().delete()
+
     # TODO: Implementation - should remove route while pending
     # def update(self):
     #     pass
