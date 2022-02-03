@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from os import path
+import os
+import sys
 import pkg_resources
-from setuptools import setup, find_namespace_packages
+from setuptools import setup, find_packages
 
-VERSION = '0.0.2.post5'
+
+path = os.path.abspath('./src')
+sys.path.append(path)
+
+VERSION = '0.0.3'
 
 with open('README.md') as f:
     readme = f.read()
@@ -13,7 +18,7 @@ with open('LICENSE') as f:
     license = f.read()
 
 install_requires = []
-with open(path.abspath("requirements.txt"), "r") as f:
+with open(os.path.abspath("requirements.txt"), "r") as f:
     requirements_txt = f.readlines()
     install_requires = [
         str(requirement)
@@ -31,10 +36,21 @@ setup(
     url='https://github.com/monosidev/monosi',
     license=license,
     install_requires=install_requires,
-    packages=find_namespace_packages(include=['monosi', 'monosi.*'], exclude=('tests', 'docs')),
+    packages=find_packages(
+        where="src", 
+        include=[
+            "agent*",
+            "cli*",
+            "core*",
+            "scheduler*",
+            "server*"
+        ],
+        exclude=["tests"],
+    ),
+    package_dir={"": "src"},
     entry_points = {
         'console_scripts': [
-            'monosi=monosi.__main__:main',
+            'monosi=cli.__main__:main',
         ],
     },
 )
