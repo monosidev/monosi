@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from flask_apscheduler import APScheduler
 import json
 import uuid
@@ -66,6 +67,8 @@ class MsiScheduler(APScheduler):
         arguments = [monitor_job.run, job_id]
         arguments.extend(args)
 
-        self.add_job(func=self.run_job, id=job_id, args=arguments, trigger=trigger, minutes=minutes)
+        start_date = datetime.now() - timedelta(minutes=(minutes-1)) # start one minute after schedule
+
+        self.add_job(func=self.run_job, id=job_id, args=arguments, trigger=trigger, minutes=minutes, start_date=start_date)
 
         return job_id
