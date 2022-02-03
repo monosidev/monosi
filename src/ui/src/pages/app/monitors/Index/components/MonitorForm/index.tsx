@@ -24,6 +24,7 @@ import SchemaConfiguration from './SchemaConfiguration';
 
 const MonitorForm: React.FC = () => {
   const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [type, setType] = useState('table');  
   const [datasourceName, setDatasourceName] = useState('');
   const [intervalAmount, setIntervalAmount] = useState('');
@@ -57,7 +58,7 @@ const MonitorForm: React.FC = () => {
 
   const createMonitor = () => {
     const service = MonitorService;
-    const body = {
+    const body: any = {
       name: name,
       type: type,
       datasource: datasourceName,
@@ -69,6 +70,7 @@ const MonitorForm: React.FC = () => {
       //   interval_type: intervalType,
       // },
     };
+    if (description) { body['description'] = description }
 
     const resp = service.create(body);
     window.location.reload();
@@ -102,6 +104,16 @@ const MonitorForm: React.FC = () => {
                 />
               </EuiFlexItem>
             </EuiFlexGroup>
+          </EuiFormRow>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+      <EuiFlexGroup>
+        <EuiFlexItem>
+          <EuiFormRow label="Description">
+            <EuiFieldText
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </EuiFormRow>
         </EuiFlexItem>
       </EuiFlexGroup>
