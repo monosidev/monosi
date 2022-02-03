@@ -2,9 +2,9 @@ from flask import Flask, send_from_directory
 from flask_cors import CORS
 import os
 import sys
+import uuid
 
-from core.monitor.tasks.run import RunMonitorTask
-from scheduler.job import MonitorJob
+from core.common.events import set_user_id
 
 from .api import MsiApi
 from .db import db
@@ -69,5 +69,7 @@ def create_app():
         [monitor.schedule() for monitor in Monitor.all()]
 
     [integration.register() for integration in Integration.all()]
+
+    set_user_id(str(uuid.uuid4()))
 
     return app
