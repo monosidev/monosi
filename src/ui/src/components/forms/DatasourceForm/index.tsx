@@ -28,9 +28,14 @@ const WarehouseForm = () => {
   const [password, setPassword] = useState('');
   const [warehouse, setWarehouse] = useState('');
   const [database, setDatabase] = useState('');
+  
+  const [host, setHost] = useState('');
+  const [port, setPort] = useState('');
 
   const submitForm = async () => {
-    const body = {
+    let body;
+    if (datasourceType == "snowflake") {
+    body = {
       name: datasourceName,
       type: datasourceType,
       configuration: {
@@ -42,6 +47,19 @@ const WarehouseForm = () => {
         database: database,
       },
     };
+    } else if (datasourceType == "postgres") {
+    body = {
+      name: datasourceName,
+      type: datasourceType,
+      configuration: {
+        user: user,
+        password: password,
+        host: host,
+        port: parseInt(port),
+        database: database,
+      },
+    };
+    }
     await datasourceService.create(body);
 
     window.location.reload();
@@ -69,12 +87,24 @@ const WarehouseForm = () => {
           <EuiCard
             icon={<EuiIcon type="snowflake" size="xl" />}
             selectable={{
-              onClick: undefined,
-              isSelected: true,
+              onClick: () => onChange("snowflake"),
+              isSelected: datasourceType == "snowflake",
               isDisabled: false,
             }}
             title="Snowflake"
             description="Connect to Snowflake Data Warehouse"
+          />
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiCard
+            selectable={{
+              onClick: () => onChange("postgres"),
+              isSelected: datasourceType == "postgres",
+              isDisabled: false,
+            }}
+            icon={<EuiIcon type="logoPostgres" size="xl" />}
+            title="PostgreSQL"
+            description="Connect to PostgreSQL Database"
           />
         </EuiFlexItem>
         <EuiFlexItem>
@@ -107,54 +137,106 @@ const WarehouseForm = () => {
 
       <EuiHorizontalRule />
 
-      <EuiPageHeader
-        iconType="snowflake"
-        pageTitle="Snowflake"
-        description="Connect to Snowflake Data Warehouse"
-      />
-      <EuiHorizontalRule />
-      <EuiFormRow label="Name for Data Source">
-        <EuiFieldText
-          placeholder="Company Data Warehouse"
-          onChange={(e) => setDatasourceName(e.target.value)}
-          value={datasourceName}
-        />
-      </EuiFormRow>
-      <EuiFormRow label="Account">
-        <EuiFieldText
-          placeholder="abc123"
-          onChange={(e) => setAccount(e.target.value)}
-          value={account}
-        />
-      </EuiFormRow>
-      <EuiFormRow label="Warehouse">
-        <EuiFieldText
-          placeholder="COMPUTE_WH"
-          onChange={(e) => setWarehouse(e.target.value)}
-          value={warehouse}
-        />
-      </EuiFormRow>
-      <EuiFormRow label="User">
-        <EuiFieldText
-          placeholder="MONOSI_USER"
-          onChange={(e) => setUser(e.target.value)}
-          value={user}
-        />
-      </EuiFormRow>
-      <EuiFormRow label="Password">
-        <EuiFieldPassword
-          placeholder="password123"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-        />
-      </EuiFormRow>
-      <EuiFormRow label="Database">
-        <EuiFieldText
-          placeholder="SNOWFLAKE_SAMPLE_DATA"
-          onChange={(e) => setDatabase(e.target.value)}
-          value={database}
-        />
-      </EuiFormRow>
+        {datasourceType == "postgres" && <div>
+              <EuiPageHeader
+                iconType="logoPostgres"
+                pageTitle="PostgreSQL"
+                description="Connect to PostgreSQL Database"
+              />
+              <EuiHorizontalRule />
+              <EuiFormRow label="Name for Data Source">
+                <EuiFieldText
+                  placeholder="Company Data Warehouse"
+                  onChange={(e) => setDatasourceName(e.target.value)}
+                  value={datasourceName}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="User">
+                <EuiFieldText
+                  placeholder="MONOSI_USER"
+                  onChange={(e) => setUser(e.target.value)}
+                  value={user}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="Password">
+                <EuiFieldPassword
+                  placeholder="password123"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="Host">
+                <EuiFieldText
+                  placeholder="host"
+                  onChange={(e) => setHost(e.target.value)}
+                  value={host}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="Port">
+                <EuiFieldText
+                  placeholder="5432"
+                  onChange={(e) => setPort(e.target.value)}
+                  value={port}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="Database">
+                <EuiFieldText
+                  placeholder="SNOWFLAKE_SAMPLE_DATA"
+                  onChange={(e) => setDatabase(e.target.value)}
+                  value={database}
+                />
+              </EuiFormRow>
+        </div>}
+        {datasourceType == "snowflake" && <div>
+              <EuiPageHeader
+                iconType="snowflake"
+                pageTitle="Snowflake"
+                description="Connect to Snowflake Data Warehouse"
+              />
+              <EuiHorizontalRule />
+              <EuiFormRow label="Name for Data Source">
+                <EuiFieldText
+                  placeholder="Company Data Warehouse"
+                  onChange={(e) => setDatasourceName(e.target.value)}
+                  value={datasourceName}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="Account">
+                <EuiFieldText
+                  placeholder="abc123"
+                  onChange={(e) => setAccount(e.target.value)}
+                  value={account}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="Warehouse">
+                <EuiFieldText
+                  placeholder="COMPUTE_WH"
+                  onChange={(e) => setWarehouse(e.target.value)}
+                  value={warehouse}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="User">
+                <EuiFieldText
+                  placeholder="MONOSI_USER"
+                  onChange={(e) => setUser(e.target.value)}
+                  value={user}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="Password">
+                <EuiFieldPassword
+                  placeholder="password123"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                />
+              </EuiFormRow>
+              <EuiFormRow label="Database">
+                <EuiFieldText
+                  placeholder="SNOWFLAKE_SAMPLE_DATA"
+                  onChange={(e) => setDatabase(e.target.value)}
+                  value={database}
+                />
+              </EuiFormRow>
+        </div>}
 
       <EuiFlexGroup justifyContent="flexEnd">
         <EuiButton
