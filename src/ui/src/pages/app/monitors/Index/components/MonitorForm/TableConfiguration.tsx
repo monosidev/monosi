@@ -8,24 +8,26 @@ import {
 const TableConfiguration: React.FC<{setConfiguration: any}> = ({setConfiguration}) => {
   const [table, setTable] = useState('');
   const [timestampField, setTimestampField] = useState('');
-        
-  function updateFormState(setState: any) {
-       setState();
-       setConfiguration({"table": table, "timestamp_field": timestampField})
-  }
 
+  React.useEffect(() => {
+         setConfiguration({
+           "table": table,
+           "timestamp_field": timestampField,
+         });
+  }, [table, timestampField])
+        
   return (
     <>
       <EuiFormRow label="Table">
         <EuiFieldText
           value={table}
-          onChange={(e: any) => updateFormState(() => setTable(e.target.value))}
+          onChange={(e: any) => setTable(e.target.value)}
         />
       </EuiFormRow>
       <EuiFormRow label="Timestamp Field">
         <EuiFieldText
           value={timestampField}
-          onChange={(e: any) => updateFormState(() => setTimestampField(e.target.value))}
+          onChange={(e: any) => setTimestampField(e.target.value)}
         />
       </EuiFormRow>
     </>
