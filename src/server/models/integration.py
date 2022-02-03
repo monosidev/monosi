@@ -47,7 +47,6 @@ class Integration(IntegrationDefinition, Base, CrudMixin):
             configuration=self.configuration,
         )
         reporter.register_listener(integration)
-        print("registered listener")
 
     def create(self):
         super().create()

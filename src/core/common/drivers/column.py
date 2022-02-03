@@ -55,7 +55,7 @@ def resolve_to_type_from_str(type_str):
     type_str = type_str.lower()
     if 'varchar' in type_str:
         return ColumnDataType.STRING
-    elif 'number' in type_str:
+    elif 'number' in type_str or 'int' in type_str:
         return ColumnDataType.INTEGER
     elif 'date' in type_str or 'timestamp' in type_str:
         return ColumnDataType.DATE

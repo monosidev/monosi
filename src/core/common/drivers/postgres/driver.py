@@ -130,3 +130,4 @@ class PostgresDriver(BaseSqlAlchemyDriver):
         filtered_results = self._filter_metadata(results)
 
         return filtered_results
+
