@@ -133,14 +133,20 @@ class Monitor(MonitorDefinition, Base, CrudMixin):
             raise e
 
     def create(self):
-        result = super().create()
-        self.schedule()
+        try:
+            self.schedule()
+            return super().create()
+        except:
+            raise Exception("There was an issue scheduling the monitor during creation.")
         # self.run()
 
     def delete(self):
-        manager.remove_job(str(self.id))
-        Execution.delete_by_job_id(self.id)
-        return super().delete()
+        try:
+            manager.remove_job(str(self.id))
+            Execution.delete_by_job_id(self.id)
+            return super().delete()
+        except:
+            raise Exception("There was an issue removing a scheduled job and could not delete monitor.")
 
     # TODO: Implementation - should remove route while pending
     # def update(self):

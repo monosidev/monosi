@@ -63,6 +63,8 @@ class MsiScheduler(APScheduler):
         if not job_id:
             job_id = str(uuid.uuid4().hex)
 
+        minutes = int(minutes)
+
         execution = Execution.get_by_job_id(job_id)
         if execution:
             monitor_job.task.monitor.minutes_ago = int((datetime.now() - execution.created_at).seconds / 60)
