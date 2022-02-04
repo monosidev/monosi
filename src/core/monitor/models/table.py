@@ -142,13 +142,14 @@ class ColumnMetric(MetricBase):
 class TableMonitor(TableMonitorConfigurationDefaults, Monitor, TableMonitorConfiguration):
     metrics: List[ColumnMetricType] = field(default_factory=lambda: ColumnMetricType.all())
     columns: List[Column] = field(default_factory=list)
+    minutes_ago: int = -100 * 24 * 60
 
     def base_sql_statement(self, select_sql, dialect):
         return dialect.table_query().format(
             select_sql=select_sql,
             table=self.table,
             timestamp_field=self.timestamp_field,
-            days_ago=self.days_ago,
+            minutes_ago=self.minutes_ago,
         )
 
     def info(self):
@@ -187,7 +188,7 @@ class TableMonitor(TableMonitorConfigurationDefaults, Monitor, TableMonitorConfi
             description=description,
             timestamp_field=timestamp_field,
             where=where,
-            days_ago=days_ago,
+            minutes_ago=(days_ago * 60 * 24),
         )
 
     def to_dict(self):
@@ -219,6 +220,6 @@ class TableMonitor(TableMonitorConfigurationDefaults, Monitor, TableMonitorConfi
             table=definition.table,
             timestamp_field=definition.timestamp_field,
             where=definition.where,
-            days_ago=definition.days_ago,
+            minutes_ago=(definition.days_ago * 60 * 24),
         )
 
