@@ -18,3 +18,13 @@ build:
 
 run:
 	cd ./deployment/docker; docker-compose up
+
+pkg-test:
+	pip install -r requirements.pkg.txt
+	python3 -m build
+	python3 -m twine upload --repository testpypi dist/*
+
+pkg-prod:
+	pip install -r requirements.pkg.txt
+	python3 -m build
+	python3 -m twine upload dist/*
