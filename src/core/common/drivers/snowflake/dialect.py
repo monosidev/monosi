@@ -69,7 +69,7 @@ class SnowflakeDialect(BaseDialect):
 
             FROM {table}
             WHERE 
-                DATE_TRUNC('HOUR', {timestamp_field}) >= DATEADD(day, {days_ago}, CURRENT_TIMESTAMP()) 
+                DATE_TRUNC('HOUR', {timestamp_field}) >= DATEADD(minute, {minutes_ago}, CURRENT_TIMESTAMP()) 
             GROUP BY window_start, window_end 
             ORDER BY window_start ASC;
         """

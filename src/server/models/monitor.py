@@ -9,6 +9,7 @@ from core.monitor.models.schedule import Schedule
 from core.monitor.tasks.run import RunMonitorTask
 
 from scheduler.job import MonitorJob
+from scheduler.models.execution import Execution
 
 from server.scheduler import manager
 from server.integrations import reporter
@@ -105,6 +106,10 @@ class Monitor(MonitorDefinition, Base, CrudMixin):
         obj_dict = super().to_dict()
 
         obj_dict['id'] = self.id
+        try:
+            obj_dict['last_run'] = str(Execution.get_by_job_id(self.id).created_at)
+        except:
+            pass
         obj_dict['updated_at'] = str(self.updated_at)
         obj_dict['created_at'] = str(self.created_at)
 
@@ -133,7 +138,8 @@ class Monitor(MonitorDefinition, Base, CrudMixin):
         # self.run()
 
     def delete(self):
-        manager.remove_job(self.id)
+        manager.remove_job(str(self.id))
+        Execution.delete_by_job_id(self.id)
         return super().delete()
 
     # TODO: Implementation - should remove route while pending

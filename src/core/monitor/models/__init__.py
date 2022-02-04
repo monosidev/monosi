@@ -104,6 +104,10 @@ class MonitorDefinition:
     def to_monitor(self, workspace): # TODO: to_dict contains id, updated_at, created_at
         monitor_dict = self.to_dict()
         monitor_dict.pop('id')
+        try:
+            monitor_dict.pop('last_run')
+        except:
+            pass
         monitor_dict.pop('created_at')
         monitor_dict.pop('updated_at')
         monitor_cls = load_monitor_definition(monitor_dict)

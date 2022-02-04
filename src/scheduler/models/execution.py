@@ -12,7 +12,16 @@ class Execution(db.Model):
 
     @classmethod
     def get_by_id(cls, _id):
-        return cls.query.filter(cls.id == _id).one()
+        return cls.query.filter(cls.id == _id).order_by(cls.created_at).one()
+
+    @classmethod
+    def get_by_job_id(cls, _id):
+        return cls.query.filter(cls.job_id == _id).order_by(cls.created_at).first()
+
+    @classmethod
+    def delete_by_job_id(cls, _id):
+        db.session.delete(cls.query.filter(cls.job_id == _id))
+        db.session.commit()
         
     def create(self):
         try:

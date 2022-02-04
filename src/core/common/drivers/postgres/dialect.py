@@ -70,7 +70,7 @@ class PostgresDialect(BaseDialect):
 
             FROM {table}
             WHERE 
-                DATE_TRUNC('HOUR', {timestamp_field}) >= CURRENT_TIMESTAMP + interval '{days_ago} days' 
+                DATE_TRUNC('HOUR', {timestamp_field}) >= CURRENT_TIMESTAMP + interval '{minutes_ago} minutes' 
             GROUP BY window_start, window_end 
             ORDER BY window_start ASC;
         """
