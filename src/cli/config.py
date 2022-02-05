@@ -60,7 +60,7 @@ class WorkspaceConfiguration:
         pass
 
     @classmethod
-    def from_dict(cls, workspace_dict: Dict[str, Any]):
+    def from_dict(cls, workspace_dict: Dict[str, Any], workspace_name='default'):
         sources = {}
         if 'sources' in workspace_dict:
             for source_name in workspace_dict['sources'].keys():
@@ -68,6 +68,7 @@ class WorkspaceConfiguration:
                 sources[source_name] = source
 
         config = cls(
+            name=workspace_name,
             sources=sources,
         )
         config._initialize_events() # TODO: Read value
@@ -96,25 +97,23 @@ class WorkspaceConfiguration:
         return all_workspaces_dict[workspace_name]
 
     @classmethod
-    def from_args(cls, args=None) -> 'WorkspaceConfiguration':
+    def from_args(cls, args=None, workspace_name: str = 'default') -> 'WorkspaceConfiguration':
         try:
             workspaces_path = file_find(DEFAULT_WORKSPACES_DIR, 'workspaces.y*ml')
         except:
             raise Exception("Could not find workspaces configuration file.")
 
-        workspace_name = "default"
-        # TODO: Should check args or project config for a workspace name
         all_workspaces_dict = yaml.parse_file(workspaces_path)
         workspace_dict = cls._get_workspace_dict(workspace_name, all_workspaces_dict)
 
-        return cls.from_dict(workspace_dict)
+        return cls.from_dict(workspace_dict, workspace_name)
 
 @dataclass 
 class ProjectConfiguration:
     project_name: str
     root_path: str
     workspace_name: str
-    # source_name: str
+    source_name: str
     version: str = '0.0.3' # TODO: Pull from one location
     monitor_paths: List[str] = field(default_factory=lambda: ['./monitors'])
     
@@ -146,8 +145,7 @@ class ProjectConfiguration:
         project_name = str(project_dict.get('name'))
         version = project_dict.get('version') or '0.0.3'
         workspace_name = project_dict.get('workspace') or 'default'
-        source_name = project_dict.get('source')
-        log_path: str = project_dict.get('log-path') or 'logs'
+        source_name = project_dict.get('source') or 'default'
 
         monitor_paths: List[str] = project_dict.get('monitor-paths') or []
 
@@ -156,7 +154,7 @@ class ProjectConfiguration:
             version=version,
             root_path=root_path,
             workspace_name=workspace_name,
-            # source_name=source_name,
+            source_name=source_name,
             monitor_paths=monitor_paths,
         )
 
@@ -168,10 +166,10 @@ class ProjectConfiguration:
             "version": self.version,
             "monitor-paths": self.monitor_paths,
         }
-        # if self.collection_name:
-        #     config_dict.update({"collection": self.collection_name})
-        # if self.source_name:
-        #     config_dict.update({"source": self.source_name})
+        if self.workspace_name:
+            config_dict.update({"workspace": self.workspace_name})
+        if self.source_name:
+            config_dict.update({"source": self.source_name})
 
         return config_dict
 
@@ -196,12 +194,10 @@ class Configuration(WorkspaceConfiguration, ProjectConfiguration):
 
         project = ProjectConfiguration.from_root_path(root_path)
 
-        # workspace_name = (project.workspace_name or 'default')
-        # source_name = (project.source_name or 'default')
+        workspace_name = project.workspace_name or 'default'
         workspace = WorkspaceConfiguration.from_args(
-            # workspace_name=workspace_name, 
-            # source_name=source_name,
-            args=args
+            args=args,
+            workspace_name=workspace_name,
         )
 
         return (project, workspace)
@@ -215,7 +211,7 @@ class Configuration(WorkspaceConfiguration, ProjectConfiguration):
             monitor_paths=project.monitor_paths,
             workspace_name=project.workspace_name,
             sources=workspace.sources,
-            # source_name=project.source_name,
+            source_name=project.source_name,
             # reporter=project.reporter,
             # config=workspace.config,
             # send_anonymous_stats=workspace.send_anonymous_stats,
@@ -241,8 +237,8 @@ class Configuration(WorkspaceConfiguration, ProjectConfiguration):
         }
         if self.workspace_name:
             config_dict.update({"workspace": self.workspace_name})
-        # if self.source_name:
-        #     config_dict.update({"source": self.source_name})
+        if self.source_name:
+            config_dict.update({"source": self.workspace_name})
 
         return config_dict
 
