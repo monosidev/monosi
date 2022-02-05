@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import {
   EuiFormRow,
   EuiFieldText,
+  EuiTextArea,
 } from '@elastic/eui';
 
 const CustomConfiguration: React.FC<{setConfiguration: any}> = ({setConfiguration}) => {
@@ -17,13 +18,14 @@ const CustomConfiguration: React.FC<{setConfiguration: any}> = ({setConfiguratio
   return (
     <>
       <EuiFormRow label="SQL">
-        <EuiFieldText
+        <EuiTextArea
           value={sql}
           onChange={(e: any) => updateFormState(() => setSql(e.target.value))}
         />
       </EuiFormRow>
       <EuiFormRow label="Thresholds">
         <EuiFieldText
+          // TODO: this shouldn't be disabled and should expect a certain format of input
           disabled
           value={thresholds}
           onChange={(e: any) => updateFormState(() => setThresholds(e.target.value))}
