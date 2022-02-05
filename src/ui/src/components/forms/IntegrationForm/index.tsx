@@ -86,8 +86,8 @@ const IntegrationForm: React.FC = () => {
       <EuiFormRow
         label="Webhook URL"
         helpText={
-          <EuiLink>
-            <span>Create a Slack Webhook URL</span>
+          <EuiLink href={'https://api.slack.com/messaging/webhooks'} target="_blank">
+            Create a Slack Webhook URL
           </EuiLink>
         }
       >
