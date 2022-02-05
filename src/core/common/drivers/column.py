@@ -59,7 +59,10 @@ def resolve_to_type_from_str(type_str):
         return ColumnDataType.INTEGER
     elif 'date' in type_str or 'timestamp' in type_str:
         return ColumnDataType.DATE
+    elif 'bool' in type_str:
+        return ColumnDataType.BOOLEAN
 
+    # TODO: Check all other types should actually resolve into strings
     return ColumnDataType.STRING
 
 @dataclass
