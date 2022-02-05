@@ -25,7 +25,7 @@ import SchemaConfiguration from './SchemaConfiguration';
 const MonitorForm: React.FC = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [type, setType] = useState('table');  
+  const [type, setType] = useState('table');
   const [datasourceName, setDatasourceName] = useState('');
   const [intervalAmount, setIntervalAmount] = useState('');
   const [intervalType, setIntervalType] = useState('minutes');
@@ -33,7 +33,6 @@ const MonitorForm: React.FC = () => {
 
   const [datasources, setDatasources] = useState([]);
   const [selectedDatasource, setSelectedDatasource] = useState([]);
-
 
   useEffect(() => {
     async function loadDatasources() {
@@ -56,15 +55,15 @@ const MonitorForm: React.FC = () => {
 
   const validateInput = () => {
     // TODO: change to server based validation once implemented
-    if(name && parseInt(intervalAmount) >= 1) {
+    if (name && parseInt(intervalAmount) >= 1) {
       return true;
     }
     return false;
-  }
+  };
 
   const createMonitor = () => {
     const isValid = validateInput();
-    if(!isValid) return;
+    if (!isValid) return;
 
     const service = MonitorService;
     const body: any = {
@@ -79,7 +78,9 @@ const MonitorForm: React.FC = () => {
       //   interval_type: intervalType,
       // },
     };
-    if (description) { body['description'] = description }
+    if (description) {
+      body['description'] = description;
+    }
 
     const resp = service.create(body);
 
@@ -144,8 +145,8 @@ const MonitorForm: React.FC = () => {
         label="Table Health"
         name="Table Health"
         value="table"
-        checked={type === "table"}
-        onChange={() => setType("table")}
+        checked={type === 'table'}
+        onChange={() => setType('table')}
       />
       <EuiSpacer size="s" />
       <EuiCheckableCard
@@ -153,8 +154,8 @@ const MonitorForm: React.FC = () => {
         label="Custom SQL"
         name="Custom SQL"
         value="custom"
-        checked={type === "custom"}
-        onChange={() => setType("custom")}
+        checked={type === 'custom'}
+        onChange={() => setType('custom')}
       />
       <EuiSpacer size="s" />
       <EuiCheckableCard
@@ -163,8 +164,8 @@ const MonitorForm: React.FC = () => {
         name="Custom SQL"
         value="schema"
         disabled
-        checked={type === "schema"}
-        onChange={() => setType("schema")}
+        checked={type === 'schema'}
+        onChange={() => setType('schema')}
       />
       <EuiHorizontalRule />
 
@@ -178,9 +179,15 @@ const MonitorForm: React.FC = () => {
           })}
         />
       </EuiFormRow>
-      {type === "table" && <TableConfiguration setConfiguration={setConfiguration} />}
-      {type === "custom" && <CustomConfiguration setConfiguration={setConfiguration} />}
-      {type === "schema" && <SchemaConfiguration setConfiguration={setConfiguration} />}
+      {type === 'table' && (
+        <TableConfiguration setConfiguration={setConfiguration} />
+      )}
+      {type === 'custom' && (
+        <CustomConfiguration setConfiguration={setConfiguration} />
+      )}
+      {type === 'schema' && (
+        <SchemaConfiguration setConfiguration={setConfiguration} />
+      )}
       <EuiButton fill onClick={createMonitor}>
         Save
       </EuiButton>
