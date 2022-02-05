@@ -21,6 +21,7 @@ class InitCmd(object):
             root_path=os.path.abspath(os.getcwd()),
             project_name="monosi-repo",
             workspace_name="default",
+            source_name="default",
         )
         os.mkdir(project_directory)
 
