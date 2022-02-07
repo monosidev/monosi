@@ -11,7 +11,7 @@ Before you contribute, make sure to read these guidelines thoroughly, so that yo
 - [Creating a PR](#creating-a-pr)
 - [Questions](#questions)
 
-> **Note:** we're a young project and our contribution process is actively evolving. If you'd like to suggest or discuss changes to this document or the process in general, we're very open to suggestions and would appreciate if you reach out on [Slack](https://monosi.dev/slack) or at [support@qz.dev](mailto:support@qz.dev)! To suggest additions to this document, feel free to raise an issue or make a PR with the changes.
+> **Note:** we're a young project and our contribution process is actively evolving. If you'd like to suggest or discuss changes to this document or the process in general, we're very open to suggestions and would appreciate if you reach out on [Slack](https://monosi.dev/slack) or at [support@monosi.dev](mailto:support@monosi.dev)! To suggest additions to this document, feel free to raise an issue or make a PR with the changes.
 
 ## Reporting Issues
 
@@ -47,10 +47,10 @@ Just create a new pull request if you want to make an update. We would prefer th
 
 For now, please request Kevin (@unkrich) or Ivan (@iporollo) to review your PR.
 
-If you want to speak to us before doing lots of work, just ping us in [Slack](https://monosi.dev/slack) or email [support@qz.dev](mailto:support@qz.dev)
+If you want to speak to us before doing lots of work, just ping us in [Slack](https://monosi.dev/slack) or email [support@monosi.dev](mailto:support@monosi.dev)
 
 ## Questions
 
 Come say hi to us on [Slack](https://monosi.dev/slack)! :wave:
 
-Or if you prefer, email us at [support@qz.dev](mailto:support@qz.dev) — we're always happy to chat!
+Or if you prefer, email us at [support@monosi.dev](mailto:support@monosi.dev) — we're always happy to chat!
