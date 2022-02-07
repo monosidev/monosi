@@ -193,11 +193,17 @@ class TableMonitor(TableMonitorConfigurationDefaults, Monitor, TableMonitorConfi
 
     def to_dict(self):
         # Used for output on bootstrap right now.
-        return {
+        output = {
             'table': self.table,
             'timestamp_field': self.timestamp_field,
             'type': 'table',
         }
+        if self.name:
+            output['name'] = self.name
+        if self.description:
+            output['description'] = self.description
+
+        return output
 
     def retrieve_metrics(self):
         return self._create_metrics()

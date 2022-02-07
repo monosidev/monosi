@@ -119,7 +119,7 @@ class CustomMetric(MetricBase):
     def to_dict(self):
     	return {
     		'sql': self.sql,
-    		'thresholds': [threshold.to_dict() for threshold in self.metric.thresholds],
+    		'thresholds': [threshold.to_dict() for threshold in self.thresholds],
     	}
 
     def compile(self, dialect: BaseDialect):
@@ -159,14 +159,20 @@ class CustomMonitor(Monitor):
 
     def to_dict(self):
         metric_dict = self.metric.to_dict()
-        return {
+        output = {
             'sql': metric_dict['sql'],
             'thresholds': metric_dict['thresholds'],
             'type': 'custom',
         }
+        if self.name:
+            output['name'] = self.name
+        if self.description:
+            output['description'] = self.description
+
+        return output
 
     def base_sql_statement(self, select_sql, dialect):
-        return "WITH custom_metric AS ({select_sql}) SELECT 1 AS custom FROM custom_metric".format(select_sql=select_sql)
+        return "WITH t1 (c1) AS ({select_sql}) SELECT c1 AS custom FROM t1".format(select_sql=select_sql)
 
     @classmethod
     def from_definition(cls, definition: CustomMonitorDefinition, workspace):

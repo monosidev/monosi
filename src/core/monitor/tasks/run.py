@@ -1,9 +1,10 @@
-from core.common.reporter import Reporter
+import logging
+from core.common.reporter import reporter
 
 class RunMonitorTask:
     def __init__(self, monitor):
         self.monitor = monitor
-        self.reporter = Reporter()
+        self.reporter = reporter
 
     # def _retrieve_driver_config(self):
     #     try:
@@ -39,12 +40,16 @@ class RunMonitorTask:
     def run(self):
         self.reporter.monitor_started(self.monitor)
 
-        compiled_sql = self._compile()
-        runner_results = self._run(compiled_sql)
-        analysis = self._analyze(runner_results)
+        runner_results = None
+        try:
+            compiled_sql = self._compile()
+            runner_results = self._run(compiled_sql)
+            analysis = self._analyze(runner_results)
+        except:
+            logging.error("There was an issue running the monitor.")
 
         self.reporter.monitor_finished(self.monitor)
-        # analysis = self._analyze(runner_results)
+
         return runner_results
 
         # return (runner_results, analysis)

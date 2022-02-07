@@ -49,19 +49,44 @@ class SlackIntegration(IntegrationDefinition):
 
         #     self.write(message)
 
+    def _monitor_header(self, monitor):
+        header = ""
+        if monitor['type'] == 'table':
+            header += "\nTable Health: {}".format(monitor.get('name') or monitor.get('table'))
+        elif monitor['type'] == 'custom':
+            header += "\nCustom Monitor: {}".format(monitor.get('name') or monitor.get('sql'))
+        elif monitor['type'] == 'schema':
+            header += "\nSchema Monitor: {}".format(monitor.get('name') or monitor.get('table'))
+
+        if monitor.get('description'):
+            header += "\nDescription: {}".format(monitor.get('description'))
+
+        return header
+
+    def dump_monitor(self, monitor):
+        monitor_dict = monitor['monitor']
+
+        msg = ""
+        msg += self._monitor_header(monitor_dict)
+
+        if len(monitor['failed_metrics']) > 0:
+            for metric in monitor['failed_metrics']:
+                msg += "\n"
+                msg += metric['message']
+        else:
+            msg += "\nNo Failures."
+
+        msg += "\n\nStart: {}\tStop: {}\n\n".format(monitor['start_time'], monitor['stop_time'])
+        return msg
+
     def dump_summary(self, summary):
-        monitor = summary['monitor']
+        monitors = summary['monitors']
 
         message = ""
-        message += "Monitor: {monitor_name}".format(monitor_name=monitor.name)
-        if monitor.description:
-            message += "\nDescription: {monitor_description}".format(monitor_description=monitor.description)
-        message += "\nTotal Time: {} seconds, SQL Load Time: {} seconds".format(summary['total_time'], summary['load_time'])
-        message += "\n"
-        
-        message += "\nTotal Metrics: {}".format(summary['test_count'])
-        message += "\nFailed Metrics: {}".format(summary['failed_count'])
-        message += "\n\nAnomaly details coming soon to slack integration."
+        for monitor in monitors:
+            message += self.dump_monitor(monitor)
+            message += "\n"
+
         self.write(message)
 
     def dump_pending(self, none_obj):

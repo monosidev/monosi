@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, Table, Text, func
 
-from server.integrations import reporter
+from core.common.reporter import reporter
 from server.integrations.base import IntegrationDefinition
 from server.integrations.slack import SlackIntegration
 

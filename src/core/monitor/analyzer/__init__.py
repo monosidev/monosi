@@ -30,16 +30,17 @@ class Analyzer:
 
     def test(self, metric, data):
         test = self._create_test(metric, data)
+        result = None
         
         try:
             self.reporter.test_started(self)
             result = test.run()
-            if not len(result.anomalies) > 0:
-                self.reporter.test_passed(test)
+            if result.status == True:
+                self.reporter.test_passed(result)
             else:
-                self.reporter.test_failed(test)
+                self.reporter.test_failed(result)
         finally:
-            self.reporter.test_finished(test)
+            self.reporter.test_finished(result)
         
         return result
 
