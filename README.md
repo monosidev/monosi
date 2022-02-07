@@ -32,6 +32,11 @@ Monosi is an extensible data observability platform that ensures teams achieve d
 ```
 pip install monosi
 ```
+### OR
+
+```
+docker run -d -p 3000:3000 monosi/monosi
+```
 
 For instructions on getting started, check out our [documentation](https://docs.monosi.dev/introduction/getting-started).
 
@@ -43,32 +48,30 @@ For instructions on getting started, check out our [documentation](https://docs.
 
 ## Features
 
-### CLI
+### CLI & Web Interface
 
-Simple CLI interface for running and interaction with defined monitors.  
+Choose between using a CLI or a web interface to interact with Monosi.
+
+![web interface](https://www.monosi.dev/images/ui_interface_v003.gif)
+
 ### Monitors as code
 
 Define monitors on your data stores as code. Use provided table health metrics monitors or create custom table monitors. 
 
 ![monitors as code](https://www.monosi.dev/images/custom_monitor.gif)
 ### Profiler
-Automatically profiles your database to suggest and create new monitors for you to run from scratch.
+Monosi automatically profiles your database to suggest and create new monitors for you to run from scratch.
 
 ![monosi profiler](https://www.monosi.dev/images/profile.gif)
-### Scheduler
+### Schedule monitors
 
-Schedule monitors to run on an interval basis
-
-![monosi scheduler](https://www.monosi.dev/images/scheduler.gif)
+Schedule monitors to run in the background on an interval basis. 
 
 ### Alerting
 
-Get alerts when monosi detects anomalies in defined monitors to
+Get alerts in slack when Monosi detects anomalies in defined monitors.
 
-### Data Diff
-
-Compare data across tables or data stores.
-Ensure data ingestion or data migration was successful.
+![monosi slack alerts](https://www.monosi.dev/images/Monosi_Slack_Alert.svg)
 
 ### Own your stack
 Avoid integration pitfalls with fragmented, legacy tools by using open source & prevent vendor lock-in by decoupling metric definitions from visualization.
