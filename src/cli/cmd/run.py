@@ -9,7 +9,9 @@ class RunCmd(BaseCmd):
 
     def _process_tasks(self):
         track_event(self.project, action="run_start", label="CLI")
+        self.reporter.start()
         results = [task.run() for task in self.task_queue]
+        self.reporter.finish()
         track_event(self.project, action="run_finish", label="CLI")
 
         return results

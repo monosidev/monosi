@@ -29,20 +29,24 @@ class TextFormatter(BaseFormatter):
 
 
     def dump_summary(self, summary):
+        pass
+        # print(summary)
+
+
         # print(summary.fully_formatted)
-        self.write('\n\nFinished in {total_time} seconds (SQL results took {load_time} seconds to load)\n'.format(
-            total_time=summary['total_time'],
-            load_time=summary['load_time'],
-        ), Color.ENDC)
+        # self.write('\n\nFinished in {total_time} seconds (SQL results took {load_time} seconds to load)\n'.format(
+        #     total_time=summary['total_time'],
+        #     load_time=summary['load_time'],
+        # ), Color.ENDC)
 
-        color = Color.GREEN
-        if summary['failed_count'] > 0:
-            color = Color.RED
+        # color = Color.GREEN
+        # if summary['failed_count'] > 0:
+        #     color = Color.RED
 
-        self.write('{test_count} metrics, {failed_count} failures\n\n\n'.format(
-            test_count=summary['test_count'],
-            failed_count=summary['failed_count'],
-        ), color)
+        # self.write('{test_count} metrics, {failed_count} failures\n\n\n'.format(
+        #     test_count=summary['test_count'],
+        #     failed_count=summary['failed_count'],
+        # ), color)
         # self.write('dump_summary', Color.ENDC)
 
     def dump_pending(self, notification):

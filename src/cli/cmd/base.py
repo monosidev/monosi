@@ -3,11 +3,13 @@ from typing import List, Optional
 
 from cli.config import Configuration
 from cli.project import Project
+from core.common.reporter import reporter
 
 class TaskBase:
     def __init__(self, args, config):
         self.args = args
         self.config = config
+        self.reporter = reporter
 
     @classmethod
     def from_args(cls, args):

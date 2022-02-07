@@ -12,7 +12,7 @@ from scheduler.job import MonitorJob
 from scheduler.models.execution import Execution
 
 from server.scheduler import manager
-from server.integrations import reporter
+from core.common.reporter import reporter
 
 from . import Base, mapper_registry
 from .base import CrudMixin

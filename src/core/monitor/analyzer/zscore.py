@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from math import sqrt
 from typing import List
+from core.monitor.models.table import ColumnMetric
 
 from core.monitor.models.metrics import MetricBase
 
@@ -40,8 +41,8 @@ class ZScoreAlgorithm:
                 error = abs(z_score) > sensitivity 
                 zscore_point = ZScoreDataPoint(
                     value=point.value,
-                    expected_range_start=point.value-sensitivity,
-                    expected_range_end=point.value+sensitivity,
+                    expected_range_start=mean-(sensitivity*abs(std_dev)),
+                    expected_range_end=mean+(sensitivity*abs(std_dev)),
                     error=error,
                     z_score=z_score,
                 )
@@ -65,20 +66,64 @@ class ZScoreDataPointFields:
 
 @dataclass
 class ZScoreDataPoint(TableDataPoint, ZScoreDataPointFields):
-    pass
+    error: bool
+
+    def to_dict(self):
+        return {
+            'value': self.value,
+            'range': [self.expected_range_start, self.expected_range_end],
+            'error': self.error,
+            'z_score': self.z_score,
+            # 'window': [self.window_start, self.window_end],
+        }
+
+@dataclass
+class ZscoreTestResult:
+    metric: ColumnMetric
+    status: bool = True
+    data: List[ZScoreDataPoint] = field(default_factory=list)
+
+    def to_dict(self):
+        return {
+            'data': [pt.to_dict() for pt in self.data],
+            'status': self.status,
+            'message': self.err_message(),
+        }
+
+    def err_message(self):
+        # TODO: Needs window
+        err_pts = list(filter(lambda x: x.error, self.data))
+
+        if len(err_pts) == 0:
+            return "No failures."
+
+        msg = "\n\tColumn: {}, Metric: {}".format(self.metric.column, self.metric.type._value_)
+        msg += "\n\t{} data point(s) were not within the expected range.\n".format(len(err_pts))
+        for pt in err_pts:
+            msg += "\n\t\tValue: {}, Expected Range: {} - {}".format(pt.value, round(pt.expected_range_start, 2), round(pt.expected_range_end, 2))
+
+        if len(err_pts) > 5:
+            msg += "\n\t\t..."
+
+        return msg
 
 @dataclass
 class ZScoreTest(Test):
+    result: ZscoreTestResult
     sensitivity: float = 3.0
     data: List[DataPoint]
 
     def run(self):
-        self.data = ZScoreAlgorithm.run(self.data, self.sensitivity)
+        self.result.data = ZScoreAlgorithm.run(self.data, self.sensitivity)
+        for pt in self.result.data:
+            if pt.error:
+                self.result.status = False
+                break
 
-        return TestResult(self.anomalies())
+        return self.result
 
     @classmethod
-    def from_metric(cls, metric: MetricBase, data: Data):
+    def from_metric(cls, metric, data: Data):
         points = data.for_metric(metric)
-        return cls(data=points)
+        return cls(data=points, result=ZscoreTestResult(metric=metric))
 

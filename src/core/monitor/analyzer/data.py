@@ -64,6 +64,13 @@ class Anomaly:
 @dataclass
 class TestResult:
     anomalies: List[Anomaly]
+    status: bool
+
+    def to_dict(self):
+        return {}
+
+    def err_message(self):
+        return ''
 
 @dataclass
 class Test:
