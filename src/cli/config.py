@@ -114,7 +114,7 @@ class ProjectConfiguration:
     root_path: str
     workspace_name: str
     source_name: str
-    version: str = '0.0.3' # TODO: Pull from one location
+    version: str = '0.0.3.post2' # TODO: Pull from one location
     monitor_paths: List[str] = field(default_factory=lambda: ['./monitors'])
     
     @classmethod
