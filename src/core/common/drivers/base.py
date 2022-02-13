@@ -153,6 +153,12 @@ class BaseSqlAlchemyDriver(BaseDriver):
             self.connection.close()
         self.connection = None
 
+    def test(self):
+        if self.connection:
+            print(f"Connection Successfull")
+        else:
+            print("Connection Not Successful")
+            
     @classmethod
     def validate(cls, config_dict):
         pass

@@ -5,6 +5,7 @@ import sys
 from .cmd.init import InitCmd
 from .cmd.profile import ProfileCmd
 from .cmd.run import RunCmd
+from .cmd.ping import PingCmd
 
 # Add other modules to PYTHON_PATH
 path = os.path.abspath('../')
@@ -29,6 +30,9 @@ class CliParser(object):
             version=self.version(),
             help='Show the version number.'
         )
+        self._parser.add_argument(
+            'source', nargs='?', type=str
+        )
 
     def parse(self, argv):
         args = self._parser.parse_args(argv[1:])
@@ -51,6 +55,11 @@ class CliParser(object):
     def profile(self, args):
         args = None
         task = ProfileCmd.from_args(args)
+        task.run()
+    
+    def ping(self, args):
+        args = args[1] if len(args)>1  else "default"
+        task = PingCmd.from_args(args)
         task.run()
 
 def get_installation_info():
