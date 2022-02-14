@@ -7,8 +7,8 @@ from .definitions import MonitorDefinition
 
 
 class MonitorParser(YamlParser):
-    def __init__(self, configuration):
-        super().__init__(configuration, ['monosi', 'monitors'])
+    def __init__(self):
+        super().__init__(['monosi', 'monitors'])
 
     def parse_monitors(self, file: File) -> Iterable[MonitorDefinition]:
         monitors_dict = self.extract_from_file(file)

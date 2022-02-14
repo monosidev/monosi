@@ -35,7 +35,7 @@ class WorkspaceConfiguration:
     
     @classmethod
     def _config_from_source(cls, source_dict: Dict[str, Any]):
-        from core.common.drivers.factory import load_config
+        from core.drivers.factory import load_config
 
         if 'type' not in source_dict:
             raise Exception("Source type is required.")
@@ -59,7 +59,7 @@ class WorkspaceConfiguration:
 
         workspaces = {}
         for name in workspace_dict:
-            workspaces[name] = [source for source in workspace_dict[name]]
+            workspaces[name] = [source for source in workspace_dict[name]['sources']]
 
         sources = {}
         for ws_name in workspaces:

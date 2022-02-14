@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from core.common.drivers.base import BaseDriverConfiguration
+from core.drivers.base import BaseDriverConfiguration
 
 @dataclass
 class SnowflakeDriverConfiguration(BaseDriverConfiguration):
@@ -18,14 +18,13 @@ class SnowflakeDriverConfiguration(BaseDriverConfiguration):
         return {}
 
     def connection_string(self) -> str:
-        # /<database_name>/<schema_name>?warehouse=<warehouse_name>&role=<role_name>'
-        return 'snowflake://{user}:{password}@{account}/{database}?warehouse={warehouse}'.format(
+        return 'snowflake://{user}:{password}@{account}/{database}/{schema}?warehouse={warehouse}'.format(
             user=self.user,
             password=self.password,
             account=self.account,
             database=self.database,
             warehouse=self.warehouse,
-            # schema=self.schema,
+            schema=self.schema,
         )
 
     @classmethod

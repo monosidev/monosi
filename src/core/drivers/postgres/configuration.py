@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from core.common.drivers.base import BaseDriverConfiguration
+from core.drivers.base import BaseDriverConfiguration
 
 @dataclass
 class PostgresDriverConfiguration(BaseDriverConfiguration):

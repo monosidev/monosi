@@ -13,7 +13,7 @@ class Pipeline:
 
     def process(self, monitor):
         results = self.extractor.run(monitor)
-        objs = self.transformer.run(results)
+        objs = self.transformer.run(results, monitor.fqtn())
         return self.loader.run(objs)
 
 class PipelineTask:
@@ -48,7 +48,7 @@ class RunMonitorTask(PipelineTask):
         )
 
     def _process_monitor(self, monitor):
-        return self.pipeline.process(monitor, table_name=monitor.table_name)
+        return self.pipeline.process(monitor)
 
     def run(self):
         return self._process_monitor(self.monitor)

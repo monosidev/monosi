@@ -1,4 +1,4 @@
-from core.common.drivers.base import BaseDialect
+from core.drivers.base import BaseDialect
 
 class PostgresDialect(BaseDialect):
     @classmethod

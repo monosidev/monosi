@@ -92,8 +92,8 @@ class Table:
         return tables
 
     @classmethod
-    def _fqtn(cls, row, name):
-        return '.'.join([row['DATABASE'], row['SCHEMA'], name])
+    def _fqtn(cls, row):
+        return '.'.join([row['DATABASE'], row['SCHEMA'], row['NAME']])
 
     @classmethod
     def from_metadata(cls, metadata) -> List['Table']:
@@ -104,6 +104,6 @@ class Table:
                 data_type=resolve_to_type_from_str(row['COL_TYPE']),
                 order=int(row['COL_SORT_ORDER'])
             )
-            tables = cls._insert_in_table(tables, cls._fqtn(row, row['NAME']), column)
+            tables = cls._insert_in_table(tables, cls._fqtn(row), column)
 
-        return list(tables.values()) # TODO: Test me.
+        return list(tables.values())

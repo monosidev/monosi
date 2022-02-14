@@ -1,7 +1,7 @@
 from typing import Type
 
-from core.common.drivers.base import BaseDialect, BaseSqlAlchemyDriver
-from core.common.drivers.column import ColumnDataType
+from core.drivers.base import BaseDialect, BaseSqlAlchemyDriver
+from core.drivers.column import ColumnDataType
 
 from .configuration import PostgresDriverConfiguration
 from .dialect import PostgresDialect

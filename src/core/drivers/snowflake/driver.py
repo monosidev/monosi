@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Type
 
-from core.common.drivers.base import BaseDialect, BaseSqlAlchemyDriver
-from core.common.drivers.column import ColumnDataType
+from core.drivers.base import BaseDialect, BaseSqlAlchemyDriver
+from core.drivers.column import ColumnDataType
 
 from .configuration import SnowflakeDriverConfiguration
 from .dialect import SnowflakeDialect
@@ -49,6 +49,7 @@ class SnowflakeDriver(BaseSqlAlchemyDriver):
     def __init__(self, configuration: SnowflakeDriverConfiguration):
         self.configuration: SnowflakeDriverConfiguration = configuration
         self.dialect: Type[BaseDialect] = SnowflakeDialect
+        self.engine = self._create_engine()
         self.connection = self._open()
 
     def _retrieve_type(self, type_code, scale):
@@ -64,10 +65,12 @@ class SnowflakeDriver(BaseSqlAlchemyDriver):
 
         warehouse_sql = 'USE WAREHOUSE {}'.format(self.configuration.warehouse)
         database_sql = 'USE {}'.format(self.configuration.database)
+        schema_sql = 'USE SCHEMA {}'.format(self.configuration.schema)
 
         try:
             self.connection.execute(warehouse_sql)
             self.connection.execute(database_sql)
+            self.connection.execute(schema_sql)
         except Exception as e:
             raise e
 

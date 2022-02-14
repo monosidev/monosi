@@ -145,12 +145,18 @@ class BaseDriver:
 class BaseSqlAlchemyDriver(BaseDriver):
     def __init__(self, configuration: BaseDriverConfiguration):
         self.configuration = configuration
+        self.engine = self.engine
         self.connection = self._open()
+
+    def _create_engine(self):
+        try:
+            return create_engine(self.configuration.connection_string())
+        except Exception as e:
+            raise e
 
     def _open(self):
         try:
-            engine = create_engine(self.configuration.connection_string())
-            return engine.connect()
+            return self.engine.connect()
         except Exception as e:
             raise e
 
