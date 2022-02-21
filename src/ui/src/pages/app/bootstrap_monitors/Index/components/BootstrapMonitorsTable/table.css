@@ -1,0 +1,116 @@
+
+.custom-table-responsive {
+  border-radius: 4px;
+  overflow-x: inherit; }
+
+.custom-table {
+  min-width: 900px; }
+  .custom-table thead tr, .custom-table thead th {
+    border-top: none;
+    border-bottom: none !important;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .1rem; }
+  .custom-table tbody th, .custom-table tbody td {
+    color: #777;
+    font-weight: 400;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    font-weight: 300; }
+    .custom-table tbody th small, .custom-table tbody td small {
+      color: #b3b3b3;
+      font-weight: 300; }
+    .custom-table tbody tr:not(.spacer):hover {
+      -webkit-box-shadow: 0 2px 10px -5px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 2px 10px -5px rgba(0, 0, 0, 0.4); }
+  .custom-table tbody tr:not(.spacer) {
+    border-radius: 7px;
+    overflow: hidden;
+    -webkit-transition: .3s all ease;
+    -o-transition: .3s all ease;
+    transition: .3s all ease;
+    border-radius: 0.25rem;}
+  .custom-table tbody tr th, .custom-table tbody tr td {
+    background: #fff;
+    vertical-align:  middle; }
+  .custom-table tbody tr.spacer td {
+    padding: 0 !important;
+    height: 10px;
+    border-radius: 0 !important;
+    background: transparent !important; }
+  .custom-table tbody tr.active {
+    opacity: .4; }
+
+.custom-table>tbody>tr:not(.spacer)>td:first-child {
+    padding-left: 20px;
+    border-left: 1px solid #dee2e6;
+}
+.custom-table>tbody>tr:not(.spacer)>td:last-child {
+    border-right: 1px solid #dee2e6;
+}
+.custom-table>thead>tr:not(.spacer)>th:first-child {
+    padding-left: 20px;
+}
+.custom-table>:not(:first-child) {
+    border-top: none;
+}
+
+
+
+
+.custom-table>div>table {
+  min-width: 900px; }
+  .custom-table>div>table>thead {
+  border-bottom-width: 1px; }
+  .custom-table>div>table thead tr, .custom-table thead th {
+    border-top: none;
+    border-bottom: none !important;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .1rem; }
+  .custom-table>div>table tbody th, .custom-table tbody td {
+    color: #777;
+    font-weight: 400;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    font-weight: 300; }
+    .custom-table>div>table tbody th small, .custom-table tbody td small {
+      color: #b3b3b3;
+      font-weight: 300; }
+    .custom-table>div>table tbody tr:not(.spacer):hover {
+      -webkit-box-shadow: 0 2px 10px -5px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 2px 10px -5px rgba(0, 0, 0, 0.4); }
+  .custom-table>div>table tbody tr:not(.spacer) {
+    border-radius: 7px;
+    overflow: hidden;
+    -webkit-transition: .3s all ease;
+    -o-transition: .3s all ease;
+    transition: .3s all ease;
+    border-radius: 0.25rem;}
+  .custom-table>div>table tbody tr th, .custom-table tbody tr td {
+    background: #fff;
+    vertical-align:  middle; }
+  .custom-table>div>table tbody tr.spacer td {
+    padding: 0 !important;
+    height: 10px;
+    border-radius: 0 !important;
+    background: transparent !important; }
+  .custom-table>div>table tbody tr.active {
+    opacity: .4; }
+
+.custom-table>div>table>tbody>tr:not(.spacer)>td:first-child {
+    padding-left: 20px;
+    border-left: 1px solid #dee2e6;
+}
+.custom-table>div>table>tbody>tr:not(.spacer)>td:last-child {
+    border-right: 1px solid #dee2e6;
+}
+.custom-table>div>table>thead>tr:not(.spacer)>th:first-child {
+    padding-left: 20px;
+}
+.custom-table>div>table>:not(:first-child) {
+    border-top: none;
+}
+
+.sr-only {display: none;}
+.search-label {float: right; margin-bottom: 10px;}

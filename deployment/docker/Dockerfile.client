@@ -1,6 +1,7 @@
 FROM node:16-alpine as build-client
 
 ENV REACT_APP_API_URL=http://0.0.0.0:3000/v1/api/
+ENV GENERATE_SOURCEMAP=false
 
 WORKDIR /app
 COPY ./src/ui .

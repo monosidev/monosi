@@ -1,32 +1,15 @@
 import abc
 
-from cli.config import Configuration
 import cli.utils.yaml as yaml
 
 
-class Parser:
-    def __init__(self, configuration: Configuration):
-        self.configuration = configuration
-
+class Parser(object):
     @abc.abstractmethod
     def parse_file(self, file, project):
         pass
 
-    @property
-    def default_schema(self):
-        schema = self.configuration.config.schema
-
-        return schema
-
-    @property
-    def default_database(self):
-        database = self.configuration.config.database
-
-        return database
-
 class YamlParser(Parser):
-    def __init__(self, configuration, keys):
-        super().__init__(configuration)
+    def __init__(self, keys):
         self.keys = keys
 
     def extract_from_file(self, file):

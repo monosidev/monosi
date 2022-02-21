@@ -1,14 +1,44 @@
 services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - '5432:5432'
+    volumes: 
+      - ./db-data/:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   monosi-server:
     build:
       context: ../../
       dockerfile: deployment/docker/Dockerfile.api
     image: monosi/monosi-server:latest
-  monosi-webapp:
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: postgres
+      DB_SCHEMA: public
+    links:
+      - db
+  monosi-client:
     build:
       context: ../../
       dockerfile: deployment/docker/Dockerfile.client
-    image: monosi/monosi-webapp:latest
+    image: monosi/monosi-client:latest
+    depends_on:
+      - monosi-server
     environment:
       - REACT_APP_API_URL=http://0.0.0.0:3000/v1/api/
     ports:

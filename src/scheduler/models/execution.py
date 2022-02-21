@@ -1,44 +1,23 @@
-from scheduler.db import db
+from dataclasses import dataclass, field
+from datetime import datetime
+from mashumaro import DataClassDictMixin
+from sqlalchemy import Column, Integer, Sequence, Text, DateTime
+from typing import Optional
+from scheduler import constants
 
-class Execution(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    job_id = db.Column(db.Integer, nullable=False)
-    state = db.Column(db.Integer, nullable=False)
-    result = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now())
-    updated_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now(), onupdate=db.func.now())
+from . import mapper_registry
 
-    __tablename__ = "executions"
+@mapper_registry.mapped
+@dataclass
+class Execution(DataClassDictMixin):
+    job_id: str = field(metadata={"sa": Column(Text)})
+    state: int = field(metadata={"sa": Column(Integer)})
+    result: Optional[str] = field(metadata={"sa": Column(Text, nullable=True)})
 
-    @classmethod
-    def get_by_id(cls, _id):
-        return cls.query.filter(cls.id == _id).order_by(cls.created_at).one()
+    id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('ds_id_seq'), primary_key=True, autoincrement=True)})
+    monitor_id: int = field(default=None, metadata={"sa": Column(Integer, nullable=True)})
+    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
+    # updated_at = db.Column(db.DateTime(timezone=True), nullable=False, default=db.func.now(), onupdate=db.func.now())
 
-    @classmethod
-    def get_by_job_id(cls, _id):
-        return cls.query.filter(cls.job_id == _id).order_by(cls.created_at).first()
-
-    @classmethod
-    def delete_by_job_id(cls, _id):
-        db.session.delete(cls.query.filter(cls.job_id == _id))
-        db.session.commit()
-        
-    def create(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-
-    def update(self, updates):
-        for k, v in updates.items():
-            setattr(self, k, v)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    @classmethod
-    def all(cls):
-        return cls.query.all()
+    __tablename__ = "msi_executions"
+    __sa_dataclass_metadata_key__ = "sa"
