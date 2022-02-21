@@ -1,29 +1,39 @@
-import abc
-import logging
-from flask import request
-from flask_restful import Resource, abort
+from flask_restful import abort
+from sqlalchemy.orm import sessionmaker
 
+from scheduler import constants
 from scheduler.models.execution import Execution
 
+from .base import BaseResource
+        
+def _state_to_str(execution_dict):
+    prev_state = execution_dict['state']
+    execution_dict['state'] = constants.STATUS_DICT[prev_state]
+    return execution_dict
 
-class ExecutionsListResource(Resource):
+class ExecutionsListResource(BaseResource):
     def get(self):
-        executions = Execution.all()
-        executions_dict_list = [execution.to_dict() for execution in executions]
+        Session = sessionmaker(self.app_db())
+        with Session() as session:
+            executions = session.query(Execution).all()
+            executions_dict_list = [self._state_to_str(execution.to_dict()) for execution in executions]
 
         return {"executions": executions_dict_list}
 
+
     # TODO: Execute on demand
 
-class ExecutionsResource(Resource):
+class ExecutionsResource(BaseResource):
     def _retrieve_by_id(self, execution_id):
         try:
-            execution = Execution.query.get(execution_id)
+            Session = sessionmaker(self.app_db())
+            with Session() as session:
+                executions = session.query(Execution).filter(Execution.monitor_id == execution_id).all()
         except:
             abort(404)
-        return execution
+        return executions
 
-    def get(self, execution_id):
-        execution = self._retrieve_by_id(execution_id)
+    def get(self, obj_id):
+        executions = self._retrieve_by_id(obj_id) # This is actually monitor_id
 
-        return {"execution": execution.to_dict()}
+        return {"executions": [_state_to_str(execution.to_dict()) for execution in executions]}

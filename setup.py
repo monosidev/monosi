@@ -39,11 +39,10 @@ setup(
     packages=find_packages(
         where="src", 
         include=[
-            "agent*",
             "cli*",
             "core*",
-            "scheduler*",
-            "server*"
+            "scheduler",
+            "server",
         ],
         exclude=["tests"],
     ),

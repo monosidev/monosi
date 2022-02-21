@@ -18,7 +18,7 @@ import {
 
 import datasourceService from 'services/datasources';
 
-const WarehouseForm = () => {
+const DatasourceForm = () => {
   // const [availDatasources, setAvailDatasources] = useState([]);
   const [datasourceType, setDatasourceType] = useState('snowflake');
   const [datasourceName, setDatasourceName] = useState('');
@@ -28,6 +28,7 @@ const WarehouseForm = () => {
   const [password, setPassword] = useState('');
   const [warehouse, setWarehouse] = useState('');
   const [database, setDatabase] = useState('');
+  const [schema, setSchema] = useState('');
   
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
@@ -38,20 +39,21 @@ const WarehouseForm = () => {
     body = {
       name: datasourceName,
       type: datasourceType,
-      configuration: {
+      config: {
         driver: datasourceType,
         account: account,
         user: user,
         password: password,
         warehouse: warehouse,
         database: database,
+        schema: schema,
       },
     };
     } else if (datasourceType == "postgres") {
     body = {
       name: datasourceName,
       type: datasourceType,
-      configuration: {
+      config: {
         user: user,
         password: password,
         host: host,
@@ -105,19 +107,6 @@ const WarehouseForm = () => {
             icon={<EuiIcon type="logoPostgres" size="xl" />}
             title="PostgreSQL"
             description="Connect to PostgreSQL Database"
-          />
-        </EuiFlexItem>
-        <EuiFlexItem>
-          <EuiCard
-            isDisabled
-            selectable={{
-              onClick: undefined,
-              isSelected: false,
-              isDisabled: true,
-            }}
-            icon={<EuiIcon type="logoGoogleG" size="xl" />}
-            title="BigQuery"
-            description="Connect to Google BigQuery Data Warehouse"
           />
         </EuiFlexItem>
         <EuiFlexItem>
@@ -236,19 +225,29 @@ const WarehouseForm = () => {
                   value={database}
                 />
               </EuiFormRow>
+              <EuiFormRow label="Schema">
+                <EuiFieldText
+                  placeholder="tpch_sf1000"
+                  onChange={(e) => setSchema(e.target.value)}
+                  value={schema}
+                />
+              </EuiFormRow>
         </div>}
 
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiButton
-          fill
-          style={{ justifyContent: 'flex-end' }}
-          onClick={submitForm}
-        >
-          Save
-        </EuiButton>
-      </EuiFlexGroup>
+        <EuiSpacer />
+
+      <div>
+        <EuiFormRow>
+          <EuiButton
+            fill
+            onClick={submitForm}
+          >
+            Save
+          </EuiButton>
+        </EuiFormRow>
+      </div>
     </div>
   );
 };
 
-export default WarehouseForm;
+export default DatasourceForm;

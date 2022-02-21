@@ -1,26 +1,16 @@
-from flask_sqlalchemy import BaseQuery, SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import declarative_base
 
-from .models import Base
+from core.models import mapper_registry
 
-class MsiQuery(BaseQuery):
-    def get_by_id(cls, ident, default=None):
-        return self.get(ident) or default
+Base = declarative_base(metadata=mapper_registry.metadata)
+db = SQLAlchemy(model_class=Base)
 
-    # def all(cls):
-    #     return cls.query.all()
+def init_db(app):
+    db.init_app(app)
+    db.app = app
+
+    with app.app_context():
+        db.create_all()
     
-    # def create(self):
-    #     db.session.add(self)
-    #     db.session.commit()
-
-    # def update(self, updates):
-    #     for k, v in updates.items():
-    #         setattr(self, k, v)
-    #     db.session.commit()
-
-    # def delete(self):
-    #     db.session.delete(self)
-    #     db.session.commit()
-
-db = SQLAlchemy(model_class=Base, query_class=MsiQuery)
-
+    return db

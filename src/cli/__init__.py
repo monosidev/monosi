@@ -2,8 +2,6 @@ from argparse import ArgumentParser
 import os
 import sys
 
-from .cmd.init import InitCmd
-from .cmd.profile import ProfileCmd
 from .cmd.run import RunCmd
 
 # Add other modules to PYTHON_PATH
@@ -38,19 +36,9 @@ class CliParser(object):
     def version(self, args=None):
         return format_program_version(get_installation_info().version, sys.version.split()[0])
 
-    def init(self, args):
-        args = None
-        task = InitCmd.from_args(args)
-        task.run()
-
     def run(self, args):
         args = None
         task = RunCmd.from_args(args)
-        task.run()
-
-    def profile(self, args):
-        args = None
-        task = ProfileCmd.from_args(args)
         task.run()
 
 def get_installation_info():

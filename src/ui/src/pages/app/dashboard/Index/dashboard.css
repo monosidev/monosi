@@ -1,0 +1,11 @@
+.icon-square {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+    border-radius: 0.5rem;
+    margin: 0.5rem;
+}

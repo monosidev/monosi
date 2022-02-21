@@ -1,3 +1,6 @@
-from .base import MsiScheduler
+import os
+import sys
 
-scheduler = MsiScheduler()
+curr_path = os.path.dirname(os.path.abspath(__file__))
+src_path = os.path.abspath(os.path.join(curr_path, "../"))
+sys.path.append(src_path)

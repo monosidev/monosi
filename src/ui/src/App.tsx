@@ -8,28 +8,43 @@ import {
 } from 'react-router-dom';
 
 import 'App.css';
-
-import MonitorsIndex from 'pages/app/monitors/Index';
 // import MonitorsDetail from 'pages/app/monitors/Detail';
 
-import IntegrationsSettings from 'pages/settings/Integrations';
-import SourcesSettings from 'pages/settings/Datasources';
-import AccountSettings from 'pages/settings/Account';
+import IntegrationsSettings from 'pages/settings_bootstrap/Integrations';
+import SourcesSettings from 'pages/settings_bootstrap/Sources';
+import ProfileSettings from 'pages/settings_bootstrap/Profile';
+import DashboardIndex from 'pages/app/dashboard/Index';
+import BootstrapMonitorsIndex from 'pages/app/bootstrap_monitors/Index';
+import MonitorsDetail from 'pages/app/monitors/Detail';
+import MetricsDetail from 'pages/app/metrics/Detail';
 
 function App() {
   return (
     <div className="App" style={{ minHeight: '100vh' }}>
       <Router>
         <Switch>
-          <Route exact path="/monitors">
-              <MonitorsIndex />
+          <Route exact path="/">
+              <DashboardIndex />
           </Route>
+          <Route exact path="/monitors">
+              <BootstrapMonitorsIndex />
+          </Route>
+          <Route exact path="/monitors/:id">
+              <MonitorsDetail />
+          </Route>
+          <Route exact path="/monitors/:id/metrics">
+              <MetricsDetail />
+          </Route>
+
 {/*          <Route exact path="/monitors/:id">
               <MonitorsDetail />
           </Route>*/}
 
+          <Route exact path="/settings">
+              <Redirect to="/settings/profile" />
+          </Route>
           <Route exact path="/settings/profile">
-              <AccountSettings />
+              <ProfileSettings />
           </Route>
           <Route exact path="/settings/sources">
               <SourcesSettings />

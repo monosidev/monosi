@@ -1,8 +1,13 @@
-from flask_restful import Api
-
 from .executions import ExecutionsListResource, ExecutionsResource
+# from .jobs import JobListResource, JobResource
+# from .logs import LogListResources
+
 
 def init_api(api):
-    # TODO: Provide monitor_id/job_id spaced retrieval
-    api.add_resource(ExecutionsListResource, '/v1/api/executions')
-    api.add_resource(ExecutionsResource, '/v1/api/execution/<execution_id>')
+    api.add_resource(ExecutionsListResource, '/{}/executions'.format(api.PREFIX))
+    api.add_resource(ExecutionsResource, '/{}/executions/<int:obj_id>'.format(api.PREFIX))
+
+    # api.add_resource(JobListResource, '/{}/jobs'.format(api.PREFIX))
+    # api.add_resource(JobResource, '/{}/jobs/<int:obj_id>'.format(api.PREFIX))
+
+    # api.add_resource(LogListResource, '/{}/logs'.format(api.PREFIX))

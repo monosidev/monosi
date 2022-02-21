@@ -9,3 +9,6 @@ class MsiApi(Api):
     def __init__(self, app):
         super().__init__(app)
         handlers.init_api(self)
+
+def init_api(app):
+    return MsiApi(app)

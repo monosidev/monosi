@@ -5,7 +5,7 @@ run-api:
 	docker run --rm -p 5000:5000 monosi/monosi-server:latest
 
 build-client:
-	docker build -f deployment/docker/Dockerfile.client -t monosi/monosi-webapp:latest .
+	docker build -f deployment/docker/Dockerfile.client -t monosi/monosi-client:latest .
 
 build-simple:
 	docker build -f deployment/docker/Dockerfile.simple -t monosi/monosi:latest .
@@ -13,11 +13,14 @@ build-simple:
 run-simple:
 	docker run --rm -p 3000:3000 monosi/monosi:latest
 
-build:
+compose-build:
 	cd ./deployment/docker; docker-compose build
 
-run:
-	cd ./deployment/docker; docker-compose up
+compose-up:
+	cd ./deployment/docker; docker-compose up -d
+
+compose-down:
+	cd ./deployment/docker; docker-compose down
 
 pkg-test:
 	pip install -r requirements.pkg.txt

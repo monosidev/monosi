@@ -1,10 +1,9 @@
 import abc
-from typing import List, Optional
 
-from cli.config import Configuration
-from cli.project import Project
+from cli.configuration import Configuration
 
-class TaskBase:
+
+class BaseCmd:
     def __init__(self, args, config):
         self.args = args
         self.config = config
@@ -27,27 +26,22 @@ class TaskBase:
     def run(self, *args, **kwargs):
         raise NotImplementedError('Implementation for task does not exist.')
 
-class BaseCmd(TaskBase):
+class ProjectCmd(BaseCmd):
     def __init__(self, args, config):
         super().__init__(args, config)
-        self.project: Optional[Project] = None
-        self.task_queue: List[TaskBase] = []
+        self.project = None
 
     def load_project(self):
-        self.project = Project.from_configuration(self.config)
-        self.task_queue = self._create_tasks()
+        self.project = self.config.to_project()
 
     def _initialize(self):
         self.load_project()
 
     @abc.abstractmethod
-    def _create_tasks(self):
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def _process_tasks(self):
+    def _process(self):
         raise NotImplementedError
 
     def run(self):
         self._initialize()
-        return self._process_tasks()
+        return self._process()
+

@@ -1,65 +1,36 @@
 import React, { useState } from 'react';
 import {
-  EuiCard,
-  EuiFieldText,
-  EuiFlexGrid,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiFlyoutFooter,
-  EuiFormRow,
-  EuiFieldPassword,
-  EuiHorizontalRule,
-  EuiIcon,
-  EuiPageHeader,
-  EuiFlyout,
-  EuiFlyoutBody,
-  EuiFlyoutHeader,
-  EuiButton,
-  EuiTitle,
-} from '@elastic/eui';
+  Button,
+  Offcanvas,
+} from 'react-bootstrap';
+
+import './flyout.css';
 
 const Flyout = ({name, form}: any) => {
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
-  const simpleFlyoutTitleId = name + 'Flyout';
 
-  let flyout;
-  if (isFlyoutVisible) {
-    flyout = (
-      <EuiFlyout
-        ownFocus
-        onClose={() => setIsFlyoutVisible(false)}
-        aria-labelledby={simpleFlyoutTitleId}
-      >
-        <EuiFlyoutHeader hasBorder>
-          <EuiTitle size="m">
-            <h2 id={simpleFlyoutTitleId}>Create {name}</h2>
-          </EuiTitle>
-        </EuiFlyoutHeader>
-        <EuiFlyoutBody>
-          {form}
-        </EuiFlyoutBody>
-        <EuiFlyoutFooter>
-          <EuiFlexGroup justifyContent="flexEnd">
-            <EuiFlexItem grow={false}>
-              <EuiButton onClick={() => setIsFlyoutVisible(false)}>
-                Cancel
-              </EuiButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiFlyoutFooter>
-      </EuiFlyout>
-    );
-  }
+  const handleClose = () => setIsFlyoutVisible(false);
+  const handleShow = () => setIsFlyoutVisible(true);
 
   return (
-    <div>
-      <EuiButton onClick={() => setIsFlyoutVisible(true)}>
+    <>
+      <Button variant="primary" onClick={handleShow}>
         Create {name}
-      </EuiButton>
-      {flyout}
-    </div>
+      </Button>
+
+      <Offcanvas 
+        show={isFlyoutVisible} 
+        onHide={handleClose}
+        placement="end">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Create {name}</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {form}
+        </Offcanvas.Body>
+      </Offcanvas>
+    </>
   );
-};
+}
 
 export default Flyout;
-
