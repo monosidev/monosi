@@ -145,8 +145,8 @@ class BaseDriver:
 class BaseSqlAlchemyDriver(BaseDriver):
     def __init__(self, configuration: BaseDriverConfiguration):
         self.configuration = configuration
-        self.engine = self._create_engine()
-        self.connection = self._open()
+        self.engine = None
+        self.connection = None
 
     def _create_engine(self):
         try:
@@ -154,11 +154,12 @@ class BaseSqlAlchemyDriver(BaseDriver):
         except Exception as e:
             raise e
 
-    def _open(self):
-        try:
-            return self.engine.connect()
-        except Exception as e:
-            raise e
+    def _before_execute(self):
+        if self.engine and self.connection:
+            return
+
+        self.engine = self._create_engine()
+        self.connection = self.engine.connect()
 
     def _execute(self, sql):
         if not self.connection:
@@ -170,6 +171,15 @@ class BaseSqlAlchemyDriver(BaseDriver):
         if self.connection:
             self.connection.close()
         self.connection = None
+
+    def test(self):
+        try:
+            result = self.execute("SELECT 1")
+            rows = result["rows"]
+            columns = result["columns"]
+            return len(rows) ==1 and rows[0][columns[0].name]==1
+        except Exception as e:
+            return False
 
     @classmethod
     def validate(cls, config_dict):
