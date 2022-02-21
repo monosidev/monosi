@@ -14,13 +14,13 @@ run-simple:
 	docker run --rm -p 3000:3000 monosi/monosi:latest
 
 compose-build:
-	cd ./deployment/docker; docker-compose build
+	cd ./deployment/docker; docker compose build
 
 compose-up:
-	cd ./deployment/docker; docker-compose up -d
+	cd ./deployment/docker; docker compose up -d
 
 compose-down:
-	cd ./deployment/docker; docker-compose down
+	cd ./deployment/docker; docker compose down
 
 pkg-test:
 	pip install -r requirements.pkg.txt
