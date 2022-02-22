@@ -9,9 +9,11 @@ import BootstrapPage from 'components/BootstrapPage';
 
 import Flyout from 'components/Flyout';
 import DatasourceForm from 'components/forms/DatasourceForm';
+import { Row, Toast, Button, Col } from 'react-bootstrap';
 
 const SourcesSettings: React.FC = () => {
   const [datasources, setDatasources] = useState([]);
+  const [testLoading, setTestLoading] = useState(false);
 
   let flyout = <Flyout name="Data Source" form={<DatasourceForm />} />
 
@@ -26,14 +28,18 @@ const SourcesSettings: React.FC = () => {
   }, []);
 
   const handleTest = (ds_id: number) => {
-    async function testDatasource(ds_id: number) {
+    async function testDatasource(ds_id: any) {
         let res = await datasourceService.test(ds_id);
-        //if (res !== null && res.datasource) {
-        //  // success
-        //} else {
-        //  //fail
-        //}
+        if (res !== null && res.datasource) {
+          if (res.datasource.connection) {
+            alert("Connection was successful.");
+          } else {
+            alert("Connection was unsuccessful.");
+          }
+        }
+        setTestLoading(false);
     }
+    setTestLoading(true);
     testDatasource(ds_id);
   }
 
