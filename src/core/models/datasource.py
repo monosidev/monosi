@@ -27,3 +27,11 @@ class DataSource(DataClassDictMixin):
         config_obj = config_cls.from_dict(self.config)
 
         return config_obj
+
+    def db_driver(self):
+        config_obj = self.db_config()
+
+        from core.drivers.factory import load_driver
+        driver_cls = load_driver(config_obj)
+        return driver_cls(config_obj)
+

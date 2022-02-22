@@ -49,8 +49,8 @@ class SnowflakeDriver(BaseSqlAlchemyDriver):
     def __init__(self, configuration: SnowflakeDriverConfiguration):
         self.configuration: SnowflakeDriverConfiguration = configuration
         self.dialect: Type[BaseDialect] = SnowflakeDialect
-        self.engine = self._create_engine()
-        self.connection = self._open()
+        self.connection = None
+        self.engine = None
 
     def _retrieve_type(self, type_code, scale):
         resolved_type = SNOWFLAKE_TYPES.get(type_code, None)
@@ -60,6 +60,8 @@ class SnowflakeDriver(BaseSqlAlchemyDriver):
         return resolved_type
 
     def _before_execute(self):
+        super()._before_execute()
+
         if not self.connection:
             return
 
