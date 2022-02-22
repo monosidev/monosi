@@ -1,6 +1,7 @@
 import abc
 
 from dataclasses import dataclass
+import logging
 from sqlalchemy import create_engine
 from typing import List, Type
 
@@ -179,6 +180,7 @@ class BaseSqlAlchemyDriver(BaseDriver):
             columns = result["columns"]
             return len(rows) ==1 and rows[0][columns[0].name]==1
         except Exception as e:
+            logging.error(e)
             return False
 
     @classmethod
