@@ -73,10 +73,12 @@ const MonitorsDetail: React.FC = () => {
       dataField: "",
       formatter: (cell: any, row: any) => {
         if (monitor) {
-                return (
-                  <a href={"/monitors/" + monitor.id + "/metrics?column_name=" + row.column_name + "&metric=" + row.metric} type="button" className="btn btn-sm btn-outline-secondary">View</a>
-                );
-        } else { return <a href="#">Pending</a>}
+          return (
+            <a href={"/monitors/" + monitor.id + "/metrics?column_name=" + row.column_name + "&metric=" + row.metric} type="button" className="btn btn-sm btn-outline-secondary">View</a>
+          );
+        } else { 
+          return <a href="#">Pending</a>;
+        }
       }
     },
   ];

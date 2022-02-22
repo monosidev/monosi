@@ -5,8 +5,8 @@ class DatasourceService extends BaseService {
     super('datasources');
   }
 
-  test(ds_id: any) {
-        console.log("Not implemented.");
+  async test(id: string) {
+    return await this.http.get(`/${id}/test`);
   }
 }
 
