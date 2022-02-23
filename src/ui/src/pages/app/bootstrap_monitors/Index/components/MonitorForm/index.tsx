@@ -99,7 +99,7 @@ const MonitorForm: React.FC = () => {
         <Button 
           variant="primary"
           onClick={handleClick}
-          disabled={process.env.IS_DEMO === 'true'}
+          disabled={process.env.REACT_APP_IS_DEMO === 'true'}
           >
           Submit
         </Button>
