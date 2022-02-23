@@ -14,8 +14,8 @@ class MsiMonitor(DataClassDictMixin):
         UniqueConstraint('table_name', 'schema', 'database', 'timestamp_field', 'source', 'type'),
     )
 
-    table_name: str = field(default=None, metadata={"sa": Column(String(100))})
-    schema: str = field(default=None, metadata={"sa": Column(String(100))})
+    table_name: str = field(default=None, metadata={"sa": Column(String(100), nullable=False)})
+    schema: str = field(default=None, metadata={"sa": Column(String(100), nullable=False)})
     database: str = field(default=None, metadata={"sa": Column(String(100))})
     timestamp_field: str = field(default=None, metadata={"sa": Column(String(100))})
     workspace: str = field(default=None, metadata={"sa": Column(String(100))})

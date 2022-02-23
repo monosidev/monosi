@@ -65,6 +65,8 @@ class ColumnMetricType(Enum):
                 cls.NUMERIC_MIN,
                 cls.NUMERIC_MAX,
                 # cls.NUMERIC_STD,
+                cls.COMPLETENESS,
+                cls.APPROX_DISTINCTNESS,
             ]
         elif data_type == ColumnDataType.STRING:
             return [
@@ -78,6 +80,8 @@ class ColumnMetricType(Enum):
                 cls.TEXT_UUID_RATE,
                 cls.TEXT_ALL_SPACES_RATE,
                 cls.TEXT_NULL_KEYWORD_RATE,
+                cls.COMPLETENESS,
+                cls.APPROX_DISTINCTNESS,
             ]
             
 

@@ -19,3 +19,12 @@ class IntegrationListResource(ListResource):
     @property
     def key(self):
         return "integrations"
+
+    def _validate(self, req):
+        try:
+            Integration.from_dict(req)
+        except Exception as e:
+            return False
+        return True
+
+            

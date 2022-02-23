@@ -15,7 +15,7 @@ class Integration(DataClassDictMixin):
     type: str = field(metadata={"sa": Column(String(100))})
     config: str = field(metadata={"sa": Column(JSONType, nullable=False)})
 
-    id: int = field(default=1, metadata={"sa": Column(Integer, Sequence('integ_id_seq'), primary_key=True, autoincrement=True)})
+    id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('integ_id_seq'), primary_key=True, autoincrement=True)})
     created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
 
     __tablename__ = "msi_integrations"
