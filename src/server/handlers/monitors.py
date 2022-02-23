@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from core.models.monitor import MsiMonitor
 from core.models.metadata.metric import MsiMetric
 
-from server.db import db
+from server.middleware.db import db
 from .base import CrudResource, ListResource
 
 class MonitorListResource(ListResource):
@@ -48,7 +48,7 @@ class MonitorListResource(ListResource):
         try:
             logging.info("Scheduling monitor to run: {}", sqlalc_obj.to_dict())
 
-            from server.scheduler import manager
+            from server.middleware.scheduler import manager
             manager.add_job(
                 job_class_string='server.jobs.monitor.MonitorJob',
                 job_id=str(sqlalc_obj.id),
@@ -83,7 +83,7 @@ class MonitorResource(CrudResource):
         pass
 
     def _after_destroy(self, sqlalc_obj):
-        from server.scheduler import manager
+        from server.middleware.scheduler import manager
         manager.remove_job(str(sqlalc_obj.id))
         self._delete_associated_metrics(sqlalc_obj)
         self._delete_associated_executions(sqlalc_obj)

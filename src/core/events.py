@@ -4,7 +4,7 @@ import logging
 
 snowplow_logger.setLevel(100)
 SNOWPLOW_URL = "monosi-spipeline-collector-lb-1716143593.us-west-2.elb.amazonaws.com" 
-send_anonymous_stats = os.getenv('SEND_ANONYMOUS_STATS', True)
+send_anonymous_stats = os.getenv('SEND_ANONYMOUS_STATS', True) != "false"
 
 e = AsyncEmitter(
     SNOWPLOW_URL, 
