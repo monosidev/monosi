@@ -1,4 +1,5 @@
 import logging
+from core.events import track_event
 
 from scheduler import job
 from core.metadata.task import RunAndAnalyzeTask
@@ -29,9 +30,13 @@ class MonitorJob(job.JobBase):
         }
 
     def run(self, monitor_id, *args, **kwargs):
+        track_event(action="monitor_start", label="server")
+
         # retrieve and save data - PipelineTask
         monitor = db.session.query(MsiMonitor).filter(MsiMonitor.id == monitor_id).one()
         source = db.session.query(DataSource).filter(DataSource.name == monitor.source).one()
 
         task = RunAndAnalyzeTask.from_source_and_destinations([monitor], source.db_config(), [destination])
         results = task.run()
+
+        track_event(action="monitor_end", label="server")

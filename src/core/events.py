@@ -1,10 +1,11 @@
-from snowplow_tracker import Tracker, AsyncEmitter, SelfDescribingJson, Subject, logger as snowplow_logger
+import os
+from snowplow_tracker import Tracker, AsyncEmitter, Subject, logger as snowplow_logger
 import logging
-import platform
 
 snowplow_logger.setLevel(100)
 SNOWPLOW_URL = "monosi-spipeline-collector-lb-1716143593.us-west-2.elb.amazonaws.com" 
-# check if dev
+send_anonymous_stats = os.getenv('SEND_ANONYMOUS_STATS', True)
+
 e = AsyncEmitter(
     SNOWPLOW_URL, 
     protocol="http",
@@ -20,33 +21,15 @@ def set_user_id(user_id):
     subject.set_user_id(user_id)
     tracker.set_subject(subject)
 
-def context():
-    # data = {
-    #     "name": "platform_context",                
-    #     "vendor": platform.platform(),
-    #     "version": platform.python_version(),
-    #     "format": platform.python_implementation(),
-    # }
-    return [
-        SelfDescribingJson(
-            schema="iglu:com.snowplowanalytics.self-desc/instance/jsonschema/1-0-0",
-            data={},
-            vendor=platform.platform(),
-            name="platform_context",
-            format=platform.python_implementation(),
-            version=platform.python_version(),
-        )
-    ]
+def track_event(*args, **kwargs):
+    if send_anonymous_stats == False:
+        return
 
-def track_event(config, *args, **kwargs):
-    # if not config.send_anonymous_stats:
-    #   return
     try:
         tracker.track_struct_event(
             action=kwargs['action'],
             label=kwargs['label'],
             category='monosi',
-            # context=context(),
         )
     except Exception as e:
         logging.error("Failed to send anonymous usage stats.")

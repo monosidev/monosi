@@ -1,3 +1,5 @@
+import logging
+from core.events import track_event
 from core.models.datasource import DataSource
 
 from .base import CrudResource, ListResource
@@ -19,6 +21,9 @@ class DataSourceListResource(ListResource):
     @property
     def key(self):
         return "datasources"
+
+    def _after_create(self, sqlalc_obj):
+        track_event(action="connection_created", label=sqlalc_obj.type)
 
 class DataSourceTestResource(CrudResource):
     @property
