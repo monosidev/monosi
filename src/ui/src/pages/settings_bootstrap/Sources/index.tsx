@@ -92,8 +92,22 @@ const SourcesSettings: React.FC = () => {
       formatter: (cell: any, row: any) => {
         return (
           <div className="btn-group">
-                  <button onClick={() => handleTest(row.id)} type="button" className="btn btn-sm btn-outline-secondary">Test</button>
-                  <button onClick={() => handleDelete(row.id)} type="button" className="btn btn-sm btn-outline-danger">Delete</button>
+                  <button 
+                    onClick={() => handleTest(row.id)} 
+                    type="button" 
+                    className="btn btn-sm btn-outline-secondary"
+                    disabled={process.env.IS_DEMO === 'true'}
+                  >
+                        Test
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(row.id)}
+                    type="button" 
+                    className="btn btn-sm btn-outline-danger"
+                    disabled={process.env.IS_DEMO === 'true'}
+                  >
+                        Delete
+                  </button>
           </div>
         );
       },

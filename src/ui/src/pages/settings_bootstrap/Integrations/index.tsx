@@ -74,7 +74,14 @@ const IntegrationsSettings: React.FC = () => {
       dataField: "id",
       formatter: (cell: any, row: any) => {
         return (
-          <button onClick={() => handleDelete(row.id)} type="button" className="btn btn-sm btn-outline-danger">Delete</button>
+          <button
+            onClick={() => handleDelete(row.id)}
+            type="button" 
+            className="btn btn-sm btn-outline-danger"
+            disabled={process.env.IS_DEMO === 'true'}
+          >
+              Delete
+          </button>
         );
       },
     },

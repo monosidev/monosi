@@ -96,7 +96,11 @@ const MonitorForm: React.FC = () => {
           </Form.Text>
         </Form.Group>
 
-        <Button variant="primary" onClick={handleClick}>
+        <Button 
+          variant="primary"
+          onClick={handleClick}
+          disabled={process.env.IS_DEMO === 'true'}
+          >
           Submit
         </Button>
       </Form>
