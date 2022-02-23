@@ -1,6 +1,6 @@
 from scheduler.manager import JobManager
 
-from .config import Config
+from server.config import Config
 
 
 # Initialize scheduler process

@@ -5,7 +5,7 @@ from sqlalchemy import func
 from core.models.metadata.metric import MsiMetric
 from core.models.zscore import ZScore
 
-from server.db import db
+from server.middleware.db import db
 from .monitors import MonitorResource, MonitorListResource
 
 class MetricListResource(Resource):

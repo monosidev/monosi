@@ -7,7 +7,7 @@ from core.models.monitor import MsiMonitor
 from core.models.datasource import DataSource
 
 from server.config import db_config as destination
-from server.db import db
+from server.middleware.db import db
 
 logger = logging.getLogger(__name__)
 
