@@ -78,7 +78,7 @@ const IntegrationsSettings: React.FC = () => {
             onClick={() => handleDelete(row.id)}
             type="button" 
             className="btn btn-sm btn-outline-danger"
-            disabled={process.env.IS_DEMO === 'true'}
+            disabled={process.env.REACT_APP_IS_DEMO === 'true'}
           >
               Delete
           </button>

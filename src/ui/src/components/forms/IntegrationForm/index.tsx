@@ -99,7 +99,7 @@ const IntegrationForm: React.FC = () => {
       <EuiButton 
         fill 
         onClick={handleClick}
-        disabled={process.env.IS_DEMO === 'true'}
+        disabled={process.env.REACT_APP_IS_DEMO === 'true'}
       >
         Create
       </EuiButton>

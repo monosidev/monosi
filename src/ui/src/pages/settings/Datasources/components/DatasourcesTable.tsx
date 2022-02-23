@@ -104,7 +104,7 @@ const DatasourcesTable: React.FC = () => {
                 <EuiContextMenuItem
                   key="C"
                   icon="trash"
-                  disabled={process.env.IS_DEMO === 'true'}
+                  disabled={process.env.REACT_APP_IS_DEMO === 'true'}
                   onClick={() => {
                     deleteDatasource(item.id);
                   }}
