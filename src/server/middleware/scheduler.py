@@ -1,3 +1,4 @@
+import logging
 from scheduler.manager import JobManager
 
 from server.config import Config
@@ -7,6 +8,9 @@ from server.config import Config
 manager = JobManager(db_url=Config.SQLALCHEMY_DATABASE_URI)
 
 def init_scheduler(app):
-    manager.init_app(app)
+    try:
+        manager.init_app(app)
+    except:
+        logging.warn("Scheduler already started.")
     return manager    
 

@@ -30,4 +30,3 @@ def init_api(api):
 	api.add_resource(RunMonitorResource, '/{}/monitors/<int:obj_id>/run'.format(api.PREFIX))
 
 	api.add_resource(MetricListResource, '/{}/monitors/<int:obj_id>/metrics'.format(api.PREFIX))
-	api.add_resource(MetricResource, '/{}/monitors/<int:obj_id>/metrics/<string:metric_name>'.format(api.PREFIX))

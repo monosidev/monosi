@@ -2,6 +2,7 @@ import abc
 
 from dataclasses import dataclass
 import logging
+from mashumaro import DataClassDictMixin
 from sqlalchemy import create_engine
 from typing import List, Type
 
@@ -50,7 +51,7 @@ class BaseDialect:
         return cls.numeric_std().format("LENGTH({})")
 
 @dataclass
-class BaseDriverConfiguration:
+class BaseDriverConfiguration(DataClassDictMixin):
     database: str
     schema: str
 

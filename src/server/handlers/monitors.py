@@ -58,6 +58,13 @@ class MonitorListResource(ListResource):
             logging.error("Failed to schedule monitor")
             logging.error(e)
 
+    def _validate(self, req):
+        try:
+            MsiMonitor.from_dict(req)
+        except:
+            return False
+        return True
+
 class MonitorResource(CrudResource):
     @property
     def resource(self):

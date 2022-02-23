@@ -31,9 +31,9 @@ class ListResource(BaseResource):
         req = request.get_json(force=True)
         self._validate(req)
         
-        obj = self.resource.from_dict(req)
-
         try:
+            obj = self.resource.from_dict(req)
+
             self._create(obj)
             self._after_create(obj)
         except Exception as e:
