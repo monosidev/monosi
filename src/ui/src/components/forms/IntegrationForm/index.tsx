@@ -96,7 +96,11 @@ const IntegrationForm: React.FC = () => {
           onChange={(e: any) => setSlackWebhookUrl(e.target.value)}
         />
       </EuiFormRow>
-      <EuiButton fill onClick={handleClick}>
+      <EuiButton 
+        fill 
+        onClick={handleClick}
+        disabled={process.env.IS_DEMO === 'true'}
+      >
         Create
       </EuiButton>
     </div>

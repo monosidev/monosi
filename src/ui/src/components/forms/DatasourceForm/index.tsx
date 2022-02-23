@@ -241,6 +241,7 @@ const DatasourceForm = () => {
           <EuiButton
             fill
             onClick={submitForm}
+            disabled={process.env.IS_DEMO === 'true'}
           >
             Save
           </EuiButton>
