@@ -27,8 +27,8 @@ def track_event(*args, **kwargs):
 
     try:
         tracker.track_struct_event(
-            action=kwargs['action'],
-            label=kwargs['label'],
+            action=kwargs.get('action') or '',
+            label=kwargs.get('label') or '',
             category='monosi',
         )
     except Exception as e:
