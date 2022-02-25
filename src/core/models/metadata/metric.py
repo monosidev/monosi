@@ -19,7 +19,7 @@ class MsiMetric(DataClassDictMixin):
     database: str = field(default=None, metadata={"sa": Column(String(100))})
     column_name: str = field(default=None, metadata={"sa": Column(String(100))})
     metric: str = field(default=None, metadata={"sa": Column(String(100))})
-    value: str = field(default=None, metadata={"sa": Column(String(100))})
+    value: str = field(default=None, metadata={"sa": Column(String(100), nullable=False)})
     time_window_start: datetime = field(default=None, metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
     time_window_end: datetime = field(default=None, metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
     interval_length_sec: int = field(default=None, metadata={"sa": Column(Integer)})

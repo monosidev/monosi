@@ -17,7 +17,8 @@ class SchedulerDatabase:
             raise e
 
     def add(self, obj):
-    	Session = sessionmaker(self.engine)
-    	with Session() as session:
-    		session.add(obj)
-    		session.commit()
+        Session = sessionmaker(self.engine)
+        with Session() as session:
+            session.add(obj)
+            session.commit()
+

@@ -14,9 +14,11 @@ class Loader:
         driver_cls = load_driver(destination)
         driver = driver_cls(destination)
 
+        driver._before_execute()
         mapper_registry.metadata.create_all(driver.engine)
 
-        Session = sessionmaker(driver.engine)
+        print(driver.engine)
+        Session = sessionmaker(bind=driver.engine)
         with Session() as session:
             from core.models.metadata.metric import MsiMetric
             session.bulk_insert_mappings(MsiMetric, [metric.to_dict() for metric in metrics])
