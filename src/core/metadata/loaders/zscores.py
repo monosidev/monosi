@@ -51,9 +51,10 @@ class ZScoreLoader:
         driver_cls = load_driver(destination)
         driver = driver_cls(destination)
 
+        driver._before_execute()
         mapper_registry.metadata.create_all(driver.engine)
 
-        Session = sessionmaker(driver.engine)
+        Session = sessionmaker(bind=driver.engine)
         with Session() as session:
             from core.models.zscore import ZScore
             upsert_data([zscore.to_dict() for zscore in zscores], ZScore, 'metric_id', session)

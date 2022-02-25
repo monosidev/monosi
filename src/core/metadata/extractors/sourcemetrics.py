@@ -13,6 +13,7 @@ class MetricsRunner:
             driver_cls = load_driver(self.config)
 
             self.driver = driver_cls(self.config)
+            self.driver._before_execute()
         except Exception as e:
             print(e)
             raise Exception("Could not initialize connection to database in Runner.")
@@ -21,7 +22,7 @@ class MetricsRunner:
         if self.driver is None:
             raise Exception("Initialize runner before execution.")
 
-        Session = sessionmaker(self.driver.engine)
+        Session = sessionmaker(bind=self.driver.engine)
         metrics = []
         with Session() as session:
             metrics = session.query(MsiMetric).filter(

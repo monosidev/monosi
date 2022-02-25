@@ -42,12 +42,12 @@ class ColumnMetricType(Enum):
             cls.NUMERIC_MEAN,
             cls.NUMERIC_MIN,
             cls.NUMERIC_MAX,
-            cls.NUMERIC_STD,
+            # cls.NUMERIC_STD,
             cls.APPROX_DISTINCT_COUNT,
             cls.MEAN_LENGTH,
             cls.MAX_LENGTH,
             cls.MIN_LENGTH,
-            cls.STD_LENGTH,
+            # cls.STD_LENGTH,
             cls.TEXT_INT_RATE,
             cls.TEXT_NUMBER_RATE,
             cls.TEXT_UUID_RATE,
@@ -64,7 +64,7 @@ class ColumnMetricType(Enum):
                 cls.NUMERIC_MEAN,
                 cls.NUMERIC_MIN,
                 cls.NUMERIC_MAX,
-                cls.NUMERIC_STD,
+                # cls.NUMERIC_STD,
             ]
         elif data_type == ColumnDataType.STRING:
             return [
@@ -72,7 +72,7 @@ class ColumnMetricType(Enum):
                 cls.MEAN_LENGTH,
                 cls.MAX_LENGTH,
                 cls.MIN_LENGTH,
-                cls.STD_LENGTH,
+                # cls.STD_LENGTH,
                 cls.TEXT_INT_RATE,
                 cls.TEXT_NUMBER_RATE,
                 cls.TEXT_UUID_RATE,
