@@ -1,0 +1,10 @@
+[[plugins]]
+  package = "netlify-plugin-checklinks"
+
+    [plugins.inputs]
+
+    skipPatterns = ["#", "www.google-analytics.com", "www.googletagmanager.com", "Asset is used as both Html and Image", "/docs/typescript/client"]
+    pretty = true
+
+## Note: if you are looking for Redirects
+# they have been moved to /static/_redirects to make it more manageable - swyx

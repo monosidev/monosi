@@ -1,0 +1,474 @@
+/* stylelint-disable docusaurus/copyright-header */
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ifm-color-primary: #127ae5;
+  --ifm-color-primary-dark: #0e60b2;
+  --ifm-color-primary-darker: #093d71;
+  --ifm-color-primary-darkest: #041a31;
+  --ifm-color-primary-light: #3e97ef;
+  --ifm-color-primary-lighter: #84bdf5;
+  --ifm-color-primary-lightest: #cae3fb;
+  --ifm-code-font-size: 95%;
+  --doc-sidebar-width: 275px !important;
+  --ifm-link-hover-decoration: none;
+  --ifm-link-hover-color: inherit;
+}
+
+html[data-theme="dark"] {
+  --ifm-link-color: var(--ifm-color-primary-lighter);
+  --ifm-menu-color-active: var(--ifm-color-primary-lighter);
+  --ifm-navbar-link-hover-color: var(--ifm-color-primary-lighter);
+  --ifm-toc-link-color: var(--ifm-color-primary-lighter);
+  --ifm-blockquote-color: #eeeeee;
+  /* --ifm-code-background: var(--ifm-color-primary-dark); */
+  --ifm-color: #ffffff;
+  --ifm-background-color: #141414;
+  --ifm-footer-background-color: #000;
+  --ifm-card-background-color: #1a1a1a;
+  --collapse-button-bg-color-dark: transparent;
+  --ifm-badge-background-color: #b2e7ea;
+  --ifm-badge-background-color: hsl(210deg, 15%, 20%);
+  --card-color: rgba(17, 24, 39);
+}
+
+html[data-theme="light"] {
+  --ifm-blockquote-color: #000000;
+  --ifm-color-emphasis-300: #505050;
+  /* --ifm-code-background: var(--ifm-color-primary-lightest); */
+  --ifm-color-input-background: #ffffff;
+  --ifm-color: #141414;
+  --ifm-background-color: rgb(249, 250, 251);
+  --ifm-footer-background-color: #ffffff;
+  --ifm-card-background-color: #ffffff;
+  --ifm-badge-background-color: rgba(239, 246, 255);
+
+  --card-color: rgba(239, 246, 255);
+}
+
+@font-face {
+  font-family: "Aeonik";
+  src: url("../fonts/Aeonik-Regular.woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Aeonik-Bold";
+  src: url("../fonts/Aeonik-Bold.woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Aeonik-Light";
+  src: url("../fonts/Aeonik-Light.woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+.docs-page {
+  @apply my-12;
+}
+
+.edit a svg {
+  @apply inline;
+}
+
+h1,
+h2,
+h3,
+h4,
+.menu__list,
+.navbar {
+  font-family: "Aeonik", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.menu__list {
+  @apply text-sm;
+  padding-right: calc(var(--ifm-menu-link-padding-horizontal) - 2px);
+}
+
+/* otherwise external references in menu bar (see Go) have the icon screwed up */
+.menu__list-item > .menu__link > span {
+  display: flex;
+}
+.menu__link--sublist:after {
+  background: var(--ifm-menu-link-sublist-icon) 50% / 1.5rem 1.5rem;
+}
+
+div[class^="sidebar_"]
+  .menu__link.menu__link--active:not(.menu__link--sublist) {
+  padding-right: calc(var(--ifm-menu-link-padding-horizontal) - 2px);
+}
+
+div[class^="sidebar_"] .button {
+  @apply mx-auto mb-2 w-full border-0;
+}
+div[class^="sidebar_"] .button svg {
+  @apply mx-auto;
+}
+
+.table-of-contents {
+  @apply border-none pt-12;
+}
+
+.table-of-contents__link {
+  @apply text-sm text-[color:var(--ifm-color)];
+}
+.table-of-contents__link--active {
+  @apply font-bold text-[color:var(--ifm-color-primary)];
+}
+
+.docs-wrapper aside {
+  @apply border-0;
+}
+
+/* Blog List Page */
+
+.case-study-header {
+  background-color: #000000;
+  @apply w-full rounded-lg;
+}
+
+.center {
+  text-align: center; /* needed so that blog post heading is centered in the single blog post view */
+}
+
+/*
+
+.blog-list-page {
+  @apply max-w-screen-lg mx-auto px-10 my-16;
+}
+.blog-list-page main {
+  @apply flex flex-col space-y-12 max-w-screen-lg mx-auto;
+}
+.blog-list-page aside {
+  @apply text-sm mr-10 px-2;
+}
+.blog-list-page .post-header {
+  @apply items-start;
+}
+.blog-list-page article img {
+  @apply -mb-3 shadow-lg;
+}
+
+
+
+.blog-tags-post-page aside {
+  @apply text-sm mr-10 px-2;
+}
+
+.blog-tags-post-page main {
+  @apply flex flex-col space-y-12 max-w-screen-lg mx-auto;
+}
+
+*/
+
+.blog-tags-post-page {
+  @apply mx-auto my-16 max-w-screen-lg px-10;
+}
+
+/* Pagination */
+.pagination-nav {
+  @apply flex flex-col items-start justify-center space-y-5 space-x-0 md:flex-row md:space-y-0 md:space-x-10;
+}
+.pagination-nav__item {
+  @apply w-full max-w-md;
+}
+.pagination-nav__link {
+  @apply flex-grow transform rounded-lg border-0 bg-[color:var(--ifm-card-background-color)] p-5  text-lg shadow-lg transition-transform hover:scale-105;
+}
+
+/* Navbar */
+.navbar__inner {
+  @apply mx-auto max-w-screen-lg  px-10 shadow-none;
+}
+
+.navbar__items--right {
+  @apply flex-row-reverse;
+}
+
+.navbar__items--right > :last-child {
+  @apply pr-5;
+}
+
+/* Search */
+
+.DocSearch-Button {
+  @apply rounded-lg p-5 !important;
+}
+
+.button.button--secondary.button--outline:not(.button--active):not(:hover) {
+  color: #ffffff;
+}
+
+/* Footer */
+
+.footer .footer__svg {
+  @apply m-8 inline fill-current;
+}
+
+.footer .footer__link-item span svg {
+  @apply hidden;
+}
+
+@media (max-width: 996px) {
+  .footer .footer__separators {
+    display: none;
+  }
+
+  /* .footer .footer__block {
+    display: block;
+  } */
+}
+
+/* Docs */
+
+.docusaurus-highlight-code-line {
+  background-color: rgb(72, 77, 91);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+.docs-image-centered {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 25px;
+}
+
+.docs-image-max-width-20 {
+  width: 20%;
+}
+
+.docs-image-max-width-50 {
+  width: 50%;
+}
+
+.hero--primary {
+  background-color: var(--ifm-color-hero-background-dark);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+#mc-embedded-waitlist {
+  margin-top: 15px;
+}
+
+.related-read-div {
+  border-width: 0;
+  padding: 7px var(--ifm-alert-padding-horizontal);
+  margin-bottom: 0.5em;
+}
+
+.related-read-label {
+  font-weight: 600;
+}
+
+.related-read-link {
+  margin-left: 7px;
+}
+
+.related-read-archetype-tag {
+  padding: 3px 6px;
+  color: #ffffff;
+  font-size: 0.8em;
+  border-radius: 6px;
+  margin-left: 7px;
+}
+
+.archetype-tag-operation-guide {
+  background-color: #ca1a7b;
+}
+
+.archetype-tag-developer-guide {
+  background-color: #ca811a;
+}
+
+.archetype-tag-tutorial {
+  background-color: #1ac9c7;
+}
+
+.archetype-tag-explanation {
+  background-color: #78c91a;
+}
+
+.archetype-tag-reference {
+  background-color: #cf8f19;
+}
+
+.docs-image-wrapper {
+  position: static;
+  width: 100%;
+  background-color: #efefef;
+  margin: 0 0 15px 0;
+  padding: 0;
+}
+
+.docs-centered-image-wrapper {
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  padding: 15px;
+}
+
+.docs-image-title-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 15px;
+  text-align: left;
+  font-size: 0.9em;
+  font-weight: 300;
+  color: #121212;
+}
+
+.docs-image-title {
+  margin: 0px !important;
+}
+
+.docs-centered-image-size-100 {
+  max-width: 1024px;
+}
+
+.docs-centered-image-size-75 {
+  max-width: 768px;
+}
+
+.docs-centered-image-size-50 {
+  max-width: 640px;
+}
+
+.docs-centered-image-size-25 {
+  max-width: 400px;
+}
+
+@media screen and (max-width: 1024px) {
+  .docs-centered-image-size-100 {
+    max-width: 100%;
+  }
+
+  .docs-centered-image-size-75 {
+    max-width: 75%;
+  }
+
+  .docs-centered-image-size-50 {
+    max-width: 50%;
+  }
+
+  .docs-centered-image-size-25 {
+    max-width: 25%;
+  }
+}
+
+.docs-image-legend-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 15px;
+  text-align: left;
+  font-size: 0.9em;
+  font-weight: 300;
+  color: #121212;
+}
+
+.docs-image-legend-list {
+  margin: 0px !important;
+  padding: 0;
+  list-style-type: none;
+}
+
+.docs-image-legend-symbol {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.scale {
+  @apply transition hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none;
+}
+
+/* .tableOfContents {
+  max-height: calc(100vh - (var(--ifm-navbar-height) + 2rem));
+  overflow-y: auto;
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 1rem);
+} */
+
+/* hacks to counteract tailwind typography clashing with docusaurus tabs */
+.prose .tabs-container > .tabs > .tabs__item::before {
+  content: none;
+}
+.prose .tabs-container > .tabs > .tabs__item {
+  padding-left: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  margin-bottom: 0em;
+  opacity: 0.5;
+}
+.prose .tabs-container > .tabs > .tabs__item.tabs__item--active {
+  opacity: 1;
+}
+
+.prose .tabs {
+  padding: 0 !important;
+}
+.prose .tabs-container ul {
+  margin: 0;
+  margin-bottom: -1.25rem;
+}
+.prose .tabs-container > .margin-vert--md pre {
+  margin: 0;
+}
+/* otherwise tailwind typography gives very ugly margins on inline images */
+.prose li img {
+  margin: 0;
+}
+/* otherwise tailwind typography gives very ugly margins on li children */
+.prose > ol > li > :first-child,
+.prose > ul > li > :first-child,
+.prose > ol > li > :last-child,
+.prose > ul > li > :last-child {
+  margin: 0 !important; /* sorry cant figure out how else to do this, prose @media overriding - swyx */
+}
+.prose li > ul {
+  margin-top: 1rem !important; /* sorry cant figure out how else to do this, prose @media overriding - swyx */
+}
+
+.prose :where(a code) {
+  color: unset;
+}
+
+.prose pre.prism-code {
+  margin: 0;
+}
+
+.codeBlockContainer_node_modules-\@docusaurus-theme-classic-lib-next-theme-CodeBlock-styles-module {
+  box-shadow: none !important;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95em;
+}

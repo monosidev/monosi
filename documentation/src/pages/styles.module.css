@@ -1,0 +1,141 @@
+/* stylelint-disable docusaurus/copyright-header */
+
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroSecondRow {
+  align-items: baseline;
+}
+
+.heroBanner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 966px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.featureImageContainer {
+  display: inline-flex;
+  align-items: center;
+  align-content: center;
+  height: 6.25rem;
+  width: 6.25rem;
+  margin-bottom: 1rem;
+}
+
+.featureImage {
+  width: 100%;
+  max-height: 100%;
+}
+
+.featuresMarginBottom {
+  margin-bottom: 25px;
+}
+
+.listImage {
+  max-width: 50px;
+  margin: 5px 7px 5px auto;
+  padding: 5px;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border-radius: 25px;
+}
+
+.soc2Logo {
+  max-width: 50px;
+  margin: auto;
+  padding: 5px;
+}
+
+.unOrderedList {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.videoContainer {
+  margin: 15px auto;
+  text-align: center;
+  max-width: 600px;
+}
+
+.textFeature {
+  margin: 15px auto;
+  max-width: 966px;
+  text-align: left;
+}
+
+.formFeature {
+  margin: 50px auto;
+  max-width: 400px;
+  text-align: left;
+}
+
+.sdkTakeMeToTutorialLogo {
+  margin: 5px 15px;
+  max-width: 80px;
+  padding: 10px;
+  vertical-align: bottom;
+  transition: transform 1s;
+}
+.sdkTakeMeToTutorialLogo:hover {
+  transform: scale(1.1);
+}
+
+.cloudWaitlistSubmit {
+  margin-top: 15px;
+  color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+  border-style: solid;
+  border-width: 1px;
+}
+
+.cloudWaitlistSubmit:hover {
+  background-color: var(--ifm-color-primary);
+}
+
+.justifyLeft {
+  text-align: left;
+}
+
+.justifyCenter {
+  text-align: center;
+  justify-content: center;
+}
+
+.securityPageHeaders {
+  text-align: right;
+}
+
+@media screen and (max-width: 996px) {
+  .securityPageHeaders {
+    text-align: left;
+  }
+}
+
+.viewCompleteLibraryLink {
+  font-size: 2em;
+  color: var(--ifm-color-primary);
+}

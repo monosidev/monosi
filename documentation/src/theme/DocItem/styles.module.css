@@ -1,0 +1,52 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+.docTitle {
+  font-size: 3rem;
+  margin-bottom: calc(var(--ifm-leading-desktop) * var(--ifm-leading));
+}
+
+.docItemContainer {
+  margin: 0 auto;
+  padding: 0 0.5rem;
+}
+
+@media only screen and (min-width: 997px) {
+  .docItemCol {
+    max-width: 75% !important;
+  }
+
+  /* Prevent hydration FOUC, as the mobile TOC needs to be server-rendered */
+  .tocMobile {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 996px) {
+  .docItemContainer {
+    padding: 0 0.3rem;
+  }
+}
+
+.EditThisPage {
+  margin-top: 2rem;
+}
+
+@media screen and (min-width: 998px) {
+  .EditThisPage {
+    backdrop-filter: invert(0.2);
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 1rem;
+    z-index: 99;
+  }
+  .EditThisPage:hover {
+    background-color: var(--ifm-color-content);
+    --ifm-link-color: var(--ifm-color-content-inverse);
+  }
+}
