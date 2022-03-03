@@ -11,19 +11,20 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./documentation
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
-        working-directory: ./documentation
         with:
           node-version: 16.x
+          cache-dependency-path: ./documentation/yarn.lock
           cache: yarn
 
       - name: Install dependencies
-        working-directory: ./documentation
         run: yarn install --frozen-lockfile
       - name: Build website
-        working-directory: ./documentation
         run: yarn build
 
       # Popular action to deploy to GitHub Pages:
