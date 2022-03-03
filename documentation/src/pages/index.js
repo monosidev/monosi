@@ -21,8 +21,8 @@ export default function Home() {
       >
         <main className="mx-auto max-w-screen-lg p-6 md:p-10">
           <Intro />
-          <Resources />
-          <Community />
+          {/* <Resources /> */}
+          {/* <Community /> */}
           <Newsletter />
           <MonosiCloud />
         </main>

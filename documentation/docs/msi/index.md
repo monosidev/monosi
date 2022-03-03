@@ -4,7 +4,7 @@ title: What is msi?
 description: msi is a command-line tool that you can use to pipe, manipulate, and analyze metadata
 tags:
   - operation-guide
-  - tctl
+  - msi
 ---
 
 The Monosi CLI (msi) is a command-line tool that you can use to pipe, manipulate, and analyze metadata.
@@ -12,12 +12,11 @@ It allows users to define the metadata they would like to monitor as code, creat
 
 - [How to install msi](/docs/msi/how-to-install-msi)
 - [Your first msi project](/docs/msi/project)
-- [How to use msi](/docs/tctl/how-to-use-msi)
+- [How to use msi](/docs/msi/how-to-use-msi)
 
 ## msi commands
 
 - [`msi init`](/docs/msi/init)
-<!-- - [`tctl admin`](/docs/tctl/admin) -->
 - [`msi bootstrap`](/docs/msi/bootstrap)
 - [`msi test-connection`](/docs/msi/test-connection)
 - [`msi run`](/docs/msi/run)
