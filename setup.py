@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 path = os.path.abspath('./src')
 sys.path.append(path)
 
-VERSION = '0.0.3'
+VERSION = '0.1.0'
 
 with open('README.md') as f:
     readme = f.read()
