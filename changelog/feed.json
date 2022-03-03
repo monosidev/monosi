@@ -1,0 +1,19 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "Monosi Documentation Blog",
+    "home_page_url": "https://docs.monosi.dev/changelog",
+    "description": "Monosi Documentation Blog",
+    "items": [
+        {
+            "id": "latest-release",
+            "content_html": "<img alt=\"Monosi Release\" class=\"case-study-header\" src=\"/img/example.gif\"/><br/> Learn more about our latest release. <h3>v0.0.3 Release</h3><p>Information regarding the latest release is forthcoming.</p>",
+            "url": "https://docs.monosi.dev/changelog/latest-release",
+            "title": "v0.0.3 Release",
+            "summary": "Learn more about our latest release.",
+            "date_modified": "2022-02-07T00:00:00.000Z",
+            "author": {
+                "name": "Kevin Unkrich"
+            }
+        }
+    ]
+}

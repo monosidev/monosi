@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://docs.monosi.dev/changelog</id>
+    <title>Monosi Documentation Blog</title>
+    <updated>2022-02-07T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://docs.monosi.dev/changelog"/>
+    <subtitle>Monosi Documentation Blog</subtitle>
+    <icon>https://docs.monosi.dev/img/favicon.png</icon>
+    <rights>Copyright © 2022 Vocable Inc. dba Monosi</rights>
+    <entry>
+        <title type="html"><![CDATA[v0.0.3 Release]]></title>
+        <id>latest-release</id>
+        <link href="https://docs.monosi.dev/changelog/latest-release"/>
+        <updated>2022-02-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Learn more about our latest release.]]></summary>
+        <content type="html"><![CDATA[<img alt="Monosi Release" class="case-study-header" src="/img/example.gif"/><br/> Learn more about our latest release. <h3>v0.0.3 Release</h3><p>Information regarding the latest release is forthcoming.</p>]]></content>
+        <author>
+            <name>Kevin Unkrich</name>
+        </author>
+    </entry>
+</feed>

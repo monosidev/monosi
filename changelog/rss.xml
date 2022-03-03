@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Monosi Documentation Blog</title>
+        <link>https://docs.monosi.dev/changelog</link>
+        <description>Monosi Documentation Blog</description>
+        <lastBuildDate>Mon, 07 Feb 2022 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <copyright>Copyright © 2022 Vocable Inc. dba Monosi</copyright>
+        <item>
+            <title><![CDATA[v0.0.3 Release]]></title>
+            <link>https://docs.monosi.dev/changelog/latest-release</link>
+            <guid>latest-release</guid>
+            <pubDate>Mon, 07 Feb 2022 00:00:00 GMT</pubDate>
+            <description><![CDATA[Learn more about our latest release.]]></description>
+            <content:encoded><![CDATA[<img alt="Monosi Release" class="case-study-header" src="/img/example.gif"/><br/> Learn more about our latest release. <h3>v0.0.3 Release</h3><p>Information regarding the latest release is forthcoming.</p>]]></content:encoded>
+        </item>
+    </channel>
+</rss>

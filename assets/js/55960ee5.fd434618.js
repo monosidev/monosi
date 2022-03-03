@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmonosi_documentation=self.webpackChunkmonosi_documentation||[]).push([[4121],{8070:function(n){n.exports=JSON.parse('[{"name":"msi","permalink":"/docs/tags/msi","count":18},{"name":"operation-guide","permalink":"/docs/tags/operation-guide","count":1}]')}}]);
