@@ -24,10 +24,10 @@ module.exports = {
           items: [
             "user-guide/monitors-overview",
             "user-guide/table-health",
-            "user-guide/schema-changes",
-            "user-guide/freshness",
-            "user-guide/distribution",
-            "user-guide/custom-sql",
+            // "user-guide/schema-changes",
+            // "user-guide/freshness",
+            // "user-guide/distribution",
+            // "user-guide/custom-sql",
           ]
         },
         {
@@ -110,6 +110,28 @@ module.exports = {
         "msi/how-to-use-msi",
         "msi/configuration",
         "msi/environment-variables",
+        {
+          type: "category",
+          label: "Project",
+          items: [
+            "msi/msiprojectyml",
+            "msi/inputsyml",
+            "msi/collectorsyml",
+            "msi/routesyml",
+            "msi/outputsyml",
+          ],
+        },
+        {
+          type: "category",
+          label: "Pipeline",
+          items: [
+            "msi/sources",
+            "msi/normalization",
+            "msi/functions",
+            "msi/destinations",
+          ],
+        },
+        "msi/state",
         {
           type: "category",
           label: "msi commands",

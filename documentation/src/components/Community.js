@@ -158,7 +158,7 @@ export const Community = () => {
             <li className="list-disc">
               <p className="">
                 <a
-                  href="https://github.com/airbytehq/airbyte"
+                  href="https://github.com/monosidev/monosi"
                   className="font-semibold hover:underline"
                 >
                   Monthly Calls
@@ -189,13 +189,12 @@ export const Community = () => {
           </h2>
           {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-2"> */}
           <div className="mt-8 flex flex-col space-y-4">
-            <a
-              href="#"
+            <div
               className="flex items-center space-x-5"
             >
-              <img className="h-8 w-8" src="/img/ruby.svg" alt="Ruby logo" />
+              <span className="bg-purple-100 text-purple-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-purple-200 dark:text-purple-900">Coming Soon</span>
               <p>Ultimate Guide to Data Reliability Engineering</p>
-            </a>
+            </div>
           </div>
         </div>
       </div>

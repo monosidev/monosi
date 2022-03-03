@@ -42,12 +42,14 @@ html[data-theme="dark"] {
 }
 
 html[data-theme="light"] {
+  --ifm-menu-color-active: #7344d2;
+  --ifm-font-color-base: #270d5b;
   --ifm-blockquote-color: #000000;
   --ifm-color-emphasis-300: #505050;
   /* --ifm-code-background: var(--ifm-color-primary-lightest); */
   --ifm-color-input-background: #ffffff;
-  --ifm-color: #141414;
-  --ifm-background-color: rgb(249, 250, 251);
+  --ifm-color: #270d5b;
+  --ifm-background-color: #f9f7f1;
   --ifm-footer-background-color: #ffffff;
   --ifm-card-background-color: #ffffff;
   --ifm-badge-background-color: rgba(239, 246, 255);

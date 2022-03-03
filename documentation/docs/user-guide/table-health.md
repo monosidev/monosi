@@ -1,7 +1,7 @@
 ---
 id: table-health
-title: Table Health Monitor
-sidebar_label: Table Health
+title: Table Health Metrics
+sidebar_label: Metrics
 ---
 
 The Table Health monitor tracks various metrics (as listed below) on each column for a specified table and evaluates the results. It’s primary purpose is to ensure the data in the table specified is healthy and there are no anomalies.
