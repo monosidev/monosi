@@ -27,12 +27,12 @@ The following steps will run a local instance of Monosi using the default config
 
 1. Clone the [monosidev/monosi](https://github.com/monosidev/monosi) repository.
 2. Change directory into the root of the project.
-3. Run the `make compose-up` command.
+3. Run the `make compose` command.
 
 ```bash
 git clone https://github.com/monosidev/monosi.git
 cd  monosi
-make compose-up
+make compose
 ```
 
 After the Monosi application has started you can view the Monosi Web interface in your browser: [localhost:3000](http://localhost:3000/)
