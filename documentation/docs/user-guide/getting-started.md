@@ -21,7 +21,7 @@ In order to use Monosi successfully, you will need to complete the following ste
 ```
 git clone https://github.com/monosidev/monosi.git
 cd monosi
-make compose-up
+make compose
 ```
 Navigate to http://localhost:3000 to access the web application once it has started.
 

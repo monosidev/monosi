@@ -9,7 +9,7 @@ sidebar_label: Local Deployment (Docker)
 ```
 git clone https://github.com/monosidev/monosi
 cd monosi
-make compose-up
+make compose
 ```
 3. Navigate to http://localhost:3000 via your browser
 4. Start monitoring your data

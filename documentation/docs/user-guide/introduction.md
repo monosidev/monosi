@@ -24,7 +24,7 @@ Monosi is on a mission to operationalize metadata and use it to improve existing
 ```
 git clone https://github.com/monosidev/monosi.git
 cd monosi
-make compose-up
+make compose
 ```
 
 Visit http://localhost:3000 to view the Monosi application.
