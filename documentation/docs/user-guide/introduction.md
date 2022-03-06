@@ -29,7 +29,7 @@ make compose
 
 Visit http://localhost:3000 to view the Monosi application.
 
-Here is a complete guide [ INSERT LINK ] showing you to connect a data source, start monitoring, and get alerts.
+Here is a <a href="/docs/user-guide/getting-started">complete guide</a> showing you to connect a data source, start monitoring, and get alerts.
 
 ## Features
 

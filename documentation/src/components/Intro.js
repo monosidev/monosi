@@ -64,7 +64,7 @@ function SDKs() {
         <li className="">
           <Link
             className="flex items-center space-x-5"
-            to={useBaseUrl("/docs/integrations/redshfit")}
+            to={useBaseUrl("/docs/integrations/redshift")}
           >
             <div className="flex items-center space-x-3 hover:underline">
               <img
@@ -156,7 +156,7 @@ function Server() {
         </li> */}
       </ul>
       <Link
-        to={useBaseUrl("/docs/server/quick-install")}
+        to={useBaseUrl("/docs/user-guide/local-deployment")}
         className="mt-2 -ml-2 hover:underline"
       >
         <p className="font-semibold">
