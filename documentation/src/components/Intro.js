@@ -77,7 +77,7 @@ function SDKs() {
           </Link>
         </li>
         <li className="">
-          <Link to={useBaseUrl("/docs/integrations")}>
+          <Link to={useBaseUrl("/integrations")}>
             <div className="flex space-x-3 hover:underline" style={{justifyContent: 'right'}}>
               <p className="font-semibold">View all</p>
             </div>
@@ -196,7 +196,7 @@ function Tools() {
         <h2 className="mb-4 text-xl font-semibold">Get Started</h2>
       </div>
       <p className="mb-4 flex-grow">
-          Monosi deploys as a full, standalone data observability solution (recommended) or a CLI to pipe, manipulate, and analyze metadata.
+          Monosi deploys as a full, standalone data observability solution that provides functionality to monitor your data pipelines for anomalies.
       </p>
       <div className="flex flex-col space-y-2">
         <Link
@@ -218,7 +218,7 @@ function Tools() {
           <div className="">Web UI</div>
         </Link>
         <Link
-          to={useBaseUrl("/docs/user-guide/introduction")}
+          to={useBaseUrl("/docs/user-guide/table-health")}
           className="flex space-x-3 font-semibold hover:underline"
         >
           <svg
@@ -233,7 +233,7 @@ function Tools() {
               clipRule="evenodd"
             />
           </svg>
-          <div className="">Getting Started</div>
+          <div className="">Table Health Monitoring</div>
         </Link>
           {/* <Link
           to={useBaseUrl("/docs/msi")}
