@@ -51,7 +51,7 @@ For more instructions on getting started, check out our [documentation](https://
 
 Start the UI through Docker and quickly connect your data sources and alert integrations
 
-![web interface](https://docs.monosi.dev/img/example.gif)
+<img alt="web interface" src="/documentation/static/img/example.gif"/>
 
 
 Get alerts in slack when Monosi detects anomalies in defined monitors.
