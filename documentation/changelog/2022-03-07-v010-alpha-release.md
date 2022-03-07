@@ -10,13 +10,17 @@ author_image_url: https://avatars.githubusercontent.com/u/15347345?v=4
 release_version: V0.1.0-alpha
 ---
 
-<img alt="Monosi Release" class="case-study-header" src='/img/example.gif' />
-
-<br/>
-Learn more about our latest release.
+Monosi Alpha Release 
 
 <!--truncate-->
 
-### v0.1.0-alpha Release
+<img alt="Monosi Release" class="case-study-header" src='/img/example.gif' />
 
-Information regarding the latest release is forthcoming.
+<br/>
+
+- Full-fledged user interface, redesigned and includes analysis capabilities
+- Deployment re-developed
+- Better and more documentation
+- Built-in anomaly and slack integraitons
+- Initial testing
+- Much more

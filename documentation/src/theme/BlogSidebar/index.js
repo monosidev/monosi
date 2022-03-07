@@ -1,24 +1,26 @@
 import React from "react";
 import Link from "@docusaurus/Link";
 export default function BlogSidebar({sidebar, row}) {
-  if (sidebar.items.length === 0) {
+
+  const tags = []
+  // const tags = [
+  //   {
+  //     title: "community",
+  //     url: "/blog/tags/community",
+  //   },
+  //   {
+  //     title: "announcement",
+  //     url: "/blog/tags/announcement",
+  //   },
+  //   {
+  //     title: "releases",
+  //     url: "/blog/tags/release",
+  //   },
+  // ];
+
+  if (sidebar.items.length === 0 || tags.length === 0) {
     return null;
   }
-
-  const tags = [
-    {
-      title: "community",
-      url: "/blog/tags/community",
-    },
-    {
-      title: "announcement",
-      url: "/blog/tags/announcement",
-    },
-    {
-      title: "releases",
-      url: "/blog/tags/release",
-    },
-  ];
 
   return (
     <div>
