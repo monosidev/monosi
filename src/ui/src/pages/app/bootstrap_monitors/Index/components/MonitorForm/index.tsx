@@ -23,6 +23,7 @@ const MonitorForm: React.FC = () => {
   const [type, setType] = useState<any>('table_health');
   const [database, setDatabase] = useState<any>('');
   const [schema, setSchema] = useState<any>('');
+  const [daysAgo, setDaysAgo] = useState<any>(100);
   const [table, setTable] = useState<any>('');
   const [timestampField, setTimestampField] = useState<any>('');
 
@@ -31,6 +32,7 @@ const MonitorForm: React.FC = () => {
       workspace: 'default',
       source: datasource,
       type: type,
+      days_ago: daysAgo,
       database: database,
       schema: schema,
       table_name: table,
@@ -78,6 +80,11 @@ const MonitorForm: React.FC = () => {
         <Form.Group className="mb-3" controlId="formBasicSchema">
           <Form.Label>Schema</Form.Label>
           <Form.Control type="text" placeholder="TPCH_SF1000" disabled value={schema} />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicSchema">
+          <Form.Label>Lookback Days (# Days Ago to Fetch)</Form.Label>
+          <Form.Control type="number" value={daysAgo} onChange={(e: any) => setDaysAgo(e.target.value)} />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicTableName">

@@ -20,6 +20,7 @@ class MsiMonitor(DataClassDictMixin):
     timestamp_field: str = field(default=None, metadata={"sa": Column(String(100))})
     workspace: str = field(default=None, metadata={"sa": Column(String(100))})
     source: str = field(default=None, metadata={"sa": Column(String(100))})
+    days_ago: int = field(default=100, metadata={"sa": Column(Integer)})
     type: str = field(default=None, metadata={"sa": Column(String(100))})
     
     id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('integ_id_seq'), primary_key=True, autoincrement=True)})
