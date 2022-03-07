@@ -14,7 +14,7 @@ export const MonosiCloud = () => {
         Monosi Cloud is a fully managed cloud offering of the open-source
         suite of tools. We are currently accepting private Design Partners.{" "}
         <a
-          href="https://monosi.dev/cloud"
+          href="https://monosi.dev/cloud.html"
           className="text-blue-400 underline hover:text-blue-200"
         >
           Apply here!

@@ -37,7 +37,7 @@ Then, click the button “Create Data Source” in order to enter the details fo
 <img src="/img/datasource/create-1.png" height="700" alt="Create datasource 1" />
 <img src="/img/datasource/create-2.png" height="700" alt="Create datasource 2" />
 
-More detailed information about connecting to your specific data source and a list of supported integrations can be found <a href="/docs/integrations">here</a>.
+More detailed information about connecting to your specific data source and a list of supported integrations can be found <a href="/docs/integrations/snowflake">here</a>.
 
 
 ## 3. Start Monitoring

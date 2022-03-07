@@ -42,19 +42,21 @@ export const Integrations = () => {
           to={useBaseUrl("/docs/integrations/slack")}
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="http://assets.stickpng.com/images/5cb480cd5f1b6d3fbadece79.png" alt="Slack logo" />
+          <img className="h-16 w-16" src="/img/Slack_Mark.svg" alt="Slack logo" />
           <p className="text-lg">Slack</p>
         </Link>
         <Link
           to={useBaseUrl("/docs/integrations/webhooks")}
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
+          <img className="h-16 w-16" src="https://cdn.worldvectorlogo.com/logos/webhooks.svg" alt="Webhook logo" />
           <p className="text-lg">Webhooks</p>
         </Link>
         <Link
           to={useBaseUrl("/docs/integrations/email")}
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
+          <img className="h-16 w-16" src="/img/email.png" alt="Email logo" />
           <p className="text-lg">Email</p>
         </Link>
         <Link
@@ -89,7 +91,7 @@ export const Integrations = () => {
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="http://assets.stickpng.com/images/58480fc5cef1014c0b5e4941.png" alt="Metabase logo" />
+          <img className="h-16 w-16" src="/img/metabase.svg" alt="Metabase logo" />
           <p className="text-lg">Metabase</p>
         </Link>
         <Link
@@ -103,7 +105,7 @@ export const Integrations = () => {
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="http://assets.stickpng.com/images/5848104fcef1014c0b5e4950.png" alt="MySQL logo" />
+          <img className="h-16 w-16" src="https://download.logo.wine/logo/MySQL/MySQL-Logo.wine.png" alt="MySQL logo" />
           <p className="text-lg">MySQL</p>
         </Link>
         <Link

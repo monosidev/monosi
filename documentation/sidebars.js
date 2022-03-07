@@ -22,7 +22,6 @@ module.exports = {
           collapsible: false,
           collapsed: false,
           items: [
-            "user-guide/monitors-overview",
             "user-guide/table-health",
             // "user-guide/schema-changes",
             // "user-guide/freshness",

@@ -14,13 +14,13 @@ export const Newsletter = () => {
         <br />
       </p>
       <form
-        action="#"
-        method="post"
-        id="mc-embedded-subscribe-form"
-        name="mc-embedded-subscribe-form"
-        target="_blank"
-        noValidate="novalidate"
+        action="https://dev.us1.list-manage.com/subscribe/post?u=e18eb60531cb2e284ca11ae4e&id=edd6302f06"
+        method="get"
+        id="wf-form-Newsletter-Form-1"
+        name="wf-form-Newsletter-Form-1"
         className="mt-8 sm:flex"
+        data-name="Newsletter Form 1"
+        aria-label="Newsletter Form 1"
       >
         <label htmlFor="mce-EMAIL" className="sr-only">
           Email address
@@ -33,6 +33,7 @@ export const Newsletter = () => {
           autoComplete="email"
           className="w-full rounded-md border-gray-300 px-5 py-3 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 sm:max-w-xs"
           placeholder="Enter your email"
+          data-name="Email"
         />
         <span className="cta_text" style={{display: "none"}}>
           You are on the waitlist!
