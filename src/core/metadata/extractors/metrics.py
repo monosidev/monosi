@@ -186,7 +186,7 @@ class MetricsCompiler:
             select_sql=select_sql,
             table=monitor.table_name,
             timestamp_field=monitor.timestamp_field,
-            minutes_ago=-self._minutes_ago(10000, monitor.id),
+            minutes_ago=-self._minutes_ago(monitor.days_ago*24*60, monitor.id),
             # minutes_ago=monitor.minutes_ago,
         )
 
