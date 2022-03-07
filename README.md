@@ -7,8 +7,6 @@
 <h1 align="center">Open Source Data Observability Platform</h1>
 
 <p align="center">
-  <a href="https://monosi.dev/slack">Join the community</a>
-  |
   <a href="https://www.monosi.dev/community.html">Newsletter</a>
   |
   <a href="https://docs.monosi.dev">Docs</a>
@@ -18,27 +16,30 @@
   <a href="mailto:support@monosi.dev">Contact us</a>
 </p>
 
+<p align="center">
+  <a href="https://monosi.dev/slack">Join the Data Reliability Engineering Community</a>
+</p>
 
-Monosi is an extensible data observability platform that ensures teams achieve data reliability. It provides:
+Monosi is a stand-alone & extensible platform for data observability and monitoring. It ensures data quality by automatically monitoring your data stack for anomalies, alerting you of issues, and analyzing the root cause.
 
-- Data monitoring setup in [less than 10 minutes](https://docs.monosi.dev/introduction/getting-started)
-
-- OSS alternative to proprietary data quality and observability systems 
+This project is an OSS alternative to proprietary data quality and observability systems. Get started monitoring your data in [less than 10 minutes](https://docs.monosi.dev/docs/user-guide/getting-started)
 
 
 ## Installation
-*Compatible with Python 3.6+*
+
+_Note: Monosi works through Docker, ensure Docker Compose v2 is installed._
+
+Run the following commands:
 
 ```
-pip install monosi
-```
-### OR
-
-```
-docker run -d -p 3000:3000 monosi/monosi
+git clone https://github.com/monosidev/monosi.git
+cd monosi
+make compose
 ```
 
-For instructions on getting started, check out our [documentation](https://docs.monosi.dev/introduction/getting-started).
+Navigate to http://localhost:3000 to access the web application once it has started.
+
+For more instructions on getting started, check out our [documentation](https://docs.monosi.dev/docs/user-guide/getting-started).
 
 ## Community
 
@@ -46,39 +47,23 @@ For instructions on getting started, check out our [documentation](https://docs.
 * [Newsletter](https://www.monosi.dev/community.html)
 * [Contact the development team](mailto:support@monosi.dev)
 
-## Features
+## Overview
 
-### CLI & Web Interface
+Start the UI through Docker and quickly connect your data sources and alert integrations
 
-Choose between using a CLI or a web interface to interact with Monosi.
+![web interface](https://docs.monosi.dev/img/example.gif)
 
-![web interface](https://www.monosi.dev/images/ui_interface_v003.gif)
-
-### Monitors as code
-
-Define monitors on your data stores as code. Use provided table health metrics monitors or create custom table monitors. 
-
-![monitors as code](https://www.monosi.dev/images/custom_monitor.gif)
-### Profiler
-Monosi automatically profiles your database to suggest and create new monitors for you to run from scratch.
-
-![monosi profiler](https://www.monosi.dev/images/profile.gif)
-### Schedule monitors
-
-Schedule monitors to run in the background on an interval basis. 
-
-### Alerting
 
 Get alerts in slack when Monosi detects anomalies in defined monitors.
 
 ![monosi slack alerts](https://www.monosi.dev/images/Monosi_Slack_Alert.svg)
 
 ### Own your stack
-Avoid integration pitfalls with fragmented, legacy tools by using open source & prevent vendor lock-in by decoupling metric definitions from visualization.
+Avoid integration pitfalls with fragmented, legacy tools by using open source & prevent vendor lock-in by owning your (meta)data. 
 
 ## Contributing
 
-To start contributing, check out our [Contributing Guide](CONTRIBUTING.md)
+To start contributing, check out our [Contributing Guide](CONTRIBUTING.md) and [join the Slack](https://monosi.dev/slack).
 
 
 
