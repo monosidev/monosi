@@ -124,10 +124,10 @@ function Server() {
         </li>
         <li className="list-disc">
           <Link
-            to={useBaseUrl("/docs/user-guide/custom-sql")}
+            to={useBaseUrl("/docs/user-guide/table-health")}
             className="hover:underline"
           >
-            <p className="font-semibold">Defining Custom Monitors</p>
+            <p className="font-semibold">Ensuring Table Health</p>
           </Link>
         </li>
         <li className="list-disc">
