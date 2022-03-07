@@ -14,7 +14,10 @@
         <link href="https://docs.monosi.dev/changelog/latest-release"/>
         <updated>2022-03-07T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Monosi Alpha Release]]></summary>
-        <content type="html"><![CDATA[<p>Monosi Alpha Release </p><img alt="Monosi Release" class="case-study-header" src="/img/example.gif"/><br/><ul><li>Full-fledged user interface, redesigned and includes analysis capabilities</li><li>Deployment re-developed</li><li>Better and more documentation</li><li>Built-in anomaly and slack integraitons</li><li>Initial testing</li><li>Much more</li></ul>]]></content>
+        <content type="html"><![CDATA[<p>Monosi Alpha Release</p><hr/><p>Monosi&#x27;s v0.1.0-alpha release brings a new UI, ease of use &amp; deployment, and much more.</p><h3>Overhauled Web Interface</h3><p>The release brings a new design to the UI with an updated information heirarchy. You can quickly get started with data monitoring by following the directions displayed on the home page of the new UI.</p><p>Furthermore, monitor details have been expanded upon to provide details about each run and anomaly analysis.</p><img alt="Monosi Release" class="case-study-header" src="/img/example.gif"/><h3>Updated Deployment</h3><p>Deploying has been simplified with Docker and Docker Compose. All the necessary dependencies for Monosi to run are managed through Docker Compose, making it easy to start with just 3 commands:</p><pre><code>git clone https://github.com/monosidev/monosi.git
+cd monosi
+make compose
+</code></pre><h3>Updated Documentation</h3><p>As you can see by the new location of the changelog, we have enhanced our documentation from a content, UI, and information hierarchy perspective (powered by <a href="https://docusaurus.io/">Docusaurus</a>). Deployed through Github Pages and versioned in the Monosi monorepo.</p><p>It should be easier to understand and get started using Monosi. If there any issues that appear in the docs, please open an <a href="https://github.com/monosidev/monosi/issues">issue on Github</a>.</p><h3>Testing &amp; Bug fixes</h3><p>More tests have been added to ensure the reliability of the code. Furthermore, bug fixes and code changes have been made to make Monosi increasingly more stable.</p>]]></content>
         <author>
             <name>Kevin Unkrich</name>
         </author>
