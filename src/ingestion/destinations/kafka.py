@@ -10,7 +10,7 @@ class KafkaDestinationConfiguration(DestinationConfiguration):
 
 	@property
 	def type(self):
-		raise "kafka"
+		return "kafka"
 
 class KafkaDestination(Destination):
 	def _push(self):

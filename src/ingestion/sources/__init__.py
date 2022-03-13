@@ -1,5 +1,5 @@
 from .base import (
-	Extractor,
+    Extractor,
 	Source,
 )
 

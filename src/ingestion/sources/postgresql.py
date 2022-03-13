@@ -3,8 +3,12 @@ import json
 from .base import SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
 
 class PostgreSQLSourceConfiguration(SourceConfiguration):
-	@classmethod
-	def validate(cls, configuration):
+    @classmethod
+    def validate(cls, configuration):
+        raise NotImplementedError
+
+    @classmethod
+    def configuration_schema(cls):
         return {
             "type": "object",
             "properties": {
@@ -31,8 +35,8 @@ class PostgreSQLSourceConfiguration(SourceConfiguration):
         )
 
     @property
-	def type(self):
-		return "postgresql"
+    def type(self):
+        return "postgresql"
 
 class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
     @classmethod
@@ -73,20 +77,21 @@ class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
 
     @classmethod
     def schema_query(cls):
-    	raise NotImplementedError
+        raise NotImplementedError
 
     @classmethod
     def table_metrics_query(cls):
-    	raise NotImplementedError
+        raise NotImplementedError
 
     @classmethod
     def query_access_logs_query(cls):
-    	raise NotImplementedError
-    	
+        raise NotImplementedError
+        
     @classmethod
     def query_copy_logs_query(cls):
-    	raise NotImplementedError
+        raise NotImplementedError
 
 
 class PostgreSQLSource(SQLAlchemySource):
-	dialect: PostgreSQLSourceDialect
+    dialect: PostgreSQLSourceDialect
+

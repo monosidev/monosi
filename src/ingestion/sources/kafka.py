@@ -3,16 +3,20 @@ import json
 from .base import Source, SourceConfiguration
 
 class KafkaSourceConfiguration(SourceConfiguration):
-	@classmethod
-	def validate(cls, configuration):
+    @classmethod
+    def validate(cls, configuration):
+        raise NotImplementedError
+
+    @classmethod
+    def configuration_schema(cls):
         raise NotImplementedError
 
     def connection_string(self) -> str:
         raise NotImplementedError
 
     @property
-	def type(self):
-		return "kafka"
+    def type(self):
+        return "kafka"
 
 
 class KafkaSource(Source):

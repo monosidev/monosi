@@ -3,8 +3,12 @@ import json
 from .base import SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
 
 class SnowflakeSourceConfiguration(SourceConfiguration):
-	@classmethod
-	def validate(cls, configuration):
+    @classmethod
+    def validate(cls, configuration):
+        raise NotImplementedError
+
+    @classmethod
+    def configuration_schema(cls):
         return {
             "type": "object",
             "properties": {
@@ -19,7 +23,7 @@ class SnowflakeSourceConfiguration(SourceConfiguration):
         }
 
     def connection_string(self) -> str:
-    	configuration = json.loads(self.configuration)
+        configuration = json.loads(self.configuration)
 
         return 'snowflake://{user}:{password}@{account}/{database}/{schema}?warehouse={warehouse}'.format(
             user=configuration.get('user'),
@@ -31,8 +35,8 @@ class SnowflakeSourceConfiguration(SourceConfiguration):
         )
 
     @property
-	def type(self):
-		return "snowflake"
+    def type(self):
+        return "snowflake"
 
 class SnowflakeSourceDialect(SQLAlchemySourceDialect):
     @classmethod
@@ -69,21 +73,21 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
 
     @classmethod
     def schema_query(cls):
-    	raise NotImplementedError
+        raise NotImplementedError
 
     @classmethod
     def table_metrics_query(cls):
-    	raise NotImplementedError
+        raise NotImplementedError
 
     @classmethod
     def query_access_logs_query(cls):
-    	raise NotImplementedError
-    	
+        raise NotImplementedError
+        
     @classmethod
     def query_copy_logs_query(cls):
-    	raise NotImplementedError
+        raise NotImplementedError
 
 
 class SnowflakeSource(SQLAlchemySource):
-	dialect: SnowflakeSourceDialect
+    dialect: SnowflakeSourceDialect
 
