@@ -16,7 +16,7 @@ class Task:
     units: List[TaskUnit]
     extractor: Extractor
 
-    def _run_task(self, unit: TaskUnit):
+    def _run_unit(self, unit: TaskUnit):
         return unit.run(self.extractor)
 
     def run(self):
