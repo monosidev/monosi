@@ -1,13 +1,13 @@
 from pipeline import ingestion_task
 
 external_source_configuration = {
-	"type": "snowflake",
-	"account": "kva82352",
-	"user": "kevinunkrich",
-	"password": "kCUXmoKX.Ri@JfTuJZKVY_H3",
-	"warehouse": "compute_wh",
-	"database": "snowflake_sample_data",
-	"schema": "tpch_sf1000",
+	"type": "",
+	"account": "",
+	"user": "",
+	"password": "",
+	"warehouse": "",
+	"database": "",
+	"schema": "",
 }
 
 internal_destination_configuration = {
