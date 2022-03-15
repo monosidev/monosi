@@ -1,38 +1,47 @@
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
+from typing import Any, Dict, List
 import itertools
 
-from .destinations import Destination
-from .sources import Source
+from .destinations import Destination, DestinationFactory
+from .sources import Source, SourceFactory
 from .task import Task
 
 
 def flatten(arr):
-	return list(itertools.chain.from_iterable(arr))
+    return list(itertools.chain.from_iterable(arr))
 
 @dataclass
-class Job:
-	sources: List[Source]
-	destinations: List[Destination]
-	tasks: List[Task]
+class MPipe:
+    sources: List[Source]
+    destinations: List[Destination]
+    tasks: List[Task] = field(default_factory=list)
 
-	def _create_source_tasks(self, source: Source):
-		extractor = source.extractor()
-		task_units = source.task_units()
+    @classmethod
+    def from_configuration(cls, sources: List[Dict[str, Any]], destinations: List[Dict[str, Any]]):
+        source_objs = [SourceFactory.create(configuration) for configuration in sources]
+        destination_objs = [DestinationFactory.create(configuration) for configuration in destinations]
 
-		return [Task(extractor=extractor, units=[unit]) for unit in task_units]
+        return MPipe(sources=source_objs, destinations=destination_objs)
 
-	def _create_tasks(self):
-		self.tasks = flatten([self._create_source_tasks(source) for source in self.sources])
+    def _create_source_tasks(self, source: Source):
+        extractor = source.extractor()
+        task_units = source.task_units()
 
-	def publish(self, data):
-		return [destination.push(data) for destination in self.destinations]
+        return [Task(extractor=extractor, units=[unit]) for unit in task_units]
 
-	def run(self):
-		# Create Tasks
-		self._create_tasks()
+    def _create_tasks(self):
+        self.tasks = flatten([self._create_source_tasks(source) for source in self.sources])
 
-		# Run tasks
-		results = [task.run() for task in self.tasks]
-		# Publish results
-		[destination.push(results) for destination in self.destinations]
+    def publish(self, data):
+        return [destination.push(data) for destination in self.destinations]
+
+    def run(self):
+        # Create Tasks
+        self._create_tasks()
+
+        # Run tasks
+        results = [task.run() for task in self.tasks]
+        
+        # Publish results
+        self.publish(results)
+

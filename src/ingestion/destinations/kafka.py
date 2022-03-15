@@ -1,7 +1,8 @@
-from kafka import KafkaProducer, KafkaAdminClient, NewTopic
+from kafka import KafkaProducer, KafkaAdminClient
+from kafka.admin import NewTopic
 import json
 
-from .base import Destination, DestinationConfiguration
+from .base import Destination, DestinationConfiguration, Publisher
 
 
 class KafkaDestinationConfiguration(DestinationConfiguration):
@@ -33,11 +34,6 @@ class KafkaDestinationConfiguration(DestinationConfiguration):
 	def type(self):
 		return "kafka"
 
-
-class Publisher(object):
-    def run(self, item):
-        raise NotImplementedError
-
 class KafkaDestinationPublisher(Publisher):
 	def __init__(self, configuration: KafkaDestinationConfiguration):
 		self.configuration = configuration
@@ -61,41 +57,3 @@ class KafkaDestinationPublisher(Publisher):
 class KafkaDestination(Destination):
 	def _push(self):
 		raise NotImplementedError
-
-
-
-
-
-
-
-class Extractor(object):
-    def run(self, request: str):
-        raise NotImplementedError
-
-class SQLAlchemyExtractor(Extractor):
-    def __init__(self, configuration):
-        self.configuration = configuration
-        self.driver = None
-
-    def _initialize(self):
-        try:
-            from core.drivers.factory import load_driver
-            driver_cls = load_driver(self.configuration)
-
-            self.driver = driver_cls(self.configuration)
-        except Exception as e:
-            print(e)
-            raise Exception("Could not initialize connection to database in Runner.")
-
-    def _execute(self, sql: str):
-        if self.driver is None:
-            raise Exception("Initialize runner before execution.")
-
-        results = self.driver.execute(sql)
-        return results
-
-    def run(self, unit: TaskUnit):
-        self._initialize()
-        sql = unit.request
-
-        return self._execute(sql)
