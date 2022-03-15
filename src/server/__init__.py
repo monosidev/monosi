@@ -2,24 +2,14 @@ from flask import Flask
 from flask_cors import CORS
 import os
 import sys
-from telemetry.events import set_user_id, track_event
-from server.user import User
 
 curr_path = os.path.dirname(os.path.abspath(__file__))
 src_path = os.path.abspath(os.path.join(curr_path, "../"))
 sys.path.append(src_path)
 
-from .middleware.api import init_api
-from .middleware.db import init_db
-from .middleware.scheduler import init_scheduler
-from .middleware.ui import init_ui
-
-middleware = [
-    init_api,
-    init_db,
-    init_scheduler,
-    init_ui,
-]
+from server.middleware import middleware
+from server.user import User
+from telemetry.events import set_user_id, track_event
 
 
 def create_app():
@@ -39,4 +29,3 @@ def create_app():
     track_event(action="server_start")
 
     return app
-

@@ -1,6 +1,6 @@
 import os
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-from core.drivers.postgres import DriverConfiguration # TODO: Fix
+
 
 def monosi_home_dir():
     monosi_path = os.path.expanduser("~/.monosi")
@@ -9,15 +9,15 @@ def monosi_home_dir():
 
     return monosi_path
 
-# TODO: Fix
-db_config = DriverConfiguration(
-    user=os.getenv('DB_USER'),
-    password=os.getenv('DB_PASSWORD'),
-    host=os.getenv('DB_HOST'),
-    database=os.getenv('DB_DATABASE'),
-    schema=os.getenv('DB_SCHEMA'),
-    port=os.getenv('DB_PORT'),
-)
+db_config = {
+    "type": "postgresql",
+    "user": os.getenv('DB_USER'),
+    "password": os.getenv('DB_PASSWORD'),
+    "host": os.getenv('DB_HOST'),
+    "port": os.getenv('DB_PORT'),
+    "database": os.getenv('DB_DATABASE'),
+    "schema": os.getenv('DB_SCHEMA'),
+}
 
 class BaseConfig:
     """Base configuration."""
@@ -25,7 +25,14 @@ class BaseConfig:
     SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious')
     DEBUG = False
     SERVE_UI = bool(os.getenv('SERVE_UI', False))
-    SQLALCHEMY_DATABASE_URI = db_config.connection_string() # TODO: Fix
+    SQLALCHEMY_DATABASE_URI = "{type}://{user}:{password}@{host}:{port}/{database}".format(
+        type=db_config['type'],
+        user=db_config['user'],
+        password=db_config['password'],
+        host=db_config['host'],
+        port=db_config['port'],
+        database=db_config['database'],
+    )
     SCHEDULER_JOBSTORES = {"default": SQLAlchemyJobStore(url=SQLALCHEMY_DATABASE_URI, tablename="msi_jobs")}
     SCHEDULER_API_ENABLED = True
 

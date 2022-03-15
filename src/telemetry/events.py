@@ -1,5 +1,11 @@
 import os
-from snowplow_tracker import Tracker, AsyncEmitter, Subject, logger as snowplow_logger
+from snowplow_tracker import (
+    AsyncEmitter,
+    Emitter,
+    Subject,
+    Tracker,
+    logger as snowplow_logger,
+)
 import logging
 
 snowplow_logger.setLevel(100)
@@ -7,7 +13,7 @@ SNOWPLOW_URL = "monosi-spipeline-collector-lb-1716143593.us-west-2.elb.amazonaws
 send_anonymous_stats = os.getenv('SEND_ANONYMOUS_STATS', True) != "false"
 
 e = AsyncEmitter(
-    SNOWPLOW_URL, 
+    SNOWPLOW_URL,
     protocol="http",
 )
 tracker = Tracker(
