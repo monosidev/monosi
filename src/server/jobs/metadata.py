@@ -1,6 +1,6 @@
 import logging
 
-from ingestion import ingestion_task
+from pipeline import ingestion_task
 from scheduler import job
 from telemetry.events import track_event
 
