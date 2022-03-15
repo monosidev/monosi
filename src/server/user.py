@@ -22,6 +22,3 @@ class User(db.Model):
             db.session.commit()
 
         return db.session.query(cls).one().id
-
-
-

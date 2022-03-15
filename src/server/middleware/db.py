@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import declarative_base
 
-from core.models import mapper_registry
+from server.models import mapper_registry
 
 Base = declarative_base(metadata=mapper_registry.metadata)
 db = SQLAlchemy(model_class=Base)
