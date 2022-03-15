@@ -1,6 +1,6 @@
 import logging
-from core.events import track_event
-from core.models.datasource import DataSource
+from telemetry.events import track_event
+from server.models import DataSource
 
 from .base import CrudResource, ListResource
 

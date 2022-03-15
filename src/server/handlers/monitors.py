@@ -1,12 +1,10 @@
 import logging
 import uuid
-from core.models.monitor import MsiMonitor
 from flask_restful import Resource, abort
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
 
-from core.models.monitor import MsiMonitor
-from core.models.metadata.metric import MsiMetric
+from server.models import Monitor, Metric
 
 from server.middleware.db import db
 from .base import CrudResource, ListResource
@@ -14,7 +12,7 @@ from .base import CrudResource, ListResource
 class MonitorListResource(ListResource):
     @property
     def resource(self):
-        return MsiMonitor
+        return Monitor
 
     @property
     def key(self):
@@ -35,11 +33,11 @@ class MonitorListResource(ListResource):
 
     def _all(self):
         try:
-            objs = db.session.query(func.count(func.concat(MsiMetric.metric, MsiMetric.column_name).distinct()), MsiMonitor.id, MsiMonitor.table_name, MsiMonitor.database, MsiMonitor.schema, MsiMonitor.type, MsiMonitor.source, MsiMonitor.workspace).outerjoin(MsiMetric,
-                (MsiMonitor.table_name==MsiMetric.table_name) &
-                (MsiMonitor.database==MsiMetric.database) &
-                (MsiMonitor.schema==MsiMetric.schema)
-            ).group_by(MsiMonitor.id, MsiMonitor.table_name, MsiMonitor.database, MsiMonitor.schema, MsiMonitor.type, MsiMonitor.source, MsiMonitor.workspace).all()
+            objs = db.session.query(func.count(func.concat(Metric.metric, Metric.column_name).distinct()), Monitor.id, Monitor.table_name, Monitor.database, Monitor.schema, Monitor.type, Monitor.source, Monitor.workspace).outerjoin(Metric,
+                (Monitor.table_name==Metric.table_name) &
+                (Monitor.database==Metric.database) &
+                (Monitor.schema==Metric.schema)
+            ).group_by(Monitor.id, Monitor.table_name, Monitor.database, Monitor.schema, Monitor.type, Monitor.source, Monitor.workspace).all()
         except:
             abort(500)
         return [self._transform(obj) for obj in objs]
@@ -60,7 +58,7 @@ class MonitorListResource(ListResource):
 
     def _validate(self, req):
         try:
-            MsiMonitor.from_dict(req)
+            Monitor.from_dict(req)
         except:
             return False
         return True
@@ -68,7 +66,7 @@ class MonitorListResource(ListResource):
 class MonitorResource(CrudResource):
     @property
     def resource(self):
-        return MsiMonitor
+        return Monitor
 
     @property
     def key(self):
@@ -76,10 +74,10 @@ class MonitorResource(CrudResource):
 
     def _delete_associated_metrics(self, sqlalc_obj):
         try:
-            db.session.query(MsiMetric).filter(
-                MsiMetric.table_name==sqlalc_obj.table_name,
-                MsiMetric.database==sqlalc_obj.database,
-                MsiMetric.schema==sqlalc_obj.schema,
+            db.session.query(Metric).filter(
+                Metric.table_name==sqlalc_obj.table_name,
+                Metric.database==sqlalc_obj.database,
+                Metric.schema==sqlalc_obj.schema,
             ).delete(synchronize_session=False)
             db.session.commit()
         except Exception as e:

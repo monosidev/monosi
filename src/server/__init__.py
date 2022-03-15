@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 import os
 import sys
-from core.events import set_user_id, track_event
+from telemetry.events import set_user_id, track_event
 from server.user import User
 
 curr_path = os.path.dirname(os.path.abspath(__file__))

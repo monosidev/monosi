@@ -1,4 +1,4 @@
-from core.models.integration import Integration
+from server.models import Integration
 
 from .base import CrudResource, ListResource
 
