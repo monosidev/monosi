@@ -26,6 +26,19 @@ class DataSourceListResource(ListResource):
     def _after_create(self, sqlalc_obj):
         track_event(action="connection_created", label=sqlalc_obj.type)
 
+    def _after_create(self, sqlalc_obj):
+        try:
+            from server.middleware.scheduler import manager
+            manager.add_job(
+                job_class_string='server.jobs.metadata.MetadataJob',
+                job_id=str(sqlalc_obj.id),
+                name='DataSource Ingestion: {}'.format(sqlalc_obj.name),
+                args=[sqlalc_obj.id]
+            )
+        except Exception as e:
+            logging.error("Failed to schedule monitor")
+            logging.error(e)
+
 class DataSourceTestResource(CrudResource):
     @property
     def resource(self):

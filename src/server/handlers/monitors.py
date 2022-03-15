@@ -5,8 +5,8 @@ from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
 
 from server.models import Monitor, Metric
-
 from server.middleware.db import db
+
 from .base import CrudResource, ListResource
 
 class MonitorListResource(ListResource):
@@ -41,20 +41,6 @@ class MonitorListResource(ListResource):
         except:
             abort(500)
         return [self._transform(obj) for obj in objs]
-
-    def _after_create(self, sqlalc_obj):
-        try:
-            logging.info("Scheduling monitor to run: {}", sqlalc_obj.to_dict())
-
-            from server.middleware.scheduler import manager
-            manager.add_job(
-                job_class_string='server.jobs.monitor.MonitorJob',
-                job_id=str(sqlalc_obj.id),
-                name='Table Health Monitor',
-                args=[sqlalc_obj.id])
-        except Exception as e:
-            logging.error("Failed to schedule monitor")
-            logging.error(e)
 
     def _validate(self, req):
         try:
@@ -92,10 +78,3 @@ class MonitorResource(CrudResource):
         manager.remove_job(str(sqlalc_obj.id))
         self._delete_associated_metrics(sqlalc_obj)
         self._delete_associated_executions(sqlalc_obj)
-
-
-class RunMonitorResource(Resource):
-    def get(self, obj_id):
-        from server.jobs.monitor import MonitorJob
-        MonitorJob.run_job(obj_id, uuid.uuid4().hex, monitor_id=obj_id)
-
