@@ -25,8 +25,6 @@ class DataSourceListResource(ListResource):
 
     def _after_create(self, sqlalc_obj):
         track_event(action="connection_created", label=sqlalc_obj.type)
-
-    def _after_create(self, sqlalc_obj):
         try:
             from server.middleware.scheduler import manager
             manager.add_job(
@@ -39,15 +37,7 @@ class DataSourceListResource(ListResource):
             logging.error("Failed to schedule monitor")
             logging.error(e)
 
-class DataSourceTestResource(CrudResource):
-    @property
-    def resource(self):
-        return DataSource
-
-    @property
-    def key(self):
-        return "datasource"
-
+class DataSourceTestResource(DataSourceResource):
     def _test(self, obj):
         driver = obj.db_driver()
         return driver.test()
@@ -58,3 +48,9 @@ class DataSourceTestResource(CrudResource):
 
         result = self._test(obj)
         return {self.key: {"connection": result}}
+
+    def put(self, obj_id): # TODO: Change Error Type
+        raise NotImplementedError
+
+    def delete(self, obj_id): # TODO: Change Error Type
+        raise NotImplementedError
