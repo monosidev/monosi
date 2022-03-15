@@ -76,6 +76,7 @@ class SQLAlchemyExtractor(Extractor):
         self.configuration = configuration
         self.engine = None
         self.connection = None
+        self.discovered = None
 
     def _create_engine(self):
         try:
@@ -92,24 +93,31 @@ class SQLAlchemyExtractor(Extractor):
             "rows": rows,
         }
 
+    def discovery_query(self):
+        raise NotImplementedError
+
     def _initialize(self):
-        if self.engine and self.connection:
+        if self.engine and self.connection and self.discovered:
             return
 
         self.engine = self._create_engine()
         self.connection = self.engine.connect()
+        self.discovered = self._execute(self.discovery_query())
 
     def _execute(self, sql: str):
         if not self.connection:
             raise Exception("Connection has already been closed. Could not execute.")
 
-        return self.connection.execute(sql)
+        cs = self.connection.execute(sql)
+        results = self._retrieve_results(cs)
+
+        return results
 
     def run(self, unit: TaskUnit):
         self._initialize()
 
-        cs = self._execute(unit.request)
-        results = self._retrieve_results(cs)
+        sql = unit.request(self.discovered)
+        results = self._execute(sql)
 
         return results
 
@@ -187,38 +195,23 @@ class SQLAlchemySourceDialect:
         raise NotImplementedError
 
     @classmethod
-    def schema_query(cls):
-        return """
-            SELECT
-                lower(c.table_name) AS name,
-                lower(c.column_name) AS col_name,
-                lower(c.data_type) AS col_type,
-                c.comment AS col_description,
-                lower(c.ordinal_position) AS col_sort_order,
-                lower(c.table_catalog) AS database,
-                lower(c.table_schema) AS schema,
-                t.comment AS description,
-                decode(lower(t.table_type), 'view', 'true', 'false') AS is_view
-            FROM
-                {database_name}.INFORMATION_SCHEMA.COLUMNS AS c
-            LEFT JOIN
-                {database_name}.INFORMATION_SCHEMA.TABLES t
-                    ON c.TABLE_NAME = t.TABLE_NAME
-                    AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
-            WHERE LOWER( name ) = '{table_name}'
-              AND LOWER( schema ) = '{schema_name}'
-        """
+    def schema_tables_query(cls, database_name, schema_name):
+        raise NotImplementedError
+
+    @classmethod
+    def schema_columns_query(cls, database_name, schema_name):
+        raise NotImplementedError
 
     @classmethod
     def table_metrics_query(cls):
         raise NotImplementedError
 
     @classmethod
-    def query_access_logs_query(cls):
+    def access_logs_query(cls):
         raise NotImplementedError
         
     @classmethod
-    def query_copy_logs_query(cls):
+    def copy_and_load_logs_query(cls):
         raise NotImplementedError
 
 
@@ -226,34 +219,43 @@ class SQLAlchemySourceDialect:
 class SQLAlchemySource(Source):
     dialect: SQLAlchemySourceDialect
 
-    def _schema(self) -> TaskUnit:
-        schema_query = self.dialect.schema_query().format(
+    def _columns_schema(self, _) -> TaskUnit:
+        return self.dialect.schema_columns_query(
             database_name=self.configuration.database(),
             schema_name=self.configuration.schema(),
-            table_name='orders'
         )
-        return TaskUnit(request=schema_query)
 
-    def _metrics(self) -> List[TaskUnit]:
-        tables = [] # TODO: Get for all tables
-        return [TaskUnit(request=self.dialect.table_metrics_query()) for table in tables]
+    def _tables_schema(self, _) -> TaskUnit:
+        return self.dialect.schema_tables_query(
+            database_name=self.configuration.database(),
+            schema_name=self.configuration.schema(),
+        )
 
-    def _query_access_logs(self) -> TaskUnit:
-        return TaskUnit(request=self.dialect.query_access_logs_query())
+    def _metrics(self, discovery_data) -> List[TaskUnit]:
+        # tables = [row.get('TABLE_NAME') for row in discovery_data['rows']]
+        # Filter nulls
 
-    def _query_copy_logs(self) -> TaskUnit:
-        return TaskUnit(request=self.dialect.query_copy_logs_query())
+        print(discovery_data)
+        return "SELECT 1"
+        # return [MultiTaskUnit(request=self.dialect.table_metrics_query()) for table in tables]
+
+    def _access_logs(self, _) -> TaskUnit:
+        return self.dialect.access_logs_query()
+
+    def _copy_and_load_logs(self, _) -> TaskUnit:
+        return self.dialect.copy_and_load_logs_query()
 
     def extractor(self):
         raise NotImplementedError
 
     def task_units(self) -> List[TaskUnit]:
         units = [
-            self._schema(),
-            # self._query_access_logs(),
-            # self._query_copy_logs()
+            # TaskUnit(request=self._columns_schema),
+            # TaskUnit(request=self._tables_schema),
+            TaskUnit(request=self._metrics),
+            # TaskUnit(request=self._access_logs),
+            # TaskUnit(request=self._copy_and_load_logs),
         ]
-        [units.append(unit) for unit in self._metrics()]
 
         return units
 
