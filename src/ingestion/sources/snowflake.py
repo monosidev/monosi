@@ -1,6 +1,13 @@
 import json
+from typing import Any
+from urllib.parse import quote
 
-from .base import SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
+from .base import (
+    SourceConfiguration,
+    SQLAlchemySourceDialect,
+    SQLAlchemySource,
+    SQLAlchemyExtractor
+)
 
 class SnowflakeSourceConfiguration(SourceConfiguration):
     @classmethod
@@ -27,12 +34,18 @@ class SnowflakeSourceConfiguration(SourceConfiguration):
 
         return 'snowflake://{user}:{password}@{account}/{database}/{schema}?warehouse={warehouse}'.format(
             user=configuration.get('user'),
-            password=configuration.get('password'),
+            password=quote(configuration.get('password')),
             account=configuration.get('account'),
             database=configuration.get('database'),
             warehouse=configuration.get('warehouse'),
             schema=configuration.get('schema'),
         )
+
+    def database(self):
+        return json.loads(self.configuration).get("database")
+
+    def schema(self):
+        return json.loads(self.configuration).get('schema')
 
     @property
     def type(self):
@@ -72,10 +85,6 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
         return "COUNT({}) / CAST(COUNT(*) AS NUMERIC)"
 
     @classmethod
-    def schema_query(cls):
-        raise NotImplementedError
-
-    @classmethod
     def table_metrics_query(cls):
         raise NotImplementedError
 
@@ -87,7 +96,14 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
     def query_copy_logs_query(cls):
         raise NotImplementedError
 
+class SnowflakeSourceExtractor(SQLAlchemyExtractor):
+    pass
+
 
 class SnowflakeSource(SQLAlchemySource):
-    dialect: SnowflakeSourceDialect
+    def __init__(self, configuration: SnowflakeSourceConfiguration):
+        self.configuration = configuration
+        self.dialect = SnowflakeSourceDialect
 
+    def extractor(self):
+        return SnowflakeSourceExtractor(self.configuration)
