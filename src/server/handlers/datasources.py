@@ -1,5 +1,6 @@
 import logging
 from telemetry.events import track_event
+
 from server.models import DataSource
 
 from .base import CrudResource, ListResource

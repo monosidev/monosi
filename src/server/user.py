@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 import uuid
 
-from .middleware.db import db
+from server.middleware.db import db
+
 
 class User(db.Model):
     id = db.Column(db.String(50), primary_key=True, nullable=False)

@@ -5,7 +5,6 @@ from flask import send_from_directory
 
 curr_path = os.path.dirname(os.path.abspath(__file__))
 src_path = os.path.abspath(os.path.join(curr_path, "../"))
-sys.path.append(src_path)
 
 def _build_path():
     build_path = os.path.join(src_path, 'ui/build/')
