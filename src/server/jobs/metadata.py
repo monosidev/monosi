@@ -28,9 +28,9 @@ class MetadataJob(job.JobBase):
     def run(self, datasource_id, *args, **kwargs):
         track_event(action="metadata_ingestion_start", label="server")
 
-        source = db.session.query(DataSource).filter(DataSource.name == monitor.source).one()
+        source = db.session.query(DataSource).filter(DataSource.id == datasource_id).one()
 
-        mpipe = ingestion_task(source.db_config(), [destination])
+        mpipe = ingestion_task(source.to_dict(), [destination])
         mpipe.run()
 
         track_event(action="metadata_ingestion_stop", label="server")
