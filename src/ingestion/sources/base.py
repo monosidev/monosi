@@ -1,15 +1,15 @@
 from dataclasses import dataclass
+from sqlalchemy import create_engine
+from typing import Any, Dict, List, Optional
 import abc
 import json
-
-from typing import Any, Dict, List
 
 from ingestion.task import Task, TaskUnit
 
 
 @dataclass
 class SourceConfiguration:
-    name: str
+    name: Optional[str]
     configuration: str
     enabled: bool = True
 
@@ -32,10 +32,11 @@ class SourceConfiguration:
             "type": self.type,
         }
 
-class Source(object):
-    """docstring for Source"""
+@dataclass
+class Source:
+    configuration: SourceConfiguration
+
     def __init__(self, configuration: SourceConfiguration):
-        super(Source, self).__init__()
         self.configuration = configuration
 
     def _before_pull(self):
@@ -67,33 +68,50 @@ class Extractor(object):
     def run(self, request: str):
         raise NotImplementedError
 
+
+# Base SQL
+
 class SQLAlchemyExtractor(Extractor):
     def __init__(self, configuration):
         self.configuration = configuration
-        self.driver = None
+        self.engine = None
+        self.connection = None
+
+    def _create_engine(self):
+        try:
+            return create_engine(self.configuration.connection_string())
+        except Exception as e:
+            raise e
+
+    def _retrieve_results(self, cs):
+        columns = [d.name for d in cs.cursor.description]
+        rows = [dict(zip(columns, row)) for row in cs.fetchall()]
+
+        return {
+            "columns": columns, 
+            "rows": rows,
+        }
 
     def _initialize(self):
-        try:
-            from core.drivers.factory import load_driver
-            driver_cls = load_driver(self.configuration)
+        if self.engine and self.connection:
+            return
 
-            self.driver = driver_cls(self.configuration)
-        except Exception as e:
-            print(e)
-            raise Exception("Could not initialize connection to database in Runner.")
+        self.engine = self._create_engine()
+        self.connection = self.engine.connect()
 
     def _execute(self, sql: str):
-        if self.driver is None:
-            raise Exception("Initialize runner before execution.")
+        if not self.connection:
+            raise Exception("Connection has already been closed. Could not execute.")
 
-        results = self.driver.execute(sql)
-        return results
+        return self.connection.execute(sql)
 
     def run(self, unit: TaskUnit):
         self._initialize()
-        sql = unit.request
 
-        return self._execute(sql)
+        cs = self._execute(unit.request)
+        results = self._retrieve_results(cs)
+
+        return results
 
 class SQLAlchemySourceDialect:
     @classmethod
@@ -170,7 +188,26 @@ class SQLAlchemySourceDialect:
 
     @classmethod
     def schema_query(cls):
-        raise NotImplementedError
+        return """
+            SELECT
+                lower(c.table_name) AS name,
+                lower(c.column_name) AS col_name,
+                lower(c.data_type) AS col_type,
+                c.comment AS col_description,
+                lower(c.ordinal_position) AS col_sort_order,
+                lower(c.table_catalog) AS database,
+                lower(c.table_schema) AS schema,
+                t.comment AS description,
+                decode(lower(t.table_type), 'view', 'true', 'false') AS is_view
+            FROM
+                {database_name}.INFORMATION_SCHEMA.COLUMNS AS c
+            LEFT JOIN
+                {database_name}.INFORMATION_SCHEMA.TABLES t
+                    ON c.TABLE_NAME = t.TABLE_NAME
+                    AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
+            WHERE LOWER( name ) = '{table_name}'
+              AND LOWER( schema ) = '{schema_name}'
+        """
 
     @classmethod
     def table_metrics_query(cls):
@@ -190,7 +227,12 @@ class SQLAlchemySource(Source):
     dialect: SQLAlchemySourceDialect
 
     def _schema(self) -> TaskUnit:
-        return TaskUnit(request=self.dialect.schema_query())
+        schema_query = self.dialect.schema_query().format(
+            database_name=self.configuration.database(),
+            schema_name=self.configuration.schema(),
+            table_name='orders'
+        )
+        return TaskUnit(request=schema_query)
 
     def _metrics(self) -> List[TaskUnit]:
         tables = [] # TODO: Get for all tables
@@ -202,11 +244,14 @@ class SQLAlchemySource(Source):
     def _query_copy_logs(self) -> TaskUnit:
         return TaskUnit(request=self.dialect.query_copy_logs_query())
 
+    def extractor(self):
+        raise NotImplementedError
+
     def task_units(self) -> List[TaskUnit]:
         units = [
             self._schema(),
-            self._query_access_logs(),
-            self._query_copy_logs()
+            # self._query_access_logs(),
+            # self._query_copy_logs()
         ]
         [units.append(unit) for unit in self._metrics()]
 

@@ -1,20 +1,18 @@
 from dataclasses import dataclass
-from typing import List
-
-from .sources import Extractor
+from typing import Any, List
 
 
 @dataclass
 class TaskUnit:
     request: str
 
-    def run(self, extractor: Extractor):
-        return extractor.run(self.request)
+    def run(self, extractor):
+        return extractor.run(self)
     
 @dataclass
 class Task:
     units: List[TaskUnit]
-    extractor: Extractor
+    extractor: Any
 
     def _run_unit(self, unit: TaskUnit):
         return unit.run(self.extractor)

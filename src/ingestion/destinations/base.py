@@ -2,6 +2,11 @@ from dataclasses import dataclass
 import abc
 import json
 
+
+class Publisher(object):
+    def run(self, item):
+        raise NotImplementedError
+
 @dataclass
 class DestinationConfiguration:
     name: str
