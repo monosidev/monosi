@@ -84,20 +84,118 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
     def _completeness(cls):
         return "COUNT({}) / CAST(COUNT(*) AS NUMERIC)"
 
+
+    @classmethod
+    def schema_tables_query(cls, database_name, schema_name):
+        return """
+            SELECT 
+              TABLE_CATALOG, 
+              TABLE_SCHEMA,
+              TABLE_NAME, 
+              TABLE_OWNER, 
+              TABLE_TYPE, 
+              IS_TRANSIENT, 
+              RETENTION_TIME, 
+              AUTO_CLUSTERING_ON, 
+              COMMENT 
+            FROM {database_name}.information_schema.tables 
+            WHERE 
+              table_schema NOT IN ('INFORMATION_SCHEMA') 
+              AND TABLE_TYPE NOT IN ('VIEW', 'EXTERNAL TABLE') 
+              AND LOWER( TABLE_SCHEMA ) = '{schema_name}'
+            ORDER BY TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME;
+        """.format(database_name=database_name, schema_name=schema_name)
+
+    @classmethod
+    def schema_columns_query(cls, database_name, schema_name):
+        return """
+            SELECT
+                lower(c.table_name) AS name,
+                lower(c.column_name) AS col_name,
+                lower(c.data_type) AS col_type,
+                c.comment AS col_description,
+                lower(c.ordinal_position) AS col_sort_order,
+                lower(c.table_catalog) AS database,
+                lower(c.table_schema) AS schema,
+                t.comment AS description,
+                decode(lower(t.table_type), 'view', 'true', 'false') AS is_view
+            FROM
+                {database_name}.INFORMATION_SCHEMA.COLUMNS AS c
+            LEFT JOIN
+                {database_name}.INFORMATION_SCHEMA.TABLES t
+                    ON c.TABLE_NAME = t.TABLE_NAME
+                    AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
+            WHERE LOWER( schema ) = '{schema_name}'
+        """.format(database_name=database_name, schema_name=schema_name)
+
     @classmethod
     def table_metrics_query(cls):
         raise NotImplementedError
 
     @classmethod
-    def query_access_logs_query(cls):
-        raise NotImplementedError
+    def access_logs_query(cls):
+        return """
+            SELECT 
+                "QUERY_TEXT", 
+                "DATABASE_NAME", 
+                "SCHEMA_NAME", 
+                "QUERY_TYPE", 
+                "USER_NAME", 
+                "ROLE_NAME", 
+                "EXECUTION_STATUS", 
+                "START_TIME", 
+                "END_TIME", 
+                "TOTAL_ELAPSED_TIME", 
+                "BYTES_SCANNED", 
+                "ROWS_PRODUCED", 
+                "SESSION_ID", 
+                "QUERY_ID", 
+                "QUERY_TAG", 
+                "WAREHOUSE_NAME", 
+                "ROWS_INSERTED", 
+                "ROWS_UPDATED", 
+                "ROWS_DELETED", 
+                "ROWS_UNLOADED" 
+            FROM snowflake.account_usage.query_history 
+            WHERE 
+                start_time BETWEEN to_timestamp_ltz('2021-01-01 00:00:00.000000+00:00') AND to_timestamp_ltz('2021-01-01 01:00:00.000000+00:00') 
+                AND QUERY_TYPE NOT IN ('DESCRIBE', 'SHOW') 
+                AND (DATABASE_NAME IS NULL OR DATABASE_NAME NOT IN ('UTIL_DB', 'SNOWFLAKE')) 
+                AND ERROR_CODE is NULL 
+            ORDER BY start_time DESC;
+        """
         
     @classmethod
-    def query_copy_logs_query(cls):
-        raise NotImplementedError
+    def copy_and_load_logs_query(cls):
+        return """
+            SELECT 
+                "FILE_NAME", 
+                "STAGE_LOCATION", 
+                "LAST_LOAD_TIME", 
+                "ROW_COUNT", 
+                "FILE_SIZE", 
+                "ERROR_COUNT", 
+                "STATUS", 
+                "TABLE_CATALOG_NAME", 
+                "TABLE_SCHEMA_NAME", 
+                "TABLE_NAME", 
+                "PIPE_CATALOG_NAME", 
+                "PIPE_SCHEMA_NAME", 
+                "PIPE_NAME", 
+                "PIPE_RECEIVED_TIME" 
+            FROM snowflake.account_usage.copy_history 
+            WHERE 
+                LAST_LOAD_TIME between to_timestamp_ltz('2021-01-01 00:00:00.000000+00:00') AND to_timestamp_ltz('2021-01-01 01:00:00.000000+00:00')
+                AND STATUS != 'load failed' 
+            ORDER BY LAST_LOAD_TIME DESC;
+        """
 
 class SnowflakeSourceExtractor(SQLAlchemyExtractor):
-    pass
+    def discovery_query(self):
+        return SnowflakeSourceDialect.schema_columns_query(
+            database_name=self.configuration.database(),
+            schema_name=self.configuration.schema(),
+        )
 
 
 class SnowflakeSource(SQLAlchemySource):
