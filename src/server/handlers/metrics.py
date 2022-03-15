@@ -2,20 +2,20 @@ import logging
 from flask_restful import Resource, abort, request
 from sqlalchemy import func
 
-from core.models.metadata.metric import MsiMetric
-from core.models.zscore import ZScore
+from server.models import Metric, ZScore
 
 from server.middleware.db import db
 from .monitors import MonitorResource, MonitorListResource
 
+
 class MetricListResource(Resource):
     def _retrieve_by_monitor(self, monitor):
         try:
-            objs = db.session.query(MsiMetric.metric, MsiMetric.column_name, func.count(MsiMetric.id)).filter(
-                MsiMetric.table_name==monitor['table_name'],
-                MsiMetric.database==monitor['database'],
-                MsiMetric.schema==monitor['schema'],
-            ).group_by(MsiMetric.metric, MsiMetric.column_name).all()
+            objs = db.session.query(Metric.metric, Metric.column_name, func.count(Metric.id)).filter(
+                Metric.table_name==monitor['table_name'],
+                Metric.database==monitor['database'],
+                Metric.schema==monitor['schema'],
+            ).group_by(Metric.metric, Metric.column_name).all()
             objs = [{'metric': obj[0], 'column_name': obj[1], 'count': obj[2]} for obj in objs]
         except Exception as e:
             logging.warn(e)
@@ -38,12 +38,12 @@ class MetricListResource(Resource):
 
     def _retrieve_by_monitor_and_name(self, monitor, column_name, metric):
         try:
-            objs = db.session.query(MsiMetric, ZScore).outerjoin(ZScore, ZScore.metric_id == MsiMetric.id).filter(
-                MsiMetric.table_name==monitor['table_name'],
-                MsiMetric.database==monitor['database'],
-                MsiMetric.schema==monitor['schema'],
-                MsiMetric.metric == metric,
-                MsiMetric.column_name == column_name
+            objs = db.session.query(Metric, ZScore).outerjoin(ZScore, ZScore.metric_id == Metric.id).filter(
+                Metric.table_name==monitor['table_name'],
+                Metric.database==monitor['database'],
+                Metric.schema==monitor['schema'],
+                Metric.metric == metric,
+                Metric.column_name == column_name
             ).all() # TODO: ORDER BY
             metrics = [(lambda d: (d.update(obj[1].to_dict()) or d) if obj[1] else d)(obj[0].to_dict()) for obj in objs]
         except Exception as e:
@@ -58,8 +58,6 @@ class MetricListResource(Resource):
         metrics = self._retrieve_by_monitor_and_name(monitor, column_name, metric)
         return {'metrics': metrics}
 
-
-
 class MetricResource(Resource):
     @property
     def key(self):
@@ -67,9 +65,9 @@ class MetricResource(Resource):
 
     def _retrieve_by_monitor_and_name(self, monitor, name):
         try:
-            obj = db.session.query(MsiMetric).filter(
-                MsiMetric.table_name == ".".join([monitor['database'], monitor['schema'], monitor['table_name']]),
-                MsiMetric.metric == name,
+            obj = db.session.query(Metric).filter(
+                Metric.table_name == ".".join([monitor['database'], monitor['schema'], monitor['table_name']]),
+                Metric.metric == name,
             )
         except Exception as e:
             logging.warn(e)

@@ -126,4 +126,3 @@ class CrudResource(BaseResource):
 
     def _after_destroy(self, sqlalc_obj):
         pass
-
