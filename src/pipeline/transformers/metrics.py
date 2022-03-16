@@ -2,8 +2,8 @@ from .base import JSONTransformer
 
 class MetricTransformer(JSONTransformer):
     @classmethod
-    def _mapped_schema(cls):
-        return '.[] | .[] | .rows | .[] | {"metric": (to_entries | .[] | select((.key | split("___") | .[1]) != null) | {"name": .key | split("___") | .[1], "value": .value }), "time_window_start":.BUCKET_START, "time_window_end": .BUCKET_END} | {"column_name": .metric.name, "value": .metric.value, "time_window_start": .time_window_start, "time_window_end": .time_window_end}'
+    def _mapped_schema(cls): # TODO: Add table, schema, database
+        return '.[] | .[] | .rows | .[] | { "metric": (to_entries | .[] | select((.key | split("__") | .[1]) != null) | { "name": .key | split("__") | .[1], "value": .value }), "time_window_start": .WINDOW_START, "time_window_end": .WINDOW_END } | { "column_name": .metric.name, "value": .metric.value, "time_window_start": .time_window_start, "time_window_end": .time_window_end }'
 
     @classmethod
     def _original_schema(cls):

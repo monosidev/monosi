@@ -4,11 +4,11 @@ from typing import Any, List
 
 @dataclass
 class TaskUnit:
-    request: str
+    request: Any
 
     def run(self, extractor):
         return extractor.run(self)
-    
+
 @dataclass
 class Task:
     units: List[TaskUnit]
