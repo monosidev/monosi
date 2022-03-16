@@ -24,7 +24,9 @@ class MsiPipeline:
 
     def process(self, blob):
         input_normalized_json = blob
+        print(input_normalized_json)
         transformed_json = self._transform(input_normalized_json)
+        print(transformed_json)
         output_normalized_json = transformed_json
 
         self._persist(output_normalized_json)

@@ -197,7 +197,6 @@ class SnowflakeSourceExtractor(SQLAlchemyExtractor):
             schema_name=self.configuration.schema(),
         )
 
-
 class SnowflakeSource(SQLAlchemySource):
     def __init__(self, configuration: SnowflakeSourceConfiguration):
         self.configuration = configuration
@@ -205,3 +204,4 @@ class SnowflakeSource(SQLAlchemySource):
 
     def extractor(self):
         return SnowflakeSourceExtractor(self.configuration)
+

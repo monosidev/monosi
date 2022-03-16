@@ -51,7 +51,6 @@ class SQLAlchemyDestinationConfiguration(DestinationConfiguration):
     def type(self):
         raise NotImplementedError
 
-
 class SQLAlchemyDestination(Destination):
     def push(self, sqlalchemy_objs: List[Any]):
         driver = None

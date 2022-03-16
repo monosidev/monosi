@@ -1,10 +1,11 @@
 from dataclasses import dataclass
+from enum import Enum
 from sqlalchemy import create_engine
 from typing import Any, Dict, List, Optional
 import abc
 import json
 
-from ingestion.task import Task, TaskUnit
+from ingestion.task import TaskUnit
 
 
 @dataclass
@@ -22,6 +23,14 @@ class SourceConfiguration:
 
     @abc.abstractproperty
     def type(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def database(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def schema(self):
         raise NotImplementedError
 
     def to_dict(self):
@@ -65,7 +74,7 @@ class Source:
         return results
 
 class Extractor(object):
-    def run(self, request: str):
+    def run(self, request):
         raise NotImplementedError
 
 
@@ -120,6 +129,183 @@ class SQLAlchemyExtractor(Extractor):
         results = self._execute(sql)
 
         return results
+
+class ColumnMetricType(Enum):
+    APPROX_DISTINCTNESS = '_approx_distinctness'
+    COMPLETENESS = '_completeness'
+    ZERO_RATE = '_zero_rate'
+    NEGATIVE_RATE = '_negative_rate'
+    NUMERIC_MEAN = '_numeric_mean'
+    NUMERIC_MIN = '_numeric_min'
+    NUMERIC_MAX = '_numeric_max'
+    NUMERIC_STD = '_numeric_std'
+    APPROX_DISTINCT_COUNT = '_approx_distinct_count'
+    MEAN_LENGTH = '_mean_length'
+    MAX_LENGTH = '_max_length'
+    MIN_LENGTH = '_min_length'
+    STD_LENGTH = '_std_length'
+    TEXT_INT_RATE = '_text_int_rate'
+    TEXT_NUMBER_RATE = '_text_number_rate'
+    TEXT_UUID_RATE = '_text_uuid_rate'
+    TEXT_ALL_SPACES_RATE = '_text_all_spaces_rate'
+    TEXT_NULL_KEYWORD_RATE = '_text_null_keyword_rate'
+
+    @classmethod
+    def default(cls):
+        return [cls.APPROX_DISTINCTNESS, cls.COMPLETENESS]
+
+    @classmethod
+    def all(cls):
+        return [
+            cls.APPROX_DISTINCTNESS, 
+            cls.COMPLETENESS,
+            cls.ZERO_RATE,
+            cls.NEGATIVE_RATE,
+            cls.NUMERIC_MEAN,
+            cls.NUMERIC_MIN,
+            cls.NUMERIC_MAX,
+            # cls.NUMERIC_STD,
+            cls.APPROX_DISTINCT_COUNT,
+            cls.MEAN_LENGTH,
+            cls.MAX_LENGTH,
+            cls.MIN_LENGTH,
+            # cls.STD_LENGTH,
+            cls.TEXT_INT_RATE,
+            cls.TEXT_NUMBER_RATE,
+            cls.TEXT_UUID_RATE,
+            cls.TEXT_ALL_SPACES_RATE,
+            cls.TEXT_NULL_KEYWORD_RATE,
+        ]
+
+    @classmethod
+    def default_for(cls, data_type): 
+        data_type = data_type.lower()
+        if data_type == 'number':
+            return [
+                cls.ZERO_RATE,
+                cls.NEGATIVE_RATE,
+                cls.NUMERIC_MEAN,
+                cls.NUMERIC_MIN,
+                cls.NUMERIC_MAX,
+                # cls.NUMERIC_STD,
+                cls.COMPLETENESS,
+                cls.APPROX_DISTINCTNESS,
+            ]
+        elif data_type == 'text':
+            return [
+                cls.APPROX_DISTINCT_COUNT,
+                cls.MEAN_LENGTH,
+                cls.MAX_LENGTH,
+                cls.MIN_LENGTH,
+                # cls.STD_LENGTH,
+                cls.TEXT_INT_RATE,
+                cls.TEXT_NUMBER_RATE,
+                cls.TEXT_UUID_RATE,
+                cls.TEXT_ALL_SPACES_RATE,
+                cls.TEXT_NULL_KEYWORD_RATE,
+                cls.COMPLETENESS,
+                cls.APPROX_DISTINCTNESS,
+            ]
+            
+
+        return cls.default()
+
+class MetricsQueryBuilder:
+    def __init__(self, dialect, ddata):
+        self.dialect = dialect
+        self.ddata = ddata
+
+    def _base_query(self, select_sql, table, timestamp_field, minutes_ago=-(100*24*60)):
+        return """
+            SELECT 
+                DATE_TRUNC('HOUR', {timestamp_field}) as window_start, 
+                DATEADD(hr, 1, DATE_TRUNC('HOUR', {timestamp_field})) as window_end, 
+                COUNT(*) as row_count, 
+                '{table}' as TABLE_NAME,
+
+                {select_sql}
+            FROM {table}
+            WHERE 
+                DATE_TRUNC('HOUR', {timestamp_field}) >= DATEADD(minute, {minutes_ago}, CURRENT_TIMESTAMP()) 
+            GROUP BY window_start, window_end 
+            ORDER BY window_start ASC;
+        """.format(
+            select_sql=select_sql,
+            table=table,
+            timestamp_field=timestamp_field,
+            minutes_ago=minutes_ago,
+        )
+
+    def _extract_col_info(self, column):
+        return column['COL_NAME'], column['COL_TYPE']
+
+    def _transform_col_info_metric(self, col_name, metric):
+        alias =  "{}_{}".format(col_name, metric._value_)
+        attr = getattr(self.dialect, metric._value_) # TODO: Fix ref to dialect
+
+        if not attr:
+            raise Exception("Unreachable: Metric type is defined that does not resolve to a definition.")
+
+        select_unformatted = attr()
+        select_no_alias = select_unformatted.format(col_name)
+        select = "{} AS {}".format(select_no_alias, alias)
+
+        return select
+
+    def _transform_col_info(self, col_name, col_type):
+        col_sql = [self._transform_col_info_metric(col_name, metric) for metric in ColumnMetricType.default_for(col_type)]
+
+        return ",\n\t".join(col_sql)
+
+    def _col_sql(self, item, select_body):
+        table_name = item['NAME']
+
+        col_name, col_type = self._extract_col_info(item)
+        col_sql = self._transform_col_info(col_name, col_type)
+
+        if table_name not in select_body:
+            select_body[table_name] = {'sql': [], 'timestamp_fields': []}
+
+        select_body[table_name]['sql'].append(col_sql)
+        if col_type == 'date' or col_type == 'timestamp_tz':
+            select_body[table_name]['timestamp_fields'].append(col_name)
+
+    def _select_sql(self, ddata):
+        select_body = {}
+
+        [self._col_sql(item, select_body) for item in ddata]
+        for table_name, cols in select_body.items():
+            select_body[table_name] = {
+                'sql': ',\n'.join(cols['sql']),
+                'timestamp_fields': cols['timestamp_fields']
+            }
+
+        return select_body
+
+    @classmethod
+    def _timestamp_field(self, cols): # TODO: Improve
+        if len(cols['timestamp_fields']) == 0:
+            return None
+
+        return cols['timestamp_fields'][0]
+
+    def compile(self) -> List[str]:
+        metrics_queries = []
+
+        select_sql = self._select_sql(self.ddata['rows'])
+        for table_name, cols in select_sql.items():
+            cols_sql = cols['sql']
+            timestamp_field = self._timestamp_field(cols)
+
+            if timestamp_field is not None:
+                metrics_queries.append(self._base_query(
+                    cols_sql,
+                    table_name,
+                    timestamp_field,
+                ))
+
+        return metrics_queries
+
 
 class SQLAlchemySourceDialect:
     @classmethod
@@ -219,25 +405,23 @@ class SQLAlchemySourceDialect:
 class SQLAlchemySource(Source):
     dialect: SQLAlchemySourceDialect
 
-    def _columns_schema(self, _) -> TaskUnit:
+    def _columns_schema(self, _) -> str:
         return self.dialect.schema_columns_query(
             database_name=self.configuration.database(),
             schema_name=self.configuration.schema(),
         )
 
-    def _tables_schema(self, _) -> TaskUnit:
+    def _tables_schema(self, _) -> str:
         return self.dialect.schema_tables_query(
             database_name=self.configuration.database(),
             schema_name=self.configuration.schema(),
         )
 
-    def _metrics(self, discovery_data) -> List[TaskUnit]:
-        # tables = [row.get('TABLE_NAME') for row in discovery_data['rows']]
-        # Filter nulls
-
-        print(discovery_data)
-        return "SELECT 1"
-        # return [MultiTaskUnit(request=self.dialect.table_metrics_query()) for table in tables]
+    def _metrics(self, discovery_data) -> List[str]:
+        builder = MetricsQueryBuilder(self.dialect, discovery_data)
+        queries = builder.compile()
+        return queries[4]
+        # return [TaskUnit(request=self.dialect.table_metrics_query()) for table in tables]
 
     def _access_logs(self, _) -> TaskUnit:
         return self.dialect.access_logs_query()
