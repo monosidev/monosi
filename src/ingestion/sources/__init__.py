@@ -18,7 +18,7 @@ class SourceFactory:
         elif config_type == 'snowflake':
             return SnowflakeSourceConfiguration
         else:
-            raise Exception("Error: Unknown destination type.")
+            raise Exception("Error: Unknown source type.")
 
     @classmethod
     def _source_cls(cls, config_type: str) -> Type[Source]:
@@ -27,13 +27,13 @@ class SourceFactory:
         elif config_type.lower() == 'snowflake':
             return SnowflakeSource
         else:
-            raise Exception("Error: Unknown destination type.")
+            raise Exception("Error: Unknown source type.")
 
     @classmethod
     def create(cls, configuration: Dict[str, Any]) -> Source:
         config_type = configuration.get('type')
         if config_type == None:
-            raise Exception("Error: No destination type set.")
+            raise Exception("Error: No source type set.")
 
         configuration_cls = cls._configuration_cls(config_type)
         source_cls = cls._source_cls(config_type)

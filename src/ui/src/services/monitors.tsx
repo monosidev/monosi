@@ -5,12 +5,12 @@ class MonitorService extends BaseService {
     super('monitors');
   }
 
-  async getMetrics(id: string) {
-    return await this.http.get(`/${id}/metrics`);
+  async getMetrics(database: string, schema: string, table: string) {
+    return await this.http.get(`/${database}/${schema}/${table}/metrics`);
   }
 
-  async getMetricData(id: string, column_name: string, metric: string) {
-    return await this.http.get(`/${id}/metrics?column_name=` + column_name + `&metric=` + metric);
+  async getMetricData(database: string, schema: string, table: string, column_name: string, metric: string) {
+    return await this.http.get(`/${database}/${schema}/${table}/metrics?column_name=${column_name}&metric=${metric}`);
   }
 }
 

@@ -41,11 +41,11 @@ const BootstrapMonitorsTable: React.FC<{
       },
       search: false,
     },
-    {
-      dataField: "source",
-      text: "Data Source",
-      sort: true
-    },
+    // {
+    //   dataField: "source",
+    //   text: "Data Source",
+    //   sort: true
+    // },
     {
       dataField: "type",
       text: "Type",
@@ -78,10 +78,10 @@ const BootstrapMonitorsTable: React.FC<{
     },
     {
       dataField: "created_at",
-      text: "Last Run",
+      text: "Last Update",
       sort: true,
       formatter: (cell: any, row: any) => {
-        return "Sunday, Feb 2, 2022";
+        return new Date(row.created_at).toDateString();
       },
       filterValue: (cell: any, row: any) => row.created_at,
     },

@@ -11,6 +11,7 @@ from sqlalchemy import (
     UniqueConstraint,
 )
 from sqlalchemy.orm import registry
+from sqlalchemy.sql import func
 from sqlalchemy_utils import JSONType
 from mashumaro import DataClassDictMixin
 
@@ -66,13 +67,13 @@ class Metric(DataClassDictMixin):
     database: str = field(default=None, metadata={"sa": Column(String(100))})
     column_name: str = field(default=None, metadata={"sa": Column(String(100))})
     metric: str = field(default=None, metadata={"sa": Column(String(100))})
-    value: str = field(default=None, metadata={"sa": Column(String(100), nullable=False)})
+    value: str = field(default=None, metadata={"sa": Column(String(100))})
     time_window_start: datetime = field(default=None, metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
     time_window_end: datetime = field(default=None, metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
     interval_length_sec: int = field(default=None, metadata={"sa": Column(Integer)})
 
     id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('metric_id_seq'), primary_key=True, autoincrement=True)})
-    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
+    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False, server_default=func.now())})
 
 @mapper_registry.mapped
 @dataclass

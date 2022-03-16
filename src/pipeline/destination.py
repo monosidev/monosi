@@ -1,4 +1,5 @@
 import json
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from typing import Any, List
 
@@ -51,43 +52,34 @@ class SQLAlchemyDestinationConfiguration(DestinationConfiguration):
     def type(self):
         raise NotImplementedError
 
-class SQLAlchemyDestination(Destination):
-    def push(self, sqlalchemy_objs: List[Any]):
-        driver = None
-
-        if driver == None:
-            return
-
-        Session = sessionmaker(bind=driver.engine)
-        with Session() as session:
-            from core.models.metadata.metric import MsiMetric
-            session.bulk_insert_mappings(MsiMetric, [metric.to_dict() for metric in metrics])
-            session.commit()
-            session.close()
 
 class SQLAlchemyPublisher(Publisher):
     def __init__(self, configuration):
         self.configuration = configuration
-        self.driver = None
+        self.engine = None
+        self.connection = None
+
+    def _create_engine(self):
+        try:
+            return create_engine(self.configuration.connection_string())
+        except Exception as e:
+            raise e
 
     def _initialize(self):
-        try:
-            from core.drivers.factory import load_driver
-            driver_cls = load_driver(self.configuration)
+        if self.engine and self.connection:
+            return
 
-            self.driver = driver_cls(self.configuration)
-        except Exception as e:
-            print(e)
-            raise Exception("Could not initialize connection to database in Runner.")
+        self.engine = self._create_engine()
+        self.connection = self.engine.connect()
 
-    def _execute(self, sql: str):
-        if self.driver is None:
-            raise Exception("Initialize runner before execution.")
+    def _execute(self, sqlalchemy_objs: List[Any]):
+        if self.engine is None:
+            raise Exception("Initialize publisher before execution.")
 
-        Session = sessionmaker(bind=self.driver.engine)
+        Session = sessionmaker(bind=self.engine)
         with Session() as session:
-            from core.models.metadata.metric import MsiMetric
-            session.bulk_insert_mappings(MsiMetric, [metric.to_dict() for metric in metrics])
+            from server.models import Metric
+            session.bulk_insert_mappings(Metric, sqlalchemy_objs)
             session.commit()
             session.close()
 
@@ -96,6 +88,12 @@ class SQLAlchemyPublisher(Publisher):
 
         return self._execute(sqlalchemy_objs)
 
+class SQLAlchemyDestination(Destination):
+    def push(self, sqlalchemy_objs: List[Any]):
+        print(sqlalchemy_objs)
+        print(self.configuration.connection_string())
+        publisher = SQLAlchemyPublisher(self.configuration)
+        publisher.run(sqlalchemy_objs)
 
 class MsiInternalDestinationConfiguration(SQLAlchemyDestinationConfiguration):
     @property

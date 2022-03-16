@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from enum import Enum
+import logging
+from posixpath import lexists
 from sqlalchemy import create_engine
 from typing import Any, Dict, List, Optional
 import abc
 import json
 
-from ingestion.task import TaskUnit
+from ingestion.task import MultiTaskUnit, TaskUnit
 
 
 @dataclass
@@ -130,6 +132,21 @@ class SQLAlchemyExtractor(Extractor):
 
         return results
 
+    def run_multiple(self, unit: TaskUnit):
+        self._initialize()
+
+        multiple_sql = unit.request(self.discovered)
+
+        results = []
+        for sql in multiple_sql:
+            try:
+                result = self._execute(sql)
+                results.append(result)
+            except Exception as e:
+                logging.error(e)
+
+        return results
+
 class ColumnMetricType(Enum):
     APPROX_DISTINCTNESS = '_approx_distinctness'
     COMPLETENESS = '_completeness'
@@ -152,7 +169,7 @@ class ColumnMetricType(Enum):
 
     @classmethod
     def default(cls):
-        return [cls.APPROX_DISTINCTNESS, cls.COMPLETENESS]
+        return []
 
     @classmethod
     def all(cls):
@@ -211,20 +228,24 @@ class ColumnMetricType(Enum):
         return cls.default()
 
 class MetricsQueryBuilder:
-    def __init__(self, dialect, ddata):
+    def __init__(self, dialect, database, schema, ddata):
         self.dialect = dialect
+        self.database = database
+        self.schema = schema
         self.ddata = ddata
 
-    def _base_query(self, select_sql, table, timestamp_field, minutes_ago=-(100*24*60)):
+    def _base_query(self, select_sql, table, timestamp_field, minutes_ago=-(1*24*60)):
         return """
             SELECT 
                 DATE_TRUNC('HOUR', {timestamp_field}) as window_start, 
                 DATEADD(hr, 1, DATE_TRUNC('HOUR', {timestamp_field})) as window_end, 
                 COUNT(*) as row_count, 
                 '{table}' as TABLE_NAME,
+                '{database}' as DATABASE_NAME,
+                '{schema}' as SCHEMA_NAME,
 
                 {select_sql}
-            FROM {table}
+            FROM {table} as c
             WHERE 
                 DATE_TRUNC('HOUR', {timestamp_field}) >= DATEADD(minute, {minutes_ago}, CURRENT_TIMESTAMP()) 
             GROUP BY window_start, window_end 
@@ -234,26 +255,30 @@ class MetricsQueryBuilder:
             table=table,
             timestamp_field=timestamp_field,
             minutes_ago=minutes_ago,
+            database=self.database,
+            schema=self.schema,
         )
 
     def _extract_col_info(self, column):
         return column['COL_NAME'], column['COL_TYPE']
 
-    def _transform_col_info_metric(self, col_name, metric):
-        alias =  "{}_{}".format(col_name, metric._value_)
-        attr = getattr(self.dialect, metric._value_) # TODO: Fix ref to dialect
+    def _transform_col_info_metric(self, col_name, metric, table_name):
+        alias =  "{}__{}".format(col_name, metric._value_)
+        attr = getattr(self.dialect, metric._value_)
 
         if not attr:
             raise Exception("Unreachable: Metric type is defined that does not resolve to a definition.")
 
         select_unformatted = attr()
-        select_no_alias = select_unformatted.format(col_name)
+        select_no_alias = select_unformatted.format('"{}"'.format(col_name.upper()))
         select = "{} AS {}".format(select_no_alias, alias)
 
         return select
 
-    def _transform_col_info(self, col_name, col_type):
-        col_sql = [self._transform_col_info_metric(col_name, metric) for metric in ColumnMetricType.default_for(col_type)]
+    def _transform_col_info(self, col_name, col_type, table_name):
+        col_sql = [self._transform_col_info_metric(col_name, metric, table_name) for metric in ColumnMetricType.default_for(col_type)]
+        if len(col_sql) == 0:
+            return None
 
         return ",\n\t".join(col_sql)
 
@@ -261,12 +286,13 @@ class MetricsQueryBuilder:
         table_name = item['NAME']
 
         col_name, col_type = self._extract_col_info(item)
-        col_sql = self._transform_col_info(col_name, col_type)
+        col_sql = self._transform_col_info(col_name, col_type, table_name)
 
         if table_name not in select_body:
             select_body[table_name] = {'sql': [], 'timestamp_fields': []}
 
-        select_body[table_name]['sql'].append(col_sql)
+        if col_sql is not None:
+            select_body[table_name]['sql'].append(col_sql)
         if col_type == 'date' or col_type == 'timestamp_tz':
             select_body[table_name]['timestamp_fields'].append(col_name)
 
@@ -282,7 +308,6 @@ class MetricsQueryBuilder:
 
         return select_body
 
-    @classmethod
     def _timestamp_field(self, cols): # TODO: Improve
         if len(cols['timestamp_fields']) == 0:
             return None
@@ -334,19 +359,19 @@ class SQLAlchemySourceDialect:
 
     @classmethod
     def _mean_length(cls):
-        return cls._numeric_mean().format("LENGTH({})")
+        return "AVG(LENGTH({}))"
 
     @classmethod
     def _max_length(cls):
-        return cls._numeric_max().format("LENGTH({})")
+        return "MAX(LENGTH({}))"
 
     @classmethod
     def _min_length(cls):
-        return cls._numeric_min().format("LENGTH({})")
+        return "MIN(LENGTH({}))"
 
     @classmethod
     def _std_length(cls):
-        return cls._numeric_std().format("LENGTH({})")
+        return "STDDEV(CAST(LENGTH({}) as double))"
 
     @classmethod
     def _text_int_rate(cls):
@@ -418,9 +443,9 @@ class SQLAlchemySource(Source):
         )
 
     def _metrics(self, discovery_data) -> List[str]:
-        builder = MetricsQueryBuilder(self.dialect, discovery_data)
+        builder = MetricsQueryBuilder(self.dialect, self.configuration.database(), self.configuration.schema(), discovery_data)
         queries = builder.compile()
-        return queries[4]
+        return queries
         # return [TaskUnit(request=self.dialect.table_metrics_query()) for table in tables]
 
     def _access_logs(self, _) -> TaskUnit:
@@ -436,7 +461,7 @@ class SQLAlchemySource(Source):
         units = [
             # TaskUnit(request=self._columns_schema),
             # TaskUnit(request=self._tables_schema),
-            TaskUnit(request=self._metrics),
+            MultiTaskUnit(request=self._metrics),
             # TaskUnit(request=self._access_logs),
             # TaskUnit(request=self._copy_and_load_logs),
         ]
