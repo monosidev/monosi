@@ -29,10 +29,10 @@ function App() {
           <Route exact path="/monitors">
               <BootstrapMonitorsIndex />
           </Route>
-          <Route exact path="/monitors/:id">
+          <Route exact path="/monitors/:database/:schema/:table">
               <MonitorsDetail />
           </Route>
-          <Route exact path="/monitors/:id/metrics">
+          <Route exact path="/monitors/:database/:schema/:table/metrics">
               <MetricsDetail />
           </Route>
 
