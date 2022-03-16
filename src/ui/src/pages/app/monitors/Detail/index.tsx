@@ -13,29 +13,21 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import { Server, Diagram3 } from 'react-bootstrap-icons';
 import { Tab, Tabs } from 'react-bootstrap';
 
-import ExecutionsTable from './components/ExecutionsTable';
+// import ExecutionsTable from './components/ExecutionsTable';
 
 const MonitorsDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [monitor, setMonitor] = useState<any>(null);
+  const { database, schema, table } = useParams<{ database: string, schema: string, table: string }>();
   const [metrics, setMetrics] = useState([]);
 
-  const loadMonitor = async () => {
-    let res = await MonitorService.get(id);
-    if (res && res.monitor) {
-      setMonitor(res.monitor);
-    }
-  };
-
   const loadMetrics = async () => {
-    let res = await MonitorService.getMetrics(id);
+    let res = await MonitorService.getMetrics(database, schema, table);
     if (res && res.metrics) {
       setMetrics(res.metrics);
     }
   };
 
   useEffect(() => {
-    loadMonitor().then(() => loadMetrics());
+    loadMetrics();
   }, []);
 
   const titleCase = (input: string) => {
@@ -48,7 +40,7 @@ const MonitorsDetail: React.FC = () => {
       text: "Status",
       formatter: (cell: any, row: any) => {
         return (
-          <span className="badge rounded-pill bg-success">Healthy</span>
+          <span className="badge rounded-pill bg-success">Enabled</span>
         );
       } 
     },
@@ -72,9 +64,9 @@ const MonitorsDetail: React.FC = () => {
       text: "",
       dataField: "",
       formatter: (cell: any, row: any) => {
-        if (monitor) {
+        if (database && schema && table) {
           return (
-            <a href={"/monitors/" + monitor.id + "/metrics?column_name=" + row.column_name + "&metric=" + row.metric} type="button" className="btn btn-sm btn-outline-secondary">View</a>
+            <a href={"/monitors/" + database + "/" + schema + "/" + table + "/metrics?column_name=" + row.column_name + "&metric=" + row.metric} type="button" className="btn btn-sm btn-outline-secondary">View</a>
           );
         } else { 
           return <a href="#">Pending</a>;
@@ -96,7 +88,7 @@ const MonitorsDetail: React.FC = () => {
     )
   }
   
-  const table = () => {
+  const tableEl = () => {
     if (metrics.length == 0) {
       return emptyState();
     }
@@ -137,7 +129,7 @@ const MonitorsDetail: React.FC = () => {
             <ul className="nav me-auto">
               <li className="nav-item"><a href="/monitors" className="nav-link link-dark px-2 active" aria-current="page">Monitors</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2">/</span></li>
-              <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{monitor && monitor.table_name} - {monitor && titleCase(monitor.type)}</span></li>
+              <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{table} - Table Health</span></li>
             </ul>
           </div>
         </nav>
@@ -145,17 +137,17 @@ const MonitorsDetail: React.FC = () => {
           <div className="container d-flex flex-wrap justify-content-center">
             <div className="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
               <div className="d-flex flex-column">
-                <span className="fs-4">{monitor && monitor.table_name} - {monitor && titleCase(monitor.type)}</span>
+                <span className="fs-4">{table} - Table Health</span>
                 <span className="fs-10 text-muted">
-                       <span><Table /> {monitor && monitor.table_name}</span>
-                       <span style={{marginLeft: 20}}><Calendar4Range /> {monitor && monitor.timestamp_field}</span>
+                       <span><Table /> {table}</span>
+                       <span style={{marginLeft: 20}}><Calendar4Range /> Timestamp Field (Pending)</span>
                 </span>
               </div>
             </div>
 
             <div className="btn-toolbar my-2 text-muted" style={{alignContent: 'center'}}>
-               <span><Server /> {monitor && monitor.database}</span>
-               <span style={{marginLeft: 20}}><Diagram3 /> {monitor && monitor.schema}</span>
+               <span><Server /> {database}</span>
+               <span style={{marginLeft: 20}}><Diagram3 /> {schema}</span>
             </div>
           </div>
         </header>
@@ -165,10 +157,7 @@ const MonitorsDetail: React.FC = () => {
           <main className="col-md-12 ms-sm-auto col-lg-12">
             <Tabs defaultActiveKey="metrics" id="tabs" className="mb-4">
                 <Tab eventKey="metrics" title="Metrics">
-                    {table()}
-                </Tab>
-                <Tab eventKey="executions" title="Executions">
-                  <ExecutionsTable monitor_id={monitor && monitor.id} />
+                    {tableEl()}
                 </Tab>
             </Tabs>
           </main>

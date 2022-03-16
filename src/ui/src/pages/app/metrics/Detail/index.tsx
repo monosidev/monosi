@@ -11,35 +11,23 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import Plot from 'react-plotly.js';
 
 const MetricsDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { database, schema, table } = useParams<{ database: string, schema: string, table: string }>();
   const params = new URLSearchParams(useLocation().search);
   const column_name = params.get('column_name');
   const metric = params.get('metric');
 
-  const [monitor, setMonitor] = useState<any>(null);
   const [metrics, setMetrics] = useState([]);
-
-  const loadMonitor = async () => {
-    let res = await MonitorService.get(id);
-    if (res && res.monitor) {
-      setMonitor(res.monitor);
-    }
-  };
-
 
   const loadMetrics = async () => {
     if (column_name == null || metric == null) return;
 
-    let res = await MonitorService.getMetricData(id, column_name, metric);
+    let res = await MonitorService.getMetricData(database, schema, table, column_name, metric);
     if (res && res.metrics) {
-      console.log(res)
-      console.log(res.metrics)
       setMetrics(res.metrics);
     }
   };
 
   useEffect(() => {
-    loadMonitor();
     loadMetrics();
   }, []);
 
@@ -105,7 +93,8 @@ const MetricsDetail: React.FC = () => {
         return (
           <>
           {row.error == false && <span className="badge rounded-pill bg-success">Healthy</span>}
-          {(row.error == true || row.error === undefined) && <span className="badge rounded-pill bg-danger">Unheathy</span>}
+          {row.error == true && <span className="badge rounded-pill bg-danger">Unheathy</span>}
+          {row.error == undefined && <span className="badge rounded-pill bg-warning">Pending</span>}
           </>
         );
       } 
@@ -147,7 +136,7 @@ const MetricsDetail: React.FC = () => {
             <ul className="nav me-auto">
               <li className="nav-item"><a href="/monitors" className="nav-link link-dark px-2 active" aria-current="page">Monitors</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
-              <li className="nav-item"><a href={monitor && "/monitors/" + monitor.id} className="nav-link link-dark px-2">{monitor && monitor.table_name} - {monitor && titleCase(monitor.type)}</a></li>
+              <li className="nav-item"><a href={`/monitors/${database}/${schema}/${table}`} className="nav-link link-dark px-2">{table} - Table Health</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
               <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{column_name || '-'}</span></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
@@ -165,9 +154,9 @@ const MetricsDetail: React.FC = () => {
             </div>
 
             <div className="btn-toolbar my-2 text-muted" style={{alignContent: 'center'}}>
-               <span><Server /> {monitor && monitor.database}</span>
-               <span style={{marginLeft: 20}}><Diagram3 /> {monitor && monitor.schema}</span>
-               <span style={{marginLeft: 20}}><Table /> {monitor && monitor.table_name}</span>
+               <span><Server /> {database}</span>
+               <span style={{marginLeft: 20}}><Diagram3 /> {schema}</span>
+               <span style={{marginLeft: 20}}><Table /> {table}</span>
             </div>
           </div>
         </header>

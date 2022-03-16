@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List
+import json
 
 from ingestion.job import MPipe
 
@@ -24,16 +25,15 @@ class MsiPipeline:
 
     def process(self, blob):
         input_normalized_json = blob
-        print(input_normalized_json)
         transformed_json = self._transform(input_normalized_json)
-        print(transformed_json)
         output_normalized_json = transformed_json
+        print(output_normalized_json)
 
         self._persist(output_normalized_json)
 
 def ingestion_task(source: Dict[str, Any], destination: Dict[str, Any]):
 	def _create_ipipeline_destination(destination):
-		dest_configuration = MsiInternalDestinationConfiguration(destination)
+		dest_configuration = MsiInternalDestinationConfiguration(json.dumps(destination))
 		internal_destinations = [
 			MsiInternalDestination(configuration=dest_configuration)
 		]

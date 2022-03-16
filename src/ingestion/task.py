@@ -10,6 +10,13 @@ class TaskUnit:
         return extractor.run(self)
 
 @dataclass
+class MultiTaskUnit(TaskUnit):
+    request: Any
+
+    def run(self, extractor):
+        return extractor.run_multiple(self)
+
+@dataclass
 class Task:
     units: List[TaskUnit]
     extractor: Any
