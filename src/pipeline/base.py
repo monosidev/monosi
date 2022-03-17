@@ -3,6 +3,7 @@ from typing import Any, Dict, List
 import json
 
 from ingestion.job import MPipe
+from pipeline.source import MsiInternalSource, MsiInternalSourceConfiguration
 from pipeline.transformers.zscores import ZScoreTransformer
 
 from .destination import MsiInternalDestination, MsiInternalDestinationConfiguration, MsiWireDestination
@@ -31,7 +32,7 @@ class MsiPipeline:
 
         self._persist(output_normalized_json)
 
-def ingestion_task(source: Dict[str, Any], destination: Dict[str, Any]):
+def analysis_task(source: Dict[str, Any], destination: Dict[str, Any]):
     def _create_ipipeline_zscores_dest(destination):
         dest_configuration = MsiInternalDestinationConfiguration(json.dumps(destination))
         internal_destinations = [
@@ -42,14 +43,33 @@ def ingestion_task(source: Dict[str, Any], destination: Dict[str, Any]):
             transformers=[ZScoreTransformer],
             destinations=internal_destinations
         )
+        wire_destination = MsiWireDestination(pipeline=pipeline)
 
-        return MsiWireDestination(pipeline=pipeline)
+        return wire_destination
 
+    def _create_ipipeline_source(source_dict):
+        source_config = MsiInternalSourceConfiguration(json.dumps(source_dict))
+        source = MsiInternalSource(source_config)
+
+        return source
+
+
+    metrics_source = _create_ipipeline_source(source)
+    wire_destination = _create_ipipeline_zscores_dest(destination)
+    
+    ingestion_pipeline = MPipe(
+        sources=[metrics_source],
+        destinations=[wire_destination],
+    )
+
+    return ingestion_pipeline
+
+
+def ingestion_task(source: Dict[str, Any], destination: Dict[str, Any]):
     def _create_ipipeline_destination(destination):
         dest_configuration = MsiInternalDestinationConfiguration(json.dumps(destination))
         internal_destinations = [
             MsiInternalDestination(configuration=dest_configuration),
-            _create_ipipeline_zscores_dest(destination)
         ]
 
         pipeline = MsiPipeline(
