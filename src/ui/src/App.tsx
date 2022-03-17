@@ -10,9 +10,9 @@ import {
 import 'App.css';
 // import MonitorsDetail from 'pages/app/monitors/Detail';
 
-import IntegrationsSettings from 'pages/settings_bootstrap/Integrations';
-import SourcesSettings from 'pages/settings_bootstrap/Sources';
-import ProfileSettings from 'pages/settings_bootstrap/Profile';
+import IntegrationsSettings from 'pages/settings/Integrations';
+import SourcesSettings from 'pages/settings/Sources';
+import ProfileSettings from 'pages/settings/Profile';
 import DashboardIndex from 'pages/app/dashboard/Index';
 import BootstrapMonitorsIndex from 'pages/app/bootstrap_monitors/Index';
 import MonitorsDetail from 'pages/app/monitors/Detail';
