@@ -12,16 +12,37 @@ export const Newsletter = () => {
     setSubmissionSuccessful(false);
     setSubmissionFailed(false);
 
-    const formData = new FormData(form.current);
     const action = form.current.getAttribute("action");
     const method = form.current.getAttribute("method");
 
+    const body = {
+      submittedAt: Date.now(),
+      fields: [
+        {
+          objectTypeId: "0-1",
+          name: "email",
+          value: emailInput,
+        },
+        {
+          objectTypeId: "0-1",
+          name: "subscribed_to_newsletter",
+          value: "true",
+        },
+      ],
+    };
+
     try {
-      var res = await fetch(action + new URLSearchParams(formData).toString(), {
-        mode: "no-cors",
+      var res = await fetch(action, {
         method,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       });
-      setSubmissionSuccessful(true);
+
+      if (res.ok) setSubmissionSuccessful(true);
+      else setSubmissionFailed(true);
     } catch (error) {
       console.error(error);
       setSubmissionFailed(true);
@@ -39,8 +60,8 @@ export const Newsletter = () => {
         <br />
       </p>
       <form
-        action="https://dev.us1.list-manage.com/subscribe/post-json?"
-        method="GET"
+        action="https://api.hsforms.com/submissions/v3/integration/submit/21571271/c8b48f0f-0186-4dcf-8899-df23fbc170fa"
+        method="POST"
         id="wf-form-Newsletter-Form-1"
         name="wf-form-Newsletter-Form-1"
         className="mt-8 sm:flex"
@@ -73,11 +94,17 @@ export const Newsletter = () => {
           </Button>
         </div>
       </form>
-      <span className="cta_text" style={submissionSuccessful ? {} : {display: "none"}}>
-          Thank you for subscribing!
+      <span
+        className="cta_text"
+        style={submissionSuccessful ? {} : {display: "none"}}
+      >
+        Thank you for subscribing!
       </span>
-      <span className="cta_text" style={submissionFailed ? {} : {display: "none"}}>
-        Something went wrong, please try again. 
+      <span
+        className="cta_text"
+        style={submissionFailed ? {} : {display: "none"}}
+      >
+        Something went wrong, please try again.
       </span>
     </section>
   );
