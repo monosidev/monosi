@@ -1,6 +1,6 @@
 import json
 
-from .base import SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
+from .base import SQLAlchemyExtractor, SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
 
 class PostgreSQLSourceConfiguration(SourceConfiguration):
     @classmethod
@@ -76,11 +76,11 @@ class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
         return "COUNT({}) / CAST(COUNT(*) AS NUMERIC)"
 
     @classmethod
-    def schema_query(cls):
+    def schema_tables_query(cls, database_name, schema_name):
         raise NotImplementedError
 
     @classmethod
-    def table_metrics_query(cls):
+    def schema_columns_query(cls, database_name, schema_name):
         raise NotImplementedError
 
     @classmethod
@@ -91,7 +91,18 @@ class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
     def query_copy_logs_query(cls):
         raise NotImplementedError
 
+class PostgreSQLSourceExtractor(SQLAlchemyExtractor):
+    def discovery_query(self):
+        return PostgreSQLSourceDialect.schema_columns_query(
+            database_name=self.configuration.database(),
+            schema_name=self.configuration.schema(),
+        )
 
 class PostgreSQLSource(SQLAlchemySource):
-    dialect: PostgreSQLSourceDialect
+    def __init__(self, configuration: PostgreSQLSourceConfiguration):
+        self.configuration = configuration
+        self.dialect = PostgreSQLSourceDialect
+
+    def extractor(self):
+        return PostgreSQLSourceExtractor(self.configuration)
 

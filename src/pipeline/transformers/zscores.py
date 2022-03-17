@@ -1,8 +1,8 @@
 import logging
 from math import sqrt
-from typing import Dict, List
+from typing import Any, List
 
-from .base import JSONTransformer
+from .base import Transformer
 
 
 class ZScoreAlgorithm:
@@ -21,12 +21,13 @@ class ZScoreAlgorithm:
         return std_dev
 
     @classmethod
-    def run(cls, metrics: List[Dict], sensitivity: float):
+    def run(cls, metrics: List[Any], sensitivity: float):
         values = []
         zscores = []
+
         for metric in metrics:
             try:
-                values.append(float(metric['value']))
+                values.append(float(metric.value))
                 mean = cls._mean(values)
                 std_dev = cls._std_dev(values)
             except Exception as e:
@@ -34,14 +35,14 @@ class ZScoreAlgorithm:
                 return []
 
             try:
-                value = float(metric['value'])
+                value = float(metric.value)
                 if std_dev == 0:
                     z_score = 0
                 else:
                     z_score = round(((value - mean) / std_dev), 2) 
                 error = abs(z_score) > sensitivity 
                 zscore_point = {
-                    # 'metric_id': metric.id,
+                    'metric_id': metric.id,
                     'expected_range_start': mean-(sensitivity*abs(std_dev)),
                     'expected_range_end': mean+(sensitivity*abs(std_dev)),
                     'error': error,
@@ -54,13 +55,14 @@ class ZScoreAlgorithm:
 
         return zscores
 
-class ZScoreTransformer(JSONTransformer):
+
+class ZScoreTransformer(Transformer):
     @classmethod
     def _organize(cls, metrics):
         groups = {}
         for obj in metrics:
-            metric = obj['metric']
-            column_name = obj['column_name']
+            metric = obj.metric
+            column_name = obj.column_name
 
             if metric not in groups:
                 groups[metric] = {}
@@ -82,7 +84,7 @@ class ZScoreTransformer(JSONTransformer):
         for metric in groups:
             for column_name in groups[metric]:
                 group_metrics = groups[metric][column_name]
-                group_metrics.sort(key=lambda x: x['time_window_start'])
+                group_metrics.sort(key=lambda x: x.time_window_start)
 
                 zscores += ZScoreAlgorithm.run(group_metrics, sensitivity)
 

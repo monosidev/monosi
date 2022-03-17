@@ -414,8 +414,10 @@ class SQLAlchemySourceDialect:
         raise NotImplementedError
 
     @classmethod
-    def table_metrics_query(cls):
-        raise NotImplementedError
+    def table_metrics_query(cls, configuration, discovery_data):
+        builder = MetricsQueryBuilder(cls, configuration.database(), configuration.schema(), discovery_data)
+        queries = builder.compile()
+        return queries
 
     @classmethod
     def access_logs_query(cls):
@@ -443,9 +445,7 @@ class SQLAlchemySource(Source):
         )
 
     def _metrics(self, discovery_data) -> List[str]:
-        builder = MetricsQueryBuilder(self.dialect, self.configuration.database(), self.configuration.schema(), discovery_data)
-        queries = builder.compile()
-        return queries
+        return self.dialect.table_metrics_query(self.configuration, discovery_data)
         # return [TaskUnit(request=self.dialect.table_metrics_query()) for table in tables]
 
     def _access_logs(self, _) -> TaskUnit:
