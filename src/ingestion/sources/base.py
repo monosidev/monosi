@@ -234,7 +234,7 @@ class MetricsQueryBuilder:
         self.schema = schema
         self.ddata = ddata
 
-    def _base_query(self, select_sql, table, timestamp_field, minutes_ago=-(1*24*60)):
+    def _base_query(self, select_sql, table, timestamp_field, minutes_ago=-int(0.25*24*60)):
         return """
             SELECT 
                 DATE_TRUNC('HOUR', {timestamp_field}) as window_start, 
