@@ -34,7 +34,7 @@ class MetadataJob(job.JobBase):
 
         print(source_configuration['config'])
 
-        mpipe = ingestion_task(source_configuration['config'], [destination])
+        mpipe = ingestion_task(source_configuration['config'], destination)
         mpipe.run()
 
         track_event(action="metadata_ingestion_stop", label="server")
