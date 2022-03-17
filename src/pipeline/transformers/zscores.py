@@ -79,6 +79,7 @@ class ZScoreTransformer(Transformer):
         sensitivity = 2.5
         zscores = []
 
+        metrics = metrics[0][0] # TODO: Fix
         groups = cls._organize(metrics)
 
         for metric in groups:

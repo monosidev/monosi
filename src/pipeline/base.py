@@ -48,7 +48,10 @@ def analysis_task(source: Dict[str, Any], destination: Dict[str, Any]):
         return wire_destination
 
     def _create_ipipeline_source(source_dict):
-        source_config = MsiInternalSourceConfiguration(json.dumps(source_dict))
+        source_config = MsiInternalSourceConfiguration(
+            name=None,
+            configuration=json.dumps(source_dict)
+        )
         source = MsiInternalSource(source_config)
 
         return source
@@ -57,10 +60,9 @@ def analysis_task(source: Dict[str, Any], destination: Dict[str, Any]):
     metrics_source = _create_ipipeline_source(source)
     wire_destination = _create_ipipeline_zscores_dest(destination)
     
-    ingestion_pipeline = MPipe(
-        sources=[metrics_source],
-        destinations=[wire_destination],
-    )
+    ingestion_pipeline = MPipe(sources=[], destinations=[])
+    ingestion_pipeline.sources = [metrics_source]
+    ingestion_pipeline.destinations = [wire_destination]
 
     return ingestion_pipeline
 

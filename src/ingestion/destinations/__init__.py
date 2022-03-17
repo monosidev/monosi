@@ -1,4 +1,6 @@
+import logging
 from typing import Any, Dict, Type
+import json
 
 from .base import (
     Destination,
@@ -23,7 +25,8 @@ class DestinationFactory:
 
     @classmethod
     def create(cls, configuration: Dict[str, Any]) -> Destination:
-        print(configuration)
+        logging.warn("You should not be creating a destination with the factory at the moment.")
+
         config_type = configuration.get('type')
         if config_type == None:
             raise Exception("Error: No destination type set.")
@@ -31,7 +34,9 @@ class DestinationFactory:
         configuration_cls = cls._configuration_cls(config_type)
         destination_cls = cls._destination_cls(config_type)
 
-        configuration_obj = configuration_cls(name=None, configuration=str(configuration))
+        configuration_obj = configuration_cls(
+            configuration=json.dumps(configuration)
+        )
         destination = destination_cls(configuration_obj)
 
         return destination
