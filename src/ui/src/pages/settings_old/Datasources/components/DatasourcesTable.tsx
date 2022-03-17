@@ -12,8 +12,9 @@ import {
 import datasourceService from 'services/datasources';
 
 const DatasourcesTable: React.FC = () => {
-  const [datasources, setDatasources] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [datasources, setDatasources] = useState<any[]>([{name: "mock data", type: "postgres", created_at: Date.now(), id: 1}]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [testing, setTesting] = useState<boolean>(false);
   // TODO: Componentize this
   const [toasts, setToasts] = useState<any[]>([]);
 
@@ -22,10 +23,12 @@ const DatasourcesTable: React.FC = () => {
 
   useEffect(() => {
     async function loadDatasources() {
+      setLoading(true);
       let res = await datasourceService.getAll();
       if (res !== null && res.datasources) {
         setDatasources(res.datasources);
       }
+      setLoading(false);
     }
     loadDatasources();
   }, []);
@@ -37,7 +40,6 @@ const DatasourcesTable: React.FC = () => {
       body="Looks like you haven&rsquo;t connected any data sources. Let&rsquo;s create your first connection!"
     />
   );
-  const [message, setMessage] = React.useState(emptyState);
 
   const columns = [
     {
@@ -74,35 +76,18 @@ const DatasourcesTable: React.FC = () => {
           >
             <EuiContextMenuPanel
               items={[
-                // <EuiContextMenuItem
-                //   key="A"
-                //   icon="pencil"
-                //   onClick={() => {
-                //     closePopover(item.id);
-                //   }}
-                // >
-                //   Edit
-                // </EuiContextMenuItem>,
-                // <EuiContextMenuItem
-                //   key="B"
-                //   icon="documentEdit"
-                //   onClick={() => {
-                //     editDatasource(item.id);
-                //   }}
-                // >
-                //   Edit
-                // </EuiContextMenuItem>,
-                // <EuiContextMenuItem
-                //   key="B"
-                //   icon="tokenGeo"
-                //   onClick={() => {
-                //     testConnectionDatasource(item.id);
-                //   }}
-                // >
-                //   Test Connection
-                // </EuiContextMenuItem>,
                 <EuiContextMenuItem
-                  key="C"
+                  key="test"
+                  icon="temperature"
+                  disabled={process.env.REACT_APP_IS_DEMO === 'true'}
+                  onClick={() => {
+                    testConnectionDatasource(item.id);
+                  }}
+                >
+                  Test Connection
+                </EuiContextMenuItem>,
+                <EuiContextMenuItem
+                  key="delete"
                   icon="trash"
                   disabled={process.env.REACT_APP_IS_DEMO === 'true'}
                   onClick={() => {
@@ -152,21 +137,18 @@ const DatasourcesTable: React.FC = () => {
 
     window.location.reload();
   };
-  // const editDatasource = (itemId: any) => {
-  //   // update user from state based on response
-  //   closePopover(itemId);
-  // }
 
-  // const testConnectionDatasource = async (itemId: any) => {
-  //   const response = await datasourceService.testConnection(itemId);
-  //   if (response && response.status) {
-  //     setToasts(toasts.concat(testConnectionSuccessToast));
-  //   } else {
-  //     setToasts(toasts.concat(testConnectionFailedToast));
-  //   }
+  const testConnectionDatasource = async (itemId: any) => {
+    setTesting(true)
+    const response = await datasourceService.test(itemId);
+    if (response && response.status) {
+      setToasts(toasts.concat(testConnectionSuccessToast));
+    } else {
+      setToasts(toasts.concat(testConnectionFailedToast));
+    }
 
-  //   closePopover(itemId);
-  // };
+    setTesting(false)
+  };
 
   const testConnectionSuccessToast = {
     title: 'Connection successful',
@@ -188,10 +170,10 @@ const DatasourcesTable: React.FC = () => {
     <>
       <EuiInMemoryTable
         items={datasources}
-        message={message}
+        message={emptyState}
         loading={loading}
         columns={columns}
-        pagination={true}
+        pagination={false}
       />
       <EuiGlobalToastList
         toasts={toasts}
