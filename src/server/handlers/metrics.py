@@ -2,7 +2,7 @@ import logging
 from flask_restful import Resource, abort, request
 from sqlalchemy import func
 
-from server.models import Metric
+from server.models import Metric, ZScore
 from server.middleware.db import db
 
 
@@ -69,16 +69,14 @@ class MetricListResource(Resource):
 
     def _retrieve_detailed(self, table_name, database, schema, column_name, metric):
         try:
-            # objs = db.session.query(Metric, ZScore).outerjoin(ZScore, ZScore.metric_id == Metric.id).filter(
-            objs = db.session.query(Metric).filter(
+            objs = db.session.query(Metric, ZScore).outerjoin(ZScore, ZScore.metric_id == Metric.id).filter(
                 Metric.table_name==table_name,
                 Metric.database==database,
                 Metric.schema==schema,
                 Metric.metric == metric,
                 Metric.column_name == column_name
             ).all() # TODO: ORDER BY
-            # metrics = [(lambda d: (d.update(obj[1].to_dict()) or d) if obj[1] else d)(obj[0].to_dict()) for obj in objs]
-            metrics = [m.to_dict() for m in objs]
+            metrics = [(lambda d: (d.update(obj[1].to_dict()) or d) if obj[1] else d)(obj[0].to_dict()) for obj in objs]
         except Exception as e:
             logging.warn(e)
             abort(404)
