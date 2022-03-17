@@ -29,9 +29,6 @@ const BootstrapMonitorsIndex: React.FC = () => {
           <main className="col-md-12 ms-sm-auto col-lg-12">
             <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
               <h1 className="h2">Monitors</h1>
-              <div className="btn-toolbar mb-2 mb-md-0">
-                <Flyout name={"Monitor"} form={<MonitorForm />} />
-              </div>
             </div>
 
             <BootstrapMonitorsTable
