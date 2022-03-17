@@ -1,39 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-import {
-  EuiButton,
-  EuiFlexGroup,
-  EuiFormRow,
-  EuiFieldText,
-  EuiFlexItem,
-  EuiSelect,
-  EuiCheckableCard,
-  EuiSpacer,
-  EuiHorizontalRule,
-  EuiPageHeader,
-  EuiFieldNumber,
-  EuiComboBox,
-} from '@elastic/eui';
+import { Form, Button } from 'react-bootstrap';
 
-import MonitorService from 'services/monitors';
+
 import datasourceService from 'services/datasources';
-
-import TableConfiguration from './TableConfiguration';
-import CustomConfiguration from './CustomConfiguration';
-import SchemaConfiguration from './SchemaConfiguration';
+import MonitorService from 'services/monitors';
 
 const MonitorForm: React.FC = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [type, setType] = useState('table');
-  const [datasourceName, setDatasourceName] = useState('');
-  const [intervalAmount, setIntervalAmount] = useState('');
-  const [intervalType, setIntervalType] = useState('minutes');
-  const [configuration, setConfiguration] = useState('');
-
   const [datasources, setDatasources] = useState([]);
-  const [selectedDatasource, setSelectedDatasource] = useState([]);
-
   useEffect(() => {
     async function loadDatasources() {
       let res = await datasourceService.getAll();
@@ -44,154 +18,99 @@ const MonitorForm: React.FC = () => {
     loadDatasources();
   }, []);
 
-  const selectDatasource = async (selectedOptions: any) => {
-    if (selectedOptions.length === 0) return;
+  // FORM VALUES
+  const [datasource, setDatasource] = useState<any>(null);
+  const [type, setType] = useState<any>('table_health');
+  const [database, setDatabase] = useState<any>('');
+  const [schema, setSchema] = useState<any>('');
+  const [daysAgo, setDaysAgo] = useState<any>(100);
+  const [table, setTable] = useState<any>('');
+  const [timestampField, setTimestampField] = useState<any>('');
 
-    setSelectedDatasource(selectedOptions);
-
-    const datasource = selectedOptions[0].label;
-    setDatasourceName(datasource);
-  };
-
-  const validateInput = () => {
-    // TODO: change to server based validation once implemented
-    if (name && parseInt(intervalAmount) >= 1) {
-      return true;
-    }
-    return false;
-  };
-
-  const createMonitor = () => {
-    const isValid = validateInput();
-    if (!isValid) return;
-
-    const service = MonitorService;
-    const body: any = {
-      name: name,
+  const handleClick = async () => {
+    const body = {
+      workspace: 'default',
+      source: datasource,
       type: type,
-      datasource: datasourceName,
-      configuration: configuration,
-      schedule_minutes: intervalAmount,
-      schedule_type: intervalType,
-      // schedule: {
-      //   interval_amount: intervalAmount,
-      //   interval_type: intervalType,
-      // },
+      days_ago: daysAgo,
+      database: database,
+      schema: schema,
+      table_name: table,
+      timestamp_field: timestampField,
     };
-    if (description) {
-      body['description'] = description;
-    }
+    const resp = await MonitorService.create(body);
 
-    const resp = service.create(body);
-
-    // TODO: check for error on creation
-
-    window.location.reload();
+    window.location.reload(); // TODO: Fix - dirty
   };
+
+  const handleDatasourceChange = (name: string) => {
+    setDatasource(name);
+    datasources.forEach((ds: any) => {
+        if (ds.name == name) {
+          setDatabase(ds.config.database);
+          setSchema(ds.config.schema);
+        }
+    })
+  }
 
   return (
-    <>
-      <EuiFlexGroup>
-        <EuiFlexItem>
-          <EuiFormRow label="Name">
-            <EuiFieldText
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </EuiFormRow>
-        </EuiFlexItem>
-        <EuiFlexItem>
-          <EuiFormRow label="Check every">
-            <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiFieldNumber
-                  required
-                  min={1}
-                  value={intervalAmount}
-                  onChange={(e) => setIntervalAmount(e.target.value)}
-                />
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiSelect
-                  value={intervalType}
-                  disabled
-                  options={[{ text: 'minutes' }]}
-                />
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiFormRow>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-      <EuiFlexGroup>
-        <EuiFlexItem>
-          <EuiFormRow label="Description">
-            <EuiFieldText
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </EuiFormRow>
-        </EuiFlexItem>
-      </EuiFlexGroup>
+      <Form>
+        <Form.Group className="mb-3" controlId="formBasicDatasource">
+          <Form.Label>Data Source</Form.Label>
+          <Form.Select aria-label="Datasource" onChange={(e: any) => handleDatasourceChange(e.target.value)}>
+            <option>Choose a data source</option>
+            {datasources.map((el: any) => {
+              return (<option value={el.name}>{el.name}</option>);
+            })}
+          </Form.Select>
+        </Form.Group>
 
-      <EuiHorizontalRule />
-      <EuiPageHeader
-        pageTitle="Configure Monitor"
-        description="Choose a monitor type and configure it's details"
-      />
-      <EuiHorizontalRule />
-      <EuiCheckableCard
-        id="table"
-        label="Table Health"
-        name="Table Health"
-        value="table"
-        checked={type === 'table'}
-        onChange={() => setType('table')}
-      />
-      <EuiSpacer size="s" />
-      <EuiCheckableCard
-        id="custom"
-        label="Custom SQL"
-        name="Custom SQL"
-        value="custom"
-        checked={type === 'custom'}
-        onChange={() => setType('custom')}
-      />
-      <EuiSpacer size="s" />
-      <EuiCheckableCard
-        id="schema"
-        label="Schema Changes"
-        name="Custom SQL"
-        value="schema"
-        disabled
-        checked={type === 'schema'}
-        onChange={() => setType('schema')}
-      />
-      <EuiHorizontalRule />
+        <Form.Group className="mb-3" controlId="formBasicType">
+          <Form.Label>Type</Form.Label>
+          <Form.Select aria-label="Monitor Type" onChange={(e: any) => setType(e.target.value)}>
+            <option value="table_health">Table Health</option>
+          </Form.Select>
+        </Form.Group>
 
-      <EuiFormRow label="Data Source">
-        <EuiComboBox
-          onChange={selectDatasource}
-          singleSelection={{ asPlainText: true }}
-          selectedOptions={selectedDatasource}
-          options={datasources.map((el: any) => {
-            return { label: el.name, value: el.id };
-          })}
-        />
-      </EuiFormRow>
-      {type === 'table' && (
-        <TableConfiguration setConfiguration={setConfiguration} />
-      )}
-      {type === 'custom' && (
-        <CustomConfiguration setConfiguration={setConfiguration} />
-      )}
-      {type === 'schema' && (
-        <SchemaConfiguration setConfiguration={setConfiguration} />
-      )}
-      <EuiButton fill onClick={createMonitor}>
-        Save
-      </EuiButton>
-    </>
+        <Form.Group className="mb-3" controlId="formBasicDatabase">
+          <Form.Label>Database</Form.Label>
+          <Form.Control type="text" placeholder="SNOWFLAKE_SAMPLE_DATA" disabled value={database} />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicSchema">
+          <Form.Label>Schema</Form.Label>
+          <Form.Control type="text" placeholder="TPCH_SF1000" disabled value={schema} />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicSchema">
+          <Form.Label>Lookback Days (# Days Ago to Fetch)</Form.Label>
+          <Form.Control type="number" value={daysAgo} onChange={(e: any) => setDaysAgo(e.target.value)} />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicTableName">
+          <Form.Label>Table</Form.Label>
+          <Form.Control type="text" placeholder="ORDERS" value={table} onChange={(e: any) => setTable(e.target.value)} />
+          <Form.Text className="text-muted">
+              Tables should be available in the database and schema specified for the data source.
+          </Form.Text>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicTimestampField">
+          <Form.Label>Timestamp Field</Form.Label>
+          <Form.Control type="text" placeholder="o_orderdate" value={timestampField} onChange={(e: any) => setTimestampField(e.target.value)} />
+          <Form.Text className="text-muted">
+              Timestamp field should be a column name in the above table of the date/time type.
+          </Form.Text>
+        </Form.Group>
+
+        <Button 
+          variant="primary"
+          onClick={handleClick}
+          disabled={process.env.REACT_APP_IS_DEMO === 'true'}
+          >
+          Submit
+        </Button>
+      </Form>
   );
 };
 
