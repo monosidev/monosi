@@ -1,31 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { EuiPanel, EuiSearchBar, EuiSpacer } from '@elastic/eui';
 
-import AppPage from 'components/AppPage';
 import MonitorService from 'services/monitors';
+import BootstrapPage from 'components/BootstrapPage';
 import Flyout from 'components/Flyout';
 
 import MonitorForm from './components/MonitorForm';
-import SearchAndFilters from './components/SearchAndFilters';
-import MonitorsTable from './components/MonitorsTable';
-
-const initialQuery = EuiSearchBar.Query.MATCH_ALL;
+import BootstrapMonitorsTable from './components/BootstrapMonitorsTable';
 
 const MonitorsIndex: React.FC = () => {
-  const [tableQuery, setTableQuery] = useState(initialQuery);
-
   const [monitors, setMonitors] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   const loadMonitors = async () => {
-    setLoading(true);
-
     let res = await MonitorService.getAll();
     if (res && res.monitors) {
       setMonitors(res.monitors);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -33,23 +22,22 @@ const MonitorsIndex: React.FC = () => {
   }, []);
 
 
-  let flyout = <Flyout name="Monitor" form={<MonitorForm />} />
-
   return (
-    <AppPage 
-      title={'Monitors'} 
-      rightSideItems={[flyout]}
-      >
-      <SearchAndFilters setTableQuery={setTableQuery} monitors={monitors} />
-      <EuiSpacer size="s" />
-      <EuiPanel>
-        <MonitorsTable
-          query={tableQuery}
-          monitors={monitors}
-          loading={loading}
-        />
-      </EuiPanel>
-    </AppPage>
+    <BootstrapPage selectedTab="monitors">
+      <div style={{paddingLeft: 96}} className="bg-light">
+        <div className="container">
+          <main className="col-md-12 ms-sm-auto col-lg-12">
+            <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+              <h1 className="h2">Monitors</h1>
+            </div>
+
+            <BootstrapMonitorsTable
+              monitors={monitors}
+            />
+          </main>
+        </div>
+      </div>
+    </BootstrapPage>
   );
 };
 

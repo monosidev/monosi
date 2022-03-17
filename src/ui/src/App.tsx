@@ -14,7 +14,7 @@ import IntegrationsSettings from 'pages/settings_bootstrap/Integrations';
 import SourcesSettings from 'pages/settings_bootstrap/Sources';
 import ProfileSettings from 'pages/settings_bootstrap/Profile';
 import DashboardIndex from 'pages/app/dashboard/Index';
-import BootstrapMonitorsIndex from 'pages/app/bootstrap_monitors/Index';
+import MonitorsIndex from 'pages/app/monitors/Index';
 import MonitorsDetail from 'pages/app/monitors/Detail';
 import MetricsDetail from 'pages/app/metrics/Detail';
 
@@ -27,7 +27,7 @@ function App() {
               <DashboardIndex />
           </Route>
           <Route exact path="/monitors">
-              <BootstrapMonitorsIndex />
+              <MonitorsIndex />
           </Route>
           <Route exact path="/monitors/:database/:schema/:table">
               <MonitorsDetail />
