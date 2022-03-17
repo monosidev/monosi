@@ -23,7 +23,6 @@ def import_from_path(path):
 
 class MsiJobStore(SQLAlchemyJobStore):
     def __init__(self, url):
-        print(url)
         super().__init__(url=url, tablename='msi_jobs')
         mapper_registry.metadata.create_all(self.engine)
 
@@ -73,7 +72,6 @@ class MsiScheduler(APScheduler):
 
     @classmethod
     def run_job(cls, job_class_path, job_id, db_url, *args, **kwargs):
-        print(db_url)
         jobstore = MsiJobStore(url=db_url)
         execution_id = jobstore.create({
             'job_id': job_id,

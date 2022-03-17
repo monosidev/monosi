@@ -79,7 +79,6 @@ class MetricListResource(Resource):
             ).all() # TODO: ORDER BY
             # metrics = [(lambda d: (d.update(obj[1].to_dict()) or d) if obj[1] else d)(obj[0].to_dict()) for obj in objs]
             metrics = [m.to_dict() for m in objs]
-            print(metrics)
         except Exception as e:
             logging.warn(e)
             abort(404)

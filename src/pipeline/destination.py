@@ -1,4 +1,5 @@
 import json
+import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from typing import Any, List
@@ -36,6 +37,7 @@ class SQLAlchemyDestinationConfiguration(DestinationConfiguration):
         }
 
     def connection_string(self) -> str:
+        print(self.configuration)
         configuration = json.loads(self.configuration)
 
         return '{type}://{user}:{password}@{host}:{port}/{database}'.format(
@@ -76,12 +78,27 @@ class SQLAlchemyPublisher(Publisher):
         if self.engine is None:
             raise Exception("Initialize publisher before execution.")
 
-        Session = sessionmaker(bind=self.engine)
-        with Session() as session:
-            from server.models import Metric
-            session.bulk_insert_mappings(Metric, sqlalchemy_objs)
-            session.commit()
-            session.close()
+        if len(sqlalchemy_objs) > 0 and 'metric' in sqlalchemy_objs[0]:
+            try: 
+                Session = sessionmaker(bind=self.engine)
+                with Session() as session:
+                    from server.models import Metric
+                    session.bulk_insert_mappings(Metric, sqlalchemy_objs)
+                    session.commit()
+                    session.close()
+            except Exception as e:
+                logging.warn(e)
+        else:
+            try: 
+                Session = sessionmaker(bind=self.engine)
+                with Session() as session:
+                    from server.models import ZScore
+                    session.bulk_insert_mappings(ZScore, sqlalchemy_objs)
+                    session.commit()
+                    session.close()
+            except Exception as e:
+                logging.warn(e)
+
 
     def run(self, sqlalchemy_objs: List[Any]):
         self._initialize()
@@ -90,8 +107,6 @@ class SQLAlchemyPublisher(Publisher):
 
 class SQLAlchemyDestination(Destination):
     def push(self, sqlalchemy_objs: List[Any]):
-        print(sqlalchemy_objs)
-        print(self.configuration.connection_string())
         publisher = SQLAlchemyPublisher(self.configuration)
         publisher.run(sqlalchemy_objs)
 
