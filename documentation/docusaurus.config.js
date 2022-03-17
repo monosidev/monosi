@@ -126,7 +126,7 @@ module.exports = {
           routeBasePath: "docs",
           exclude: ["**/shared/**"], // do not render "shared" content
           editUrl:
-            "https://github.com/monosidev/monosi/documentation/blob/master",
+            "https://github.com/monosidev/monosi/tree/master/documentation",
           /**
            * Whether to display the author who last updated the doc.
            */
@@ -214,7 +214,7 @@ module.exports = {
           path: "changelog",
           postsPerPage: 10,
           editUrl:
-            "https://github.com/monosidev/monosi/documentation/blob/master",
+            "https://github.com/monosidev/monosi/tree/master/documentation",
           blogTitle: "Monosi Changelog",
           showReadingTime: true, // Show estimated reading time for the blog post.
           feedOptions: {
