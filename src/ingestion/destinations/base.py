@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import abc
 import json
+from typing import Optional
 
 
 class Publisher(object):
@@ -9,8 +10,8 @@ class Publisher(object):
 
 @dataclass
 class DestinationConfiguration:
-    name: str
     configuration: str
+    name: Optional[str] = None
     enabled: bool = True
 
     def __init__(self, configuration: str):
@@ -29,7 +30,7 @@ class DestinationConfiguration:
 
     def to_dict(self):
         return {
-            "name": self.name,
+            "name": self.name or '',
             "configuration": json.loads(self.configuration),
             "enabled": self.enabled,
             "type": self.type,
