@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { CpuFill, Collection } from 'react-bootstrap-icons';
+import { CpuFill, Collection, ArrowRepeat } from 'react-bootstrap-icons';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
@@ -9,11 +9,13 @@ import BootstrapPage from 'components/BootstrapPage';
 
 import Flyout from 'components/Flyout';
 import DatasourceForm from 'components/forms/DatasourceForm';
-import { Row, Toast, Button, Col } from 'react-bootstrap';
+import { ToastContainer, Toast } from 'react-bootstrap';
 
 const SourcesSettings: React.FC = () => {
-  const [datasources, setDatasources] = useState([]);
-  const [testLoading, setTestLoading] = useState(false);
+  const [datasources, setDatasources] = useState<any[]>([]);
+  const [testLoading, setTestLoading] = useState<boolean>(false);
+  // TODO: Componentize this
+  const [toastVisible, setToastVisible] = useState<boolean>(false);
 
   let flyout = <Flyout name="Data Source" form={<DatasourceForm />} />
 
@@ -28,6 +30,8 @@ const SourcesSettings: React.FC = () => {
   }, []);
 
   const handleTest = (ds_id: number) => {
+    setTestLoading(true);
+    setToastVisible(true);
     async function testDatasource(ds_id: any) {
         let res = await datasourceService.test(ds_id);
         if (res !== null && res.datasource) {
@@ -36,14 +40,14 @@ const SourcesSettings: React.FC = () => {
           } else {
             alert("Connection was unsuccessful.");
           }
+        } else {
+          alert("Connection was unsuccessful.");
         }
         setTestLoading(false);
+        setToastVisible(false);
     }
-    setTestLoading(true);
     testDatasource(ds_id);
   }
-
-  console.log(process.env)
 
   const handleDelete = (ds_id: any) => {
     async function deleteDatasource(ds_id: string) {
@@ -78,7 +82,7 @@ const SourcesSettings: React.FC = () => {
       formatter: (cell: any, row: any) => {
          return (
             <div>
-               <a href="#" style={{textDecoration: 'none'}}>{row.name}</a>
+               <span style={{textDecoration: 'none'}}>{row.name}</span>
                <small className="d-block">{row.description}</small>
             </div>
          )
@@ -115,6 +119,17 @@ const SourcesSettings: React.FC = () => {
       },
     },
   ];
+
+  const SourceToasts = () => (
+    <ToastContainer position={"top-end"} style={{paddingTop: 10}}>
+      <Toast onClose={() => setToastVisible(false)}>
+        <Toast.Header>
+          <ArrowRepeat className="bi" width="24" height="24"/>
+          <strong className="me-auto" style={{paddingLeft: 12}}>Testing Connection</strong>
+        </Toast.Header>
+      </Toast>
+    </ToastContainer>
+  );
 
   return (
       <BootstrapPage selectedTab="settings">
@@ -180,6 +195,7 @@ const SourcesSettings: React.FC = () => {
              </main>
            </div>
          </div>
+         {toastVisible && <SourceToasts />}
       </BootstrapPage>
   );
 };
