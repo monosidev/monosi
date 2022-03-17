@@ -1,6 +1,7 @@
 import logging
 
 from pipeline import ingestion_task
+from pipeline.base import analysis_task
 from scheduler import job
 from telemetry.events import track_event
 
@@ -32,9 +33,19 @@ class MetadataJob(job.JobBase):
         source_configuration = source.to_dict()
         source_configuration['config']['type'] = source_configuration['type']
 
-        print(source_configuration['config'])
+        # Metrics Pipeline
+        try:
+            mpipe_metrics = ingestion_task(source_configuration['config'], destination)
+            mpipe_metrics.run()
+        except Exception as e:
+            logging.error(e)
 
-        mpipe = ingestion_task(source_configuration['config'], destination)
-        mpipe.run()
+        # Reprocessing - ZScores Pipelines
+        try:
+            mpipe_zscores = analysis_task(destination, destination)
+            mpipe_zscores.run()
+        except Exception as e:
+            logging.error(e)
 
         track_event(action="metadata_ingestion_stop", label="server")
+

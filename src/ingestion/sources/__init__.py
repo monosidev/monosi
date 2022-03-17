@@ -5,6 +5,7 @@ from .base import (
     Extractor,
 	Source,
     SourceConfiguration,
+    SQLAlchemyExtractor,
 )
 
 from .postgresql import PostgreSQLSource, PostgreSQLSourceConfiguration

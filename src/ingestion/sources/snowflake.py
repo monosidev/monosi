@@ -129,10 +129,6 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
         """.format(database_name=database_name, schema_name=schema_name)
 
     @classmethod
-    def table_metrics_query(cls):
-        raise NotImplementedError
-
-    @classmethod
     def access_logs_query(cls):
         return """
             SELECT 
