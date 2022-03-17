@@ -12,8 +12,8 @@ from ingestion.task import MultiTaskUnit, TaskUnit
 
 @dataclass
 class SourceConfiguration:
-    name: Optional[str]
     configuration: str
+    name: Optional[str] = None
     enabled: bool = True
 
     @classmethod
@@ -37,7 +37,7 @@ class SourceConfiguration:
 
     def to_dict(self):
         return {
-            "name": self.name,
+            "name": self.name or '',
             "configuration": json.loads(self.configuration),
             "enabled": self.enabled,
             "type": self.type,
@@ -66,6 +66,10 @@ class Source:
 
     @abc.abstractmethod
     def task_units(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def test(self):
         raise NotImplementedError
 
     def pull(self):
@@ -123,6 +127,18 @@ class SQLAlchemyExtractor(Extractor):
         results = self._retrieve_results(cs)
 
         return results
+
+    def test(self):
+        self._initialize()
+        try:
+            result = self._execute("SELECT 1")
+            rows = result["rows"]
+            columns = result["columns"]
+
+            return len(rows) == 1 and rows[0][columns[0]] == 1
+        except Exception as e:
+            logging.error(e)
+            return False
 
     def run(self, unit: TaskUnit):
         self._initialize()
@@ -456,6 +472,10 @@ class SQLAlchemySource(Source):
 
     def extractor(self):
         raise NotImplementedError
+
+    def test(self):
+        extractor = self.extractor()
+        return extractor.test()
 
     def task_units(self) -> List[TaskUnit]:
         units = [
