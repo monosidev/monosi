@@ -58,5 +58,7 @@ class DataSourceTestResource(DataSourceResource):
     def put(self, obj_id): # TODO: Change Error Type
         raise NotImplementedError
 
-    def delete(self, obj_id): # TODO: Change Error Type
-        raise NotImplementedError
+    def _after_destroy(self, sqlalc_obj): # Stop ingestion job
+        from server.middleware.scheduler import manager
+        manager.remove_job(str(sqlalc_obj))
+        
