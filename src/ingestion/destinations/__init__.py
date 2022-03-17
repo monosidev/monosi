@@ -23,6 +23,7 @@ class DestinationFactory:
 
     @classmethod
     def create(cls, configuration: Dict[str, Any]) -> Destination:
+        print(configuration)
         config_type = configuration.get('type')
         if config_type == None:
             raise Exception("Error: No destination type set.")

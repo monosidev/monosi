@@ -1,10 +1,8 @@
 import logging
 from math import sqrt
-from dataclasses import dataclass
-from typing import List
+from typing import Dict, List
 
-from core.models.metadata.metric import MsiMetric
-from core.models.zscore import ZScore
+from .base import JSONTransformer
 
 
 class ZScoreAlgorithm:
@@ -23,31 +21,32 @@ class ZScoreAlgorithm:
         return std_dev
 
     @classmethod
-    def run(cls, metrics: List[MsiMetric], sensitivity: float):
+    def run(cls, metrics: List[Dict], sensitivity: float):
         values = []
         zscores = []
         for metric in metrics:
-            values.append(float(metric.value))
             try:
+                values.append(float(metric['value']))
                 mean = cls._mean(values)
                 std_dev = cls._std_dev(values)
-            except ZeroDivisionError:
+            except Exception as e:
+                print(metric)
                 return []
 
             try:
-                value = float(metric.value)
+                value = float(metric['value'])
                 if std_dev == 0:
                     z_score = 0
                 else:
                     z_score = round(((value - mean) / std_dev), 2) 
                 error = abs(z_score) > sensitivity 
-                zscore_point = ZScore(
-                    metric_id=metric.id,
-                    expected_range_start=mean-(sensitivity*abs(std_dev)),
-                    expected_range_end=mean+(sensitivity*abs(std_dev)),
-                    error=error,
-                    zscore=z_score,
-                )
+                zscore_point = {
+                    # 'metric_id': metric.id,
+                    'expected_range_start': mean-(sensitivity*abs(std_dev)),
+                    'expected_range_end': mean+(sensitivity*abs(std_dev)),
+                    'error': error,
+                    'zscore': z_score,
+                }
                 zscores.append(zscore_point)
 
             except Exception as e:
@@ -55,15 +54,13 @@ class ZScoreAlgorithm:
 
         return zscores
 
-class ZScoreAnalyzer:
-    def __init__(self, sensitivity=2.5):
-        self.sensitivity = sensitivity
-
-    def _organize(self, metrics):
+class ZScoreTransformer(JSONTransformer):
+    @classmethod
+    def _organize(cls, metrics):
         groups = {}
         for obj in metrics:
-            metric = obj.metric
-            column_name = obj.column_name
+            metric = obj['metric']
+            column_name = obj['column_name']
 
             if metric not in groups:
                 groups[metric] = {}
@@ -75,22 +72,46 @@ class ZScoreAnalyzer:
 
         return groups
 
-    def run(self, metrics, monitor): # TODO: Optimize
+    @classmethod
+    def _transform(cls, metrics):
+        sensitivity = 2.5
         zscores = []
-        groups = self._organize(metrics)
+
+        groups = cls._organize(metrics)
 
         for metric in groups:
             for column_name in groups[metric]:
                 group_metrics = groups[metric][column_name]
-                group_metrics.sort(key=lambda x: x.time_window_start)
+                group_metrics.sort(key=lambda x: x['time_window_start'])
 
-                zscores += ZScoreAlgorithm.run(group_metrics, self.sensitivity)
+                zscores += ZScoreAlgorithm.run(group_metrics, sensitivity)
 
         return zscores
 
-        
+    @classmethod
+    def _original_schema(cls):
+        # List of 
+        return {
+            "type": "object",
+            "properties": {
+                "metric": { "type": "string" },
+                "column_name": { "type": "string" },
+                "value": { "type": "string" },
 
-    # @classmethod
-    # def run(cls, monitor_id, dest_config):
-    #     pass
+                # A bunch of possible/optional metrics
+            },
+            "secret": [ ],
+        }
+        # raise NotImplementedError
 
+    @classmethod
+    def _normalized_schema(cls):
+        return {
+            "type": "object",
+            "properties": {
+                "zscore": { "type": "string" },
+                "expected_range_start": { "type": "string" },
+                "expected_range_end": { "type": "string" },
+            },
+            "secret": [ ],
+        }

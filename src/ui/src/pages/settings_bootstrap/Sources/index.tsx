@@ -64,7 +64,7 @@ const SourcesSettings: React.FC = () => {
       text: "Status",
       formatter: (cell: any, row: any) => {
         return (
-          <span className="badge rounded-pill bg-success">Connected</span>
+          <span className="badge rounded-pill bg-success">Enabled</span>
         );
       },
     },
