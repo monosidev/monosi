@@ -39,8 +39,14 @@ class DataSourceListResource(ListResource):
 
 class DataSourceTestResource(DataSourceResource):
     def _test(self, obj):
-        driver = obj.db_driver()
-        return driver.test()
+        from ingestion.sources import SourceFactory
+
+        source = obj.to_dict()
+        configuration = source['config']
+        configuration['type'] = source['type']
+
+        source = SourceFactory.create(configuration)
+        return source.test()
 
     def get(self, **kwargs):
         obj_id = kwargs['obj_id']
