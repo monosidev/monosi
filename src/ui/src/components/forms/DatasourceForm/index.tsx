@@ -18,24 +18,27 @@ import {
 
 import datasourceService from 'services/datasources';
 
-const DatasourceForm = () => {
-  // const [availDatasources, setAvailDatasources] = useState([]);
-  const [datasourceType, setDatasourceType] = useState('snowflake');
-  const [datasourceName, setDatasourceName] = useState('');
+enum DataSourceTypes {
+  SNOWFLAKE="snowflake", 
+  POSTGRESQL="postgresql"
+}
 
-  const [account, setAccount] = useState('');
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
-  const [warehouse, setWarehouse] = useState('');
-  const [database, setDatabase] = useState('');
-  const [schema, setSchema] = useState('');
-  
-  const [host, setHost] = useState('');
-  const [port, setPort] = useState('');
+const DatasourceForm = () => {
+  const [datasourceType, setDatasourceType] = useState<DataSourceTypes>(DataSourceTypes.SNOWFLAKE);
+  const [datasourceName, setDatasourceName] = useState<string>('');
+
+  const [account, setAccount] = useState<string>('');
+  const [user, setUser] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [warehouse, setWarehouse] = useState<string>('');
+  const [database, setDatabase] = useState<string>('');
+  const [schema, setSchema] = useState<string>('');
+  const [host, setHost] = useState<string>('');
+  const [port, setPort] = useState<string>('');
 
   const submitForm = async () => {
     let body;
-    if (datasourceType == "snowflake") {
+    if (datasourceType === DataSourceTypes.SNOWFLAKE) {
     body = {
       name: datasourceName,
       type: datasourceType,
@@ -49,7 +52,7 @@ const DatasourceForm = () => {
         schema: schema,
       },
     };
-    } else if (datasourceType == "postgres") {
+    } else if (datasourceType === DataSourceTypes.POSTGRESQL) {
     body = {
       name: datasourceName,
       type: datasourceType,
@@ -67,17 +70,6 @@ const DatasourceForm = () => {
     window.location.reload();
   };
 
-  // useEffect(() => {
-  //   async function loadDatasourceTypes() {
-  //     let res = await datasourceTypeService.getAll();
-
-  //     if (res !== null && res.datasource_types) {
-  //       setAvailDatasources(res.datasource_types);
-  //     }
-  //   }
-  //   loadDatasourceTypes();
-  // }, []);
-
   const onChange = (value: any) => {
     setDatasourceType(value);
   };
@@ -87,10 +79,10 @@ const DatasourceForm = () => {
       <EuiFlexGrid columns={3}>
         <EuiFlexItem>
           <EuiCard
-            icon={<EuiIcon type="snowflake" size="xl" />}
+            icon={<EuiIcon type={DataSourceTypes.SNOWFLAKE} size="xl" />}
             selectable={{
-              onClick: () => onChange("snowflake"),
-              isSelected: datasourceType == "snowflake",
+              onClick: () => onChange(DataSourceTypes.SNOWFLAKE),
+              isSelected: datasourceType === DataSourceTypes.SNOWFLAKE,
               isDisabled: false,
             }}
             title="Snowflake"
@@ -100,8 +92,8 @@ const DatasourceForm = () => {
         <EuiFlexItem>
           <EuiCard
             selectable={{
-              onClick: () => onChange("postgres"),
-              isSelected: datasourceType == "postgres",
+              onClick: () => onChange(DataSourceTypes.POSTGRESQL),
+              isSelected: datasourceType === DataSourceTypes.POSTGRESQL,
               isDisabled: false,
             }}
             icon={<EuiIcon type="logoPostgres" size="xl" />}
@@ -126,7 +118,7 @@ const DatasourceForm = () => {
 
       <EuiHorizontalRule />
 
-        {datasourceType == "postgres" && <div>
+        {datasourceType === DataSourceTypes.POSTGRESQL && <div>
               <EuiPageHeader
                 iconType="logoPostgres"
                 pageTitle="PostgreSQL"
@@ -176,7 +168,7 @@ const DatasourceForm = () => {
                 />
               </EuiFormRow>
         </div>}
-        {datasourceType == "snowflake" && <div>
+        {datasourceType === DataSourceTypes.SNOWFLAKE && <div>
               <EuiPageHeader
                 iconType="snowflake"
                 pageTitle="Snowflake"
