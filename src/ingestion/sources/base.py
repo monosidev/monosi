@@ -27,13 +27,11 @@ class SourceConfiguration:
     def type(self):
         raise NotImplementedError
 
-    @abc.abstractmethod
     def database(self):
-        raise NotImplementedError
+        return json.loads(self.configuration).get("database")
 
-    @abc.abstractmethod
     def schema(self):
-        raise NotImplementedError
+        return json.loads(self.configuration).get('schema')
 
     def to_dict(self):
         return {
@@ -112,11 +110,16 @@ class SQLAlchemyExtractor(Extractor):
         raise NotImplementedError
 
     def _initialize(self):
-        if self.engine and self.connection and self.discovered:
+        if self.engine and self.connection:
             return
 
         self.engine = self._create_engine()
         self.connection = self.engine.connect()
+
+    def _discover(self):
+        if self.discovered:
+            return
+        
         self.discovered = self._execute(self.discovery_query())
 
     def _execute(self, sql: str):
@@ -135,13 +138,14 @@ class SQLAlchemyExtractor(Extractor):
             rows = result["rows"]
             columns = result["columns"]
 
-            return len(rows) == 1 and rows[0][columns[0]] == 1
+            return len(rows) == 1 and rows[0][columns[0]] == 1 # TODO: Fix Indexing
         except Exception as e:
             logging.error(e)
             return False
 
     def run(self, unit: TaskUnit):
         self._initialize()
+        self._discover()
 
         sql = unit.request(self.discovered)
         results = self._execute(sql)
@@ -150,6 +154,7 @@ class SQLAlchemyExtractor(Extractor):
 
     def run_multiple(self, unit: TaskUnit):
         self._initialize()
+        self._discover()
 
         multiple_sql = unit.request(self.discovered)
 
