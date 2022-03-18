@@ -2,6 +2,7 @@ import abc
 import logging
 from flask import request
 from flask_restful import Resource, abort
+from sqlalchemy.exc import IntegrityError
 
 from server.middleware.db import db
 
@@ -36,6 +37,9 @@ class ListResource(BaseResource):
 
             self._create(obj)
             self._after_create(obj)
+        except IntegrityError as e:
+            logging.error(e)
+            abort(422)
         except Exception as e:
             logging.error(e)
             abort(500)
@@ -46,6 +50,8 @@ class ListResource(BaseResource):
         try:
             db.session.add(obj)
             db.session.commit()
+        except IntegrityError:
+            raise
         except Exception as e:
             raise Exception("DB: Couldn't persist record")
 
