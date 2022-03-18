@@ -41,12 +41,6 @@ class SnowflakeSourceConfiguration(SourceConfiguration):
             schema=configuration.get('schema'),
         )
 
-    def database(self):
-        return json.loads(self.configuration).get("database")
-
-    def schema(self):
-        return json.loads(self.configuration).get('schema')
-
     @property
     def type(self):
         return "snowflake"
