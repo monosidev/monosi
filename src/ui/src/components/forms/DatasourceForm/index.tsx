@@ -19,13 +19,15 @@ import {
 import datasourceService from 'services/datasources';
 
 enum DataSourceTypes {
-  SNOWFLAKE="snowflake", 
-  POSTGRESQL="postgresql",
-  REDSHIFT="redshift"
+  SNOWFLAKE = 'snowflake',
+  POSTGRESQL = 'postgresql',
+  REDSHIFT = 'redshift',
 }
 
 const DatasourceForm = () => {
-  const [datasourceType, setDatasourceType] = useState<DataSourceTypes>(DataSourceTypes.SNOWFLAKE);
+  const [datasourceType, setDatasourceType] = useState<DataSourceTypes>(
+    DataSourceTypes.SNOWFLAKE
+  );
   const [datasourceName, setDatasourceName] = useState<string>('');
 
   const [account, setAccount] = useState<string>('');
@@ -40,31 +42,34 @@ const DatasourceForm = () => {
   const submitForm = async () => {
     let body;
     if (datasourceType === DataSourceTypes.SNOWFLAKE) {
-    body = {
-      name: datasourceName,
-      type: datasourceType,
-      config: {
-        driver: datasourceType,
-        account: account,
-        user: user,
-        password: password,
-        warehouse: warehouse,
-        database: database,
-        schema: schema,
-      },
-    };
-    } else if (datasourceType === DataSourceTypes.POSTGRESQL || datasourceType === DataSourceTypes.REDSHIFT ) {
-    body = {
-      name: datasourceName,
-      type: datasourceType,
-      config: {
-        user: user,
-        password: password,
-        host: host,
-        port: parseInt(port),
-        database: database,
-      },
-    };
+      body = {
+        name: datasourceName,
+        type: datasourceType,
+        config: {
+          driver: datasourceType,
+          account: account,
+          user: user,
+          password: password,
+          warehouse: warehouse,
+          database: database,
+          schema: schema,
+        },
+      };
+    } else if (
+      datasourceType === DataSourceTypes.POSTGRESQL ||
+      datasourceType === DataSourceTypes.REDSHIFT
+    ) {
+      body = {
+        name: datasourceName,
+        type: datasourceType,
+        config: {
+          user: user,
+          password: password,
+          host: host,
+          port: parseInt(port),
+          database: database,
+        },
+      };
     }
     await datasourceService.create(body);
 
@@ -109,7 +114,7 @@ const DatasourceForm = () => {
               isSelected: datasourceType === DataSourceTypes.REDSHIFT,
               isDisabled: false,
             }}
-            icon={<EuiIcon type='logoAWS' size="xl" />}
+            icon={<EuiIcon type="logoAWS" size="xl" />}
             title="Redshift"
             description="Connect to AWS Redshift Data Warehouse"
           />
@@ -118,165 +123,171 @@ const DatasourceForm = () => {
 
       <EuiHorizontalRule />
 
-        {datasourceType === DataSourceTypes.POSTGRESQL && <div>
-              <EuiPageHeader
-                iconType="logoPostgres"
-                pageTitle="PostgreSQL"
-                description="Connect to PostgreSQL Database"
-              />
-              <EuiHorizontalRule />
-              <EuiFormRow label="Name for Data Source">
-                <EuiFieldText
-                  placeholder="Company Data Warehouse"
-                  onChange={(e) => setDatasourceName(e.target.value)}
-                  value={datasourceName}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="User">
-                <EuiFieldText
-                  placeholder="MONOSI_USER"
-                  onChange={(e) => setUser(e.target.value)}
-                  value={user}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Password">
-                <EuiFieldPassword
-                  placeholder="password123"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Host">
-                <EuiFieldText
-                  placeholder="host"
-                  onChange={(e) => setHost(e.target.value)}
-                  value={host}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Port">
-                <EuiFieldText
-                  placeholder="5432"
-                  onChange={(e) => setPort(e.target.value)}
-                  value={port}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Database">
-                <EuiFieldText
-                  placeholder="postgres"
-                  onChange={(e) => setDatabase(e.target.value)}
-                  value={database}
-                />
-              </EuiFormRow>
-        </div>}
-        {datasourceType === DataSourceTypes.REDSHIFT && <div>
-              <EuiPageHeader
-                iconType="logoAWS"
-                pageTitle="Redshift"
-                description="Connect to Redshift Data Warehouse"
-              />
-              <EuiHorizontalRule />
-              <EuiFormRow label="Name for Data Source">
-                <EuiFieldText
-                  placeholder="Company Data Warehouse"
-                  onChange={(e) => setDatasourceName(e.target.value)}
-                  value={datasourceName}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="User">
-                <EuiFieldText
-                  placeholder="MONOSI_USER"
-                  onChange={(e) => setUser(e.target.value)}
-                  value={user}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Password">
-                <EuiFieldPassword
-                  placeholder="password123"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Host">
-                <EuiFieldText
-                  placeholder="host"
-                  onChange={(e) => setHost(e.target.value)}
-                  value={host}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Port">
-                <EuiFieldText
-                  placeholder="5439"
-                  onChange={(e) => setPort(e.target.value)}
-                  value={port}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Database">
-                <EuiFieldText
-                  placeholder="dev"
-                  onChange={(e) => setDatabase(e.target.value)}
-                  value={database}
-                />
-              </EuiFormRow>
-        </div>}
-        {datasourceType === DataSourceTypes.SNOWFLAKE && <div>
-              <EuiPageHeader
-                iconType="snowflake"
-                pageTitle="Snowflake"
-                description="Connect to Snowflake Data Warehouse"
-              />
-              <EuiHorizontalRule />
-              <EuiFormRow label="Name for Data Source">
-                <EuiFieldText
-                  placeholder="Company Data Warehouse"
-                  onChange={(e) => setDatasourceName(e.target.value)}
-                  value={datasourceName}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Account">
-                <EuiFieldText
-                  placeholder="abc123"
-                  onChange={(e) => setAccount(e.target.value)}
-                  value={account}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Warehouse">
-                <EuiFieldText
-                  placeholder="COMPUTE_WH"
-                  onChange={(e) => setWarehouse(e.target.value)}
-                  value={warehouse}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="User">
-                <EuiFieldText
-                  placeholder="MONOSI_USER"
-                  onChange={(e) => setUser(e.target.value)}
-                  value={user}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Password">
-                <EuiFieldPassword
-                  placeholder="password123"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Database">
-                <EuiFieldText
-                  placeholder="SNOWFLAKE_SAMPLE_DATA"
-                  onChange={(e) => setDatabase(e.target.value)}
-                  value={database}
-                />
-              </EuiFormRow>
-              <EuiFormRow label="Schema">
-                <EuiFieldText
-                  placeholder="tpch_sf1000"
-                  onChange={(e) => setSchema(e.target.value)}
-                  value={schema}
-                />
-              </EuiFormRow>
-        </div>}
+      {datasourceType === DataSourceTypes.POSTGRESQL && (
+        <div>
+          <EuiPageHeader
+            iconType="logoPostgres"
+            pageTitle="PostgreSQL"
+            description="Connect to PostgreSQL Database"
+          />
+          <EuiHorizontalRule />
+          <EuiFormRow label="Name for Data Source">
+            <EuiFieldText
+              placeholder="Company Data Warehouse"
+              onChange={(e) => setDatasourceName(e.target.value)}
+              value={datasourceName}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="User">
+            <EuiFieldText
+              placeholder="MONOSI_USER"
+              onChange={(e) => setUser(e.target.value)}
+              value={user}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Password">
+            <EuiFieldPassword
+              placeholder="password123"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Host">
+            <EuiFieldText
+              placeholder="host"
+              onChange={(e) => setHost(e.target.value)}
+              value={host}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Port">
+            <EuiFieldText
+              placeholder="5432"
+              onChange={(e) => setPort(e.target.value)}
+              value={port}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Database">
+            <EuiFieldText
+              placeholder="postgres"
+              onChange={(e) => setDatabase(e.target.value)}
+              value={database}
+            />
+          </EuiFormRow>
+        </div>
+      )}
+      {datasourceType === DataSourceTypes.REDSHIFT && (
+        <div>
+          <EuiPageHeader
+            iconType="logoAWS"
+            pageTitle="Redshift"
+            description="Connect to Redshift Data Warehouse"
+          />
+          <EuiHorizontalRule />
+          <EuiFormRow label="Name for Data Source">
+            <EuiFieldText
+              placeholder="Company Data Warehouse"
+              onChange={(e) => setDatasourceName(e.target.value)}
+              value={datasourceName}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="User">
+            <EuiFieldText
+              placeholder="MONOSI_USER"
+              onChange={(e) => setUser(e.target.value)}
+              value={user}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Password">
+            <EuiFieldPassword
+              placeholder="password123"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Host">
+            <EuiFieldText
+              placeholder="host"
+              onChange={(e) => setHost(e.target.value)}
+              value={host}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Port">
+            <EuiFieldText
+              placeholder="5439"
+              onChange={(e) => setPort(e.target.value)}
+              value={port}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Database">
+            <EuiFieldText
+              placeholder="dev"
+              onChange={(e) => setDatabase(e.target.value)}
+              value={database}
+            />
+          </EuiFormRow>
+        </div>
+      )}
+      {datasourceType === DataSourceTypes.SNOWFLAKE && (
+        <div>
+          <EuiPageHeader
+            iconType="snowflake"
+            pageTitle="Snowflake"
+            description="Connect to Snowflake Data Warehouse"
+          />
+          <EuiHorizontalRule />
+          <EuiFormRow label="Name for Data Source">
+            <EuiFieldText
+              placeholder="Company Data Warehouse"
+              onChange={(e) => setDatasourceName(e.target.value)}
+              value={datasourceName}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Account">
+            <EuiFieldText
+              placeholder="abc123"
+              onChange={(e) => setAccount(e.target.value)}
+              value={account}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Warehouse">
+            <EuiFieldText
+              placeholder="COMPUTE_WH"
+              onChange={(e) => setWarehouse(e.target.value)}
+              value={warehouse}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="User">
+            <EuiFieldText
+              placeholder="MONOSI_USER"
+              onChange={(e) => setUser(e.target.value)}
+              value={user}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Password">
+            <EuiFieldPassword
+              placeholder="password123"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Database">
+            <EuiFieldText
+              placeholder="SNOWFLAKE_SAMPLE_DATA"
+              onChange={(e) => setDatabase(e.target.value)}
+              value={database}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Schema">
+            <EuiFieldText
+              placeholder="tpch_sf1000"
+              onChange={(e) => setSchema(e.target.value)}
+              value={schema}
+            />
+          </EuiFormRow>
+        </div>
+      )}
 
-        <EuiSpacer />
+      <EuiSpacer />
 
       <div>
         <EuiFormRow>
