@@ -120,8 +120,8 @@ class SQLAlchemyExtractor(Extractor):
     def _create_engine(self):
         try:
             return create_engine(self.configuration.connection_string())
-        except Exception as e:
-            raise e
+        except Exception:
+            raise
 
     def _retrieve_results(self, cs):
         columns = [d.name for d in cs.cursor.description]
@@ -158,8 +158,8 @@ class SQLAlchemyExtractor(Extractor):
         return results
 
     def test(self):
-        self._initialize()
         try:
+            self._initialize()
             result = self._execute("SELECT 1")
             rows = result["rows"]
             columns = result["columns"]
