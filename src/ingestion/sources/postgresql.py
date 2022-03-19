@@ -21,11 +21,16 @@ class PostgreSQLSourceConfiguration(SourceConfiguration):
             },
             "secret": [ "password" ],
         }
+    
+    def _connection_string_prefix(self):
+        return "postgresql"
 
     def connection_string(self) -> str:
         configuration = json.loads(self.configuration)
+        connection_string_prefix = self._connection_string_prefix()
 
-        return 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(
+        return '{prefix}://{user}:{password}@{host}:{port}/{database}'.format(
+            prefix=connection_string_prefix,
             user=configuration.get('user'),
             password=configuration.get('password'),
             host=configuration.get('host'),
