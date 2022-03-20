@@ -20,7 +20,7 @@ class SlackIntegration:
     @classmethod
     def _create_request_data(cls, metric):
         body = {
-            "text": "Danny Torrence left a 1 star review for your property.",
+            "text": "",
             "blocks": [
                 {
                     "type": "header",

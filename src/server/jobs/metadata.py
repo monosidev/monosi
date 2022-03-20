@@ -37,9 +37,6 @@ class MetadataJob(job.JobBase):
         source_configuration['config']['start_date'] = str(self.last_run)
         destination['start_date'] = str(self.last_run)
 
-        print(source_configuration['config'])
-        print(destination)
-
         # Metrics Pipeline
         try:
             mpipe_metrics = ingestion_task(source_configuration['config'], destination)
