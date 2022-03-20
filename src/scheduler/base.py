@@ -82,7 +82,6 @@ class MsiScheduler(APScheduler):
 
         jobstore = MsiJobStore(url=db_url)
         last_run = jobstore.get(datasource_id).get('created_at')
-        print(last_run)
 
         execution_id = jobstore.create({
             'job_id': job_id,
