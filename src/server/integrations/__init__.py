@@ -1,0 +1,2 @@
+from .slack import SlackIntegration
+

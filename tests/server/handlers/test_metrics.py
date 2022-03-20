@@ -17,7 +17,7 @@ def client(tmpdir):
 
 def test_metrics_get_individ(client):
     response = client.get(METRICS_ENDPOINT.format(
-        monitor_id=1,
+        datasource_id=1,
         metric="approx_distinct_count",
         column_name="user_id",
     ))

@@ -3,8 +3,9 @@ import socket
 
 
 class JobBase:
-    def __init__(self, job_id, execution_id):
+    def __init__(self, job_id, last_run, execution_id):
         self.job_id = job_id
+        self.last_run = last_run
         self.execution_id = execution_id
 
     @classmethod
@@ -78,14 +79,14 @@ class JobBase:
         }
 
     @classmethod
-    def run_job(cls, job_id, execution_id, *args, **kwargs):
+    def run_job(cls, job_id, last_run, execution_id, *args, **kwargs):
         """Wrapper to run this job in a static context.
         :param str job_id: Job id.
         :param str execution_id: Execution id.
         :param args:
         :param kwargs:
         """
-        job = cls(job_id, execution_id)
+        job = cls(job_id, last_run, execution_id)
         return job.run(*args, **kwargs)
 
     def run(self, *args, **kwargs):

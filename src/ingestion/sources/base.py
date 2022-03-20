@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from datetime import datetime
+from dateutil import parser
 from enum import Enum
 import logging
 from posixpath import lexists
@@ -32,6 +34,30 @@ class SourceConfiguration:
 
     def schema(self):
         return json.loads(self.configuration).get('schema')
+
+    def _start_date(self):
+        return json.loads(self.configuration)['start_date']
+
+    def minutes_ago(self):
+        thirty_days_ago = -int(.25*24*60)
+
+        start_date = self._start_date()
+        if start_date is None:
+            print('no start date')
+            return thirty_days_ago
+
+        try:
+            try:
+                start_date = parser.parse(start_date)
+            except:
+                logging.info("Start date is not a string: {}", str(start_date))
+
+            print("Starting from {}", -int((datetime.now() - start_date).total_seconds() / 60))
+            logging.info("Starting from {}", -int((datetime.now() - start_date).total_seconds() / 60))
+            return -int((datetime.now() - start_date).total_seconds() / 60)
+        except:
+            return thirty_days_ago
+
 
     def to_dict(self):
         return {
@@ -249,13 +275,12 @@ class ColumnMetricType(Enum):
         return cls.default()
 
 class MetricsQueryBuilder:
-    def __init__(self, dialect, database, schema, ddata):
+    def __init__(self, dialect, configuration, ddata):
         self.dialect = dialect
-        self.database = database
-        self.schema = schema
+        self.configuration = configuration
         self.ddata = ddata
 
-    def _base_query(self, select_sql, table, timestamp_field, minutes_ago=-int(0.25*24*60)):
+    def _base_query(self, select_sql, table, timestamp_field):
         return """
             SELECT 
                 DATE_TRUNC('HOUR', {timestamp_field}) as window_start, 
@@ -275,9 +300,9 @@ class MetricsQueryBuilder:
             select_sql=select_sql,
             table=table,
             timestamp_field=timestamp_field,
-            minutes_ago=minutes_ago,
-            database=self.database,
-            schema=self.schema,
+            minutes_ago=self.configuration.minutes_ago(),
+            database=self.configuration.database(),
+            schema=self.configuration.schema(),
         )
 
     def _extract_col_info(self, column):
@@ -436,7 +461,7 @@ class SQLAlchemySourceDialect:
 
     @classmethod
     def table_metrics_query(cls, configuration, discovery_data):
-        builder = MetricsQueryBuilder(cls, configuration.database(), configuration.schema(), discovery_data)
+        builder = MetricsQueryBuilder(cls, configuration, discovery_data)
         queries = builder.compile()
         return queries
 

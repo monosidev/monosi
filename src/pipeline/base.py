@@ -3,11 +3,10 @@ from typing import Any, Dict, List
 import json
 
 from ingestion.job import MPipe
-from pipeline.source import MsiInternalSource, MsiInternalSourceConfiguration
-from pipeline.transformers.zscores import ZScoreTransformer
 
-from .destination import MsiInternalDestination, MsiInternalDestinationConfiguration, MsiWireDestination
-from .transformers.metrics import MetricTransformer
+from .source import MsiInternalSource, MsiInternalSourceConfiguration
+from .transformers import AnomalyTransformer, MetricTransformer, ZScoreTransformer
+from .destination import MsiIntegrationDestination, MsiInternalDestination, MsiInternalDestinationConfiguration, MsiWireDestination
 
 
 @dataclass
@@ -32,11 +31,23 @@ class MsiPipeline:
 
         self._persist(output_normalized_json)
 
-def analysis_task(source: Dict[str, Any], destination: Dict[str, Any]):
-    def _create_ipipeline_zscores_dest(destination):
+
+# ZScores Task & Alerting
+def analysis_task(source: Dict[str, Any], destination: Dict[str, Any], alerts):
+    def _create_ipipeline_zscores_dest(destination, alerts):
+        def _create_ipipeline_alerts_dest(alerts):
+            pipeline = MsiPipeline(
+                transformers=[AnomalyTransformer],
+                destinations=[MsiIntegrationDestination(alert) for alert in alerts],
+            )
+            wire_destination = MsiWireDestination(pipeline=pipeline)
+
+            return wire_destination
+
         dest_configuration = MsiInternalDestinationConfiguration(json.dumps(destination))
         internal_destinations = [
-            MsiInternalDestination(configuration=dest_configuration)
+            MsiInternalDestination(configuration=dest_configuration),
+            _create_ipipeline_alerts_dest(alerts),
         ]
 
         pipeline = MsiPipeline(
@@ -58,7 +69,7 @@ def analysis_task(source: Dict[str, Any], destination: Dict[str, Any]):
 
 
     metrics_source = _create_ipipeline_source(source)
-    wire_destination = _create_ipipeline_zscores_dest(destination)
+    wire_destination = _create_ipipeline_zscores_dest(destination, alerts)
     
     ingestion_pipeline = MPipe(sources=[], destinations=[])
     ingestion_pipeline.sources = [metrics_source]
@@ -67,6 +78,7 @@ def analysis_task(source: Dict[str, Any], destination: Dict[str, Any]):
     return ingestion_pipeline
 
 
+# Table Health Metrics Collection Task
 def ingestion_task(source: Dict[str, Any], destination: Dict[str, Any]):
     def _create_ipipeline_destination(destination):
         dest_configuration = MsiInternalDestinationConfiguration(json.dumps(destination))

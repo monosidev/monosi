@@ -16,7 +16,7 @@ class ExecutionsListResource(BaseResource):
         Session = sessionmaker(self.app_db())
         with Session() as session:
             executions = session.query(Execution).all()
-            executions_dict_list = [self._state_to_str(execution.to_dict()) for execution in executions]
+            executions_dict_list = [_state_to_str(execution.to_dict()) for execution in executions]
 
         return {"executions": executions_dict_list}
 
@@ -28,12 +28,12 @@ class ExecutionsResource(BaseResource):
         try:
             Session = sessionmaker(self.app_db())
             with Session() as session:
-                executions = session.query(Execution).filter(Execution.monitor_id == execution_id).all()
+                executions = session.query(Execution).filter(Execution.datasource_id == execution_id).all()
         except:
             abort(404)
         return executions
 
     def get(self, obj_id):
-        executions = self._retrieve_by_id(obj_id) # This is actually monitor_id
+        executions = self._retrieve_by_id(obj_id) # This is actually datasource_id
 
         return {"executions": [_state_to_str(execution.to_dict()) for execution in executions]}
