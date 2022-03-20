@@ -44,6 +44,11 @@ class MetadataJob(job.JobBase):
         except Exception as e:
             logging.error(e)
 
+
+        # Don't send alerts on initial run, could overload.
+        if self.last_run == None:
+            integrations = []
+
         # Reprocessing - ZScores Pipelines
         try:
             mpipe_zscores = analysis_task(destination, destination, integrations)
