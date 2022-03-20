@@ -31,7 +31,6 @@ class ZScoreAlgorithm:
                 mean = cls._mean(values)
                 std_dev = cls._std_dev(values)
             except Exception as e:
-                print(metric)
                 return []
 
             try:

@@ -1,6 +1,7 @@
 from .base import BaseResource
 
-class JobListResource(BaseResource)
+# TODO
+class JobListResource(BaseResource):
     def _get_jobs(self):
         """Returns a dictionary for all jobs info.
         It's a blocking operation.

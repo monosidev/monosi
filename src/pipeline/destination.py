@@ -14,6 +14,13 @@ class MsiWireDestination(Destination):
     def _push(self, data):
         self.pipeline.process(data)
 
+class MsiIntegrationDestination(Destination):
+    def __init__(self, integration):
+        self.integration = integration
+
+    def _push(self, zscores):
+        [self.integration.send(zscore['metric_id'], self.integration.config) for zscore in zscores]
+
 
 class SQLAlchemyDestinationConfiguration(DestinationConfiguration):
     @classmethod
@@ -37,7 +44,6 @@ class SQLAlchemyDestinationConfiguration(DestinationConfiguration):
         }
 
     def connection_string(self) -> str:
-        print(self.configuration)
         configuration = json.loads(self.configuration)
 
         return '{type}://{user}:{password}@{host}:{port}/{database}'.format(

@@ -51,13 +51,19 @@ class MsiJobStore(SQLAlchemyJobStore):
             session.expunge_all()
 
     def get(self, id):
-        execution = None
-        Session = sessionmaker(self.engine)
-        with Session() as session:
-            obj = session.query(Execution).filter(Execution.id == id).one()
-            execution = obj.to_dict()
+        execution = {}
+        try:
+            Session = sessionmaker(self.engine)
+            with Session() as session:
+                obj = session.query(Execution).filter(Execution.datasource_id == id).order_by(Execution.created_at).first()
+                if obj is not None:
+                    execution = obj.to_dict()
 
-            session.expunge_all()
+                session.expunge_all()
+        except Exception as e:
+            logging.warn(e)
+            logging.warn("No execution found for datasource id: {}", id)
+
         return execution
 
 
@@ -72,12 +78,17 @@ class MsiScheduler(APScheduler):
 
     @classmethod
     def run_job(cls, job_class_path, job_id, db_url, *args, **kwargs):
+        datasource_id = args[0]
+
         jobstore = MsiJobStore(url=db_url)
+        last_run = jobstore.get(datasource_id).get('created_at')
+        print(last_run)
+
         execution_id = jobstore.create({
             'job_id': job_id,
             'state': constants.STATUS_SCHEDULED,
             'result': None,
-            'monitor_id': args[0],
+            'datasource_id': datasource_id,
         })
 
         try:
@@ -87,37 +98,32 @@ class MsiScheduler(APScheduler):
                 'state': constants.STATUS_SCHEDULED,
             })
 
-            cls.run_scheduler_job(job_class, job_id, execution_id, jobstore, *args, **kwargs)
+            cls.run_scheduler_job(job_class, job_id, execution_id, jobstore, last_run, *args, **kwargs)
         except Exception as e:
-            
-            print(e)
+            logging.error(e)
             jobstore.update({
                 'id': execution_id,
                 'state': constants.STATUS_SCHEDULED_ERROR,
             })
-
             return None
 
         return execution_id
 
     @classmethod
-    def run_scheduler_job(cls, job_class, job_id, execution_id, jobstore, *args, **kwargs):
+    def run_scheduler_job(cls, job_class, job_id, execution_id, jobstore, last_run, *args, **kwargs):
         try:
             jobstore.update({
                 'id': execution_id,
                 'state': constants.STATUS_RUNNING,
             })
 
-            result = job_class.run_job(job_id, execution_id, *args, **kwargs)
-            # result_json = json.dumps(result, indent=4, sort_keys=True)
+            result = job_class.run_job(job_id, last_run, execution_id, *args, **kwargs)
             jobstore.update({
                 'id': execution_id,
                 'state': constants.STATUS_SUCCEEDED,
-                # 'result': result_json,
             })
         except Exception as err:
-            print("Error: {0}".format(err))
-
+            logging.error("Error: {0}".format(err))
 
     def add_scheduler_job(self, job_class_string, name, job_id=None, job_args=None, trigger='interval', minutes=720, **kwargs):
         if not job_args:
@@ -133,7 +139,6 @@ class MsiScheduler(APScheduler):
         self.add_job(func=self.run_job, id=job_id, args=args, trigger=trigger, minutes=minutes, start_date=start_date, name=name, **kwargs)
 
         return job_id
-
 
     def _load_api(self):
         """

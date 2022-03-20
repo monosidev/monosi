@@ -7,29 +7,29 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-const ExecutionsTable: React.FC<{monitor_id: any}> = ({ monitor_id }) => {
+const ExecutionsTable: React.FC<{datasource_id: any}> = ({ datasource_id }) => {
   const [executions, setExecutions] = useState<any[]>([]);
   const [job, setJob] = useState<any>(null);
 
   useEffect(() => {
     async function loadJob() {
-      let res = await JobService.get(monitor_id);
+      let res = await JobService.get(datasource_id);
       if (res !== null) {
         setJob(res);
       }
     }
     async function loadExecutions() {
-      let res = await ExecutionService.get(monitor_id);
+      let res = await ExecutionService.get(datasource_id);
       if (res !== null && res.executions) {
         setExecutions(res.executions);
       }
     }
 
-    if (monitor_id !== null) {
+    if (datasource_id !== null) {
       loadExecutions();
       loadJob();
     }
-  }, [monitor_id]);
+  }, [datasource_id]);
 
   const columns = [
     {

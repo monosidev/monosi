@@ -15,6 +15,8 @@ from sqlalchemy.sql import func
 from sqlalchemy_utils import JSONType
 from mashumaro import DataClassDictMixin
 
+from .integrations.slack import SlackIntegration
+
 
 mapper_registry = registry()
 
@@ -39,7 +41,7 @@ class DataSource(DataClassDictMixin):
 
 @mapper_registry.mapped
 @dataclass
-class Integration(DataClassDictMixin):
+class Integration(DataClassDictMixin, SlackIntegration):
     __tablename__ = "msi_integrations"
     __sa_dataclass_metadata_key__ = "sa"
 
@@ -49,9 +51,6 @@ class Integration(DataClassDictMixin):
 
     id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('integ_id_seq'), primary_key=True, autoincrement=True)})
     created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
-
-    def send(self, message):
-        raise NotImplementedError
 
 @mapper_registry.mapped
 @dataclass
