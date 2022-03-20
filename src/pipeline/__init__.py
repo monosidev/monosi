@@ -1,1 +1,1 @@
-from .base import ingestion_task
+from .base import analysis_task, ingestion_task

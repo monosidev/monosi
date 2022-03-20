@@ -5,7 +5,7 @@ from pipeline.base import analysis_task
 from scheduler import job
 from telemetry.events import track_event
 
-from server.models import DataSource
+from server.models import DataSource, Integration
 from server.config import db_config as destination
 from server.middleware.db import db
 
@@ -29,9 +29,16 @@ class MetadataJob(job.JobBase):
     def run(self, datasource_id, *args, **kwargs):
         track_event(action="metadata_ingestion_start", label="server")
 
+        integrations = db.session.query(Integration).all()
         source = db.session.query(DataSource).filter(DataSource.id == datasource_id).one()
         source_configuration = source.to_dict()
         source_configuration['config']['type'] = source_configuration['type']
+
+        source_configuration['config']['start_date'] = str(self.last_run)
+        destination['start_date'] = str(self.last_run)
+
+        print(source_configuration['config'])
+        print(destination)
 
         # Metrics Pipeline
         try:
@@ -42,7 +49,7 @@ class MetadataJob(job.JobBase):
 
         # Reprocessing - ZScores Pipelines
         try:
-            mpipe_zscores = analysis_task(destination, destination)
+            mpipe_zscores = analysis_task(destination, destination, integrations)
             mpipe_zscores.run()
         except Exception as e:
             logging.error(e)
