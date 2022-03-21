@@ -7,29 +7,19 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-const ExecutionsTable: React.FC<{datasource_id: any}> = ({ datasource_id }) => {
+const ExecutionsTable: React.FC = () => {
   const [executions, setExecutions] = useState<any[]>([]);
-  const [job, setJob] = useState<any>(null);
 
   useEffect(() => {
-    async function loadJob() {
-      let res = await JobService.get(datasource_id);
-      if (res !== null) {
-        setJob(res);
-      }
-    }
     async function loadExecutions() {
-      let res = await ExecutionService.get(datasource_id);
+      let res = await ExecutionService.getAll();
       if (res !== null && res.executions) {
         setExecutions(res.executions);
       }
     }
 
-    if (datasource_id !== null) {
-      loadExecutions();
-      loadJob();
-    }
-  }, [datasource_id]);
+    loadExecutions();
+  }, []);
 
   const columns = [
     {
@@ -41,15 +31,23 @@ const ExecutionsTable: React.FC<{datasource_id: any}> = ({ datasource_id }) => {
       text: "Run At",
     },
   ];
-
-  const nextRunTime = (job: any) => {
-    if (job !== null) {
-        return new Date(job.next_run_time).toString();
-    }
-    return '-';
-  }
   
-  return (
+  const emptyState = () => {
+    return (
+      <div className="p-5 mb-4 rounded-3" style={{background: '#f1f1f1'}}>
+        <div className="container-fluid py-5">
+          <h1 className="display-5 fw-bold">No jobs yet!</h1>
+          <p className="col-md-8 fs-4">You need to create a data source in order to start tracking the status of ingestion jobs</p>
+          <small>If you haven't created a data source yet, <a href="/settings/sources">start there</a></small>
+        </div>
+      </div>
+    )
+  }
+  if (executions.length == 0) {
+        return emptyState();
+  }
+
+  return(
     <ToolkitProvider
         keyField="id"
         data={executions}
@@ -57,9 +55,6 @@ const ExecutionsTable: React.FC<{datasource_id: any}> = ({ datasource_id }) => {
         >
         {
           props => (
-            <div>
-              <h3 >Executions</h3>
-              <small style={{margin: '0rem 0rem 1.5rem 0'}} >Next run at: {nextRunTime(job)}</small>
               <div className="mt-4 table-responsive custom-table custom-table-responsive">
                 <BootstrapTable
                   { ...props.baseProps }
@@ -67,7 +62,6 @@ const ExecutionsTable: React.FC<{datasource_id: any}> = ({ datasource_id }) => {
                   pagination={paginationFactory({ sizePerPage: 10 })}
                 />
               </div>
-             </div>
            )
         }
       </ToolkitProvider>
