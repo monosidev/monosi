@@ -86,7 +86,24 @@ class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
 
     @classmethod
     def schema_columns_query(cls, database_name, schema_name):
-        raise NotImplementedError
+        return """
+        SELECT lower(c.table_name) AS "NAME",
+            lower(c.column_name) AS "COL_NAME",
+            lower(c.data_type) AS "COL_TYPE",
+            c.ordinal_position AS "COL_SORT_ORDER",
+            lower(c.table_catalog) AS "DATABASE",
+            lower(c.table_schema) AS "SCHEMA",
+            CASE
+                lower(t.table_type)
+                WHEN 'view' THEN 'true'
+                ELSE 'false'
+            END "IS_VIEW"
+        FROM INFORMATION_SCHEMA.COLUMNS AS c
+            LEFT JOIN INFORMATION_SCHEMA.TABLES t ON c.TABLE_NAME = t.TABLE_NAME
+            AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
+        WHERE LOWER(c.table_schema) = LOWER('{schema_name}')
+            AND LOWER(c.table_catalog) = LOWER('{database_name}')
+        """.format(database_name=database_name, schema_name=schema_name)
 
     @classmethod
     def query_access_logs_query(cls):
