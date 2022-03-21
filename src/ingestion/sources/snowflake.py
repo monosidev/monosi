@@ -96,7 +96,7 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
             WHERE 
               table_schema NOT IN ('INFORMATION_SCHEMA') 
               AND TABLE_TYPE NOT IN ('VIEW', 'EXTERNAL TABLE') 
-              AND LOWER( TABLE_SCHEMA ) = '{schema_name}'
+              AND LOWER( TABLE_SCHEMA ) = LOWER('{schema_name}')
             ORDER BY TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME;
         """.format(database_name=database_name, schema_name=schema_name)
 
@@ -119,7 +119,7 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
                 {database_name}.INFORMATION_SCHEMA.TABLES t
                     ON c.TABLE_NAME = t.TABLE_NAME
                     AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
-            WHERE LOWER( schema ) = '{schema_name}'
+            WHERE LOWER( schema ) = LOWER('{schema_name}')
         """.format(database_name=database_name, schema_name=schema_name)
 
     @classmethod
