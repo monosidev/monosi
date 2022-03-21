@@ -43,7 +43,6 @@ class SourceConfiguration:
 
         start_date = self._start_date()
         if start_date is None:
-            print('no start date')
             return thirty_days_ago
 
         try:
@@ -52,10 +51,9 @@ class SourceConfiguration:
             except:
                 logging.info("Start date is not a string: {}", str(start_date))
 
-            print("Starting from {}", -int((datetime.now() - start_date).total_seconds() / 60))
-            logging.info("Starting from {}", -int((datetime.now() - start_date).total_seconds() / 60))
-            return -int((datetime.now() - start_date).total_seconds() / 60)
-        except:
+            return -int((datetime.now().replace(tzinfo=None) - start_date.replace(tzinfo=None)).total_seconds() / 60)
+        except Exception as e:
+            logging.error(e)
             return thirty_days_ago
 
 
