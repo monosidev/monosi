@@ -39,7 +39,7 @@ class SourceConfiguration:
         return json.loads(self.configuration)['start_date']
 
     def minutes_ago(self):
-        thirty_days_ago = -int(.25*24*60)
+        thirty_days_ago = -int(30*24*60)
 
         start_date = self._start_date()
         if start_date is None:
