@@ -281,19 +281,19 @@ class MetricsQueryBuilder:
     def _base_query(self, select_sql, table, timestamp_field):
         return """
             SELECT 
-                DATE_TRUNC('HOUR', {timestamp_field}) as window_start, 
-                DATEADD(hr, 1, DATE_TRUNC('HOUR', {timestamp_field})) as window_end, 
-                COUNT(*) as row_count, 
-                '{table}' as TABLE_NAME,
-                '{database}' as DATABASE_NAME,
-                '{schema}' as SCHEMA_NAME,
+                DATE_TRUNC('HOUR', {timestamp_field}) as "WINDOW_START", 
+                DATEADD(hr, 1, DATE_TRUNC('HOUR', {timestamp_field})) as "WINDOW_END", 
+                COUNT(*) as "ROW_COUNT", 
+                '{table}' as "TABLE_NAME",
+                '{database}' as "DATABASE_NAME",
+                '{schema}' as "SCHEMA_NAME",
 
                 {select_sql}
             FROM {table} as c
             WHERE 
                 DATE_TRUNC('HOUR', {timestamp_field}) >= DATEADD(minute, {minutes_ago}, CURRENT_TIMESTAMP()) 
-            GROUP BY window_start, window_end 
-            ORDER BY window_start ASC;
+            GROUP BY "WINDOW_START", "WINDOW_END" 
+            ORDER BY "WINDOW_START" ASC;
         """.format(
             select_sql=select_sql,
             table=table,
@@ -314,7 +314,7 @@ class MetricsQueryBuilder:
             raise Exception("Unreachable: Metric type is defined that does not resolve to a definition.")
 
         select_unformatted = attr()
-        select_no_alias = select_unformatted.format('"{}"'.format(col_name.upper()))
+        select_no_alias = select_unformatted.format('{}'.format(col_name))
         select = "{} AS {}".format(select_no_alias, alias)
 
         return select
@@ -337,7 +337,8 @@ class MetricsQueryBuilder:
 
         if col_sql is not None:
             select_body[table_name]['sql'].append(col_sql)
-        if col_type == 'date' or col_type == 'timestamp_tz':
+        # TODO: Better handling of date / time types is needed 
+        if col_type == 'date' or "timestamp" in col_type:
             select_body[table_name]['timestamp_fields'].append(col_name)
 
     def _select_sql(self, ddata):

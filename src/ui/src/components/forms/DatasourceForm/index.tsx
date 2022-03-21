@@ -68,6 +68,7 @@ const DatasourceForm = () => {
           host: host,
           port: parseInt(port),
           database: database,
+          schema: schema
         },
       };
     }
@@ -173,6 +174,13 @@ const DatasourceForm = () => {
               value={database}
             />
           </EuiFormRow>
+          <EuiFormRow label="Schema">
+            <EuiFieldText
+              placeholder="public"
+              onChange={(e) => setSchema(e.target.value)}
+              value={schema}
+            />
+          </EuiFormRow>
         </div>
       )}
       {datasourceType === DataSourceTypes.REDSHIFT && (
@@ -223,6 +231,13 @@ const DatasourceForm = () => {
               placeholder="dev"
               onChange={(e) => setDatabase(e.target.value)}
               value={database}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Schema">
+            <EuiFieldText
+              placeholder="public"
+              onChange={(e) => setSchema(e.target.value)}
+              value={schema}
             />
           </EuiFormRow>
         </div>
