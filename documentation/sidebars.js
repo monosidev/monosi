@@ -35,6 +35,7 @@ module.exports = {
           collapsed: true,
           items: [
             "user-guide/local-deployment",
+            "user-guide/terraform-deployment",
             "user-guide/aws-ec2",
             "user-guide/kubernetes",
             "user-guide/hybrid-deployment",
