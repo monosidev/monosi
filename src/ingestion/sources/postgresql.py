@@ -1,6 +1,32 @@
 import json
 
-from .base import SQLAlchemyExtractor, SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
+from .base import MetricsQueryBuilder, SQLAlchemyExtractor, SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
+
+class PostgreSQLMetricsQueryBuilder(MetricsQueryBuilder):
+    def _base_query(self, select_sql, table, timestamp_field):
+        return """
+            SELECT 
+                DATE_TRUNC('HOUR', {timestamp_field}) as "WINDOW_START", 
+                DATE_TRUNC('HOUR', {timestamp_field}) + interval '1 hour' as "WINDOW_END",
+                COUNT(*) as "ROW_COUNT",
+                '{table}' as "TABLE_NAME",
+                '{database}' as "DATABASE_NAME",
+                '{schema}' as "SCHEMA_NAME",
+
+                {select_sql}
+            FROM {table} as c
+            WHERE 
+                DATE_TRUNC('HOUR', {timestamp_field}) >= CURRENT_TIMESTAMP + interval '{minutes_ago} minutes' 
+            GROUP BY "WINDOW_START", "WINDOW_END" 
+            ORDER BY "WINDOW_START" ASC;
+        """.format(
+            select_sql=select_sql,
+            table=table,
+            timestamp_field=timestamp_field,
+            minutes_ago=self.configuration.minutes_ago(),
+            database=self.configuration.database(),
+            schema=self.configuration.schema(),
+        )
 
 class PostgreSQLSourceConfiguration(SourceConfiguration):
     @classmethod
@@ -83,6 +109,12 @@ class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
     @classmethod
     def schema_tables_query(cls, database_name, schema_name):
         raise NotImplementedError
+
+    @classmethod
+    def table_metrics_query(cls, configuration, discovery_data):
+        builder = PostgreSQLMetricsQueryBuilder(cls, configuration, discovery_data)
+        queries = builder.compile()
+        return queries
 
     @classmethod
     def schema_columns_query(cls, database_name, schema_name):
