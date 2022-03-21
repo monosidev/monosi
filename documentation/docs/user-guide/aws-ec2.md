@@ -4,9 +4,6 @@ title: AWS EC2 Deployment
 sidebar_label: AWS EC2
 ---
 
-## Terraform
-
-Terraform setup will be available shortly.
 
 ## Manual
 
