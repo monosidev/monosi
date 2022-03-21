@@ -91,4 +91,13 @@ ENV/
 tags
 .DS_Store
 
+# Node
 node_modules/
+
+# Terraform - Local .terraform directories
+**/.terraform/*
+
+# Terraform - .tfstate files
+*.tfstate
+*.tfstate.*
+
