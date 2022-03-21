@@ -43,6 +43,6 @@ services:
     depends_on:
       - monosi-server
     environment:
-      - REACT_APP_API_URL=http://0.0.0.0:3000/v1/api/
+      - REACT_APP_API_URL=/v1/api/
     ports:
       - "3000:80"
