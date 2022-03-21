@@ -81,7 +81,7 @@ class MsiScheduler(APScheduler):
         datasource_id = args[0]
 
         jobstore = MsiJobStore(url=db_url)
-        last_run = jobstore.get(datasource_id).get('created_at')
+        last_run = jobstore.get(datasource_id).get('updated_at')
 
         execution_id = jobstore.create({
             'job_id': job_id,
@@ -120,6 +120,7 @@ class MsiScheduler(APScheduler):
             jobstore.update({
                 'id': execution_id,
                 'state': constants.STATUS_SUCCEEDED,
+                'updated_at': datetime.now(),
             })
         except Exception as err:
             logging.error("Error: {0}".format(err))
