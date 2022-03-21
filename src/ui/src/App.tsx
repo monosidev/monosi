@@ -14,6 +14,7 @@ import IntegrationsSettings from 'pages/settings/Integrations';
 import SourcesSettings from 'pages/settings/Sources';
 import ProfileSettings from 'pages/settings/Profile';
 import DashboardIndex from 'pages/app/dashboard/Index';
+import ExecutionsIndex from 'pages/app/executions/Index';
 import MonitorsIndex from 'pages/app/monitors/Index';
 import MonitorsDetail from 'pages/app/monitors/Detail';
 import MetricsDetail from 'pages/app/metrics/Detail';
@@ -36,6 +37,9 @@ function App() {
               <MetricsDetail />
           </Route>
 
+          <Route exact path="/executions">
+              <ExecutionsIndex />
+          </Route>
 {/*          <Route exact path="/monitors/:id">
               <MonitorsDetail />
           </Route>*/}
