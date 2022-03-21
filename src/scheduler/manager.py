@@ -43,7 +43,7 @@ class JobManager:
     def stop(self):
         return self.scheduler.shutdown()
 
-    def add_job(self, job_class_string, name=None, args=None, trigger='interval', minutes=20, job_id=None, **kwargs):
+    def add_job(self, job_class_string, name=None, args=None, trigger='interval', minutes=120, job_id=None, **kwargs):
         return self.scheduler.add_scheduler_job(job_class_string, job_id=job_id, name=name, job_args=args, trigger=trigger, minutes=minutes, **kwargs)
 
     def pause_job(self, job_id):
