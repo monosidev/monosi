@@ -23,7 +23,7 @@ def source_configuration(configuration_dict):
 
 def test_minutes_ago_no_start_date(source_configuration):
     minutes_ago = source_configuration.minutes_ago()
-    assert minutes_ago == -int(30*24*60)
+    assert minutes_ago == -int(1*24*60)
 
 def test_minutes_ago_with_start_date_as_datetime(configuration_dict):
     fifteen_minutes_ago = datetime.datetime.now() - datetime.timedelta(minutes=15)

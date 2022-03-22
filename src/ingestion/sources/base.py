@@ -39,11 +39,11 @@ class SourceConfiguration:
         return json.loads(self.configuration)['start_date']
 
     def minutes_ago(self):
-        thirty_days_ago = -int(30*24*60)
+        one_day_ago = -int(1*24*60)
 
         start_date = self._start_date()
         if start_date is None:
-            return thirty_days_ago
+            return one_day_ago
 
         try:
             try:
@@ -54,7 +54,7 @@ class SourceConfiguration:
             return -int((datetime.now().replace(tzinfo=None) - start_date.replace(tzinfo=None)).total_seconds() / 60)
         except Exception as e:
             logging.error(e)
-            return thirty_days_ago
+            return one_day_ago
 
 
     def to_dict(self):
