@@ -53,6 +53,24 @@ resource "aws_security_group_rule" "egress_tcp_443" {
   security_group_id = aws_security_group.sg.id
 }
 
+resource "aws_security_group_rule" "egress_tcp_postgres" {
+  type              = "egress"
+  from_port         = 5432
+  to_port           = 5432
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg.id
+}
+
+resource "aws_security_group_rule" "egress_tcp_redshift" {
+  type              = "egress"
+  from_port         = 5439
+  to_port           = 5439
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg.id
+}
+
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
 
@@ -102,37 +120,6 @@ resource "aws_instance" "monosi" {
 
   tags = {
     Name = "${var.prefix}-monosi"
-  }
-}
-
-resource "aws_elb" "ab_elb" {
-  name               = "${var.prefix}-monosi-elb"
-
-  listener {
-    instance_port     = 3000
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 10
-    timeout             = 60
-    target              = "HTTP:3000/"
-    interval            = 300
-  }
-
-  instances                   = [aws_instance.monosi[0].id]
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  subnets = [var.subnet_id]
-
-  tags = {
-    Name = "${var.prefix}-monosi-elb"
   }
 }
 
