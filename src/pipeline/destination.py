@@ -93,7 +93,7 @@ class SQLAlchemyPublisher(Publisher):
                     session.commit()
                     session.close()
             except Exception as e:
-                logging.warn(e)
+                logging.error(e)
         else:
             try: 
                 Session = sessionmaker(bind=self.engine)
@@ -103,7 +103,7 @@ class SQLAlchemyPublisher(Publisher):
                     session.commit()
                     session.close()
             except Exception as e:
-                logging.warn(e)
+                logging.error(e)
 
 
     def run(self, sqlalchemy_objs: List[Any]):
