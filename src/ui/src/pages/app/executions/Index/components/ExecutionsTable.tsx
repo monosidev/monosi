@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
 import ExecutionService from 'services/executions';
 import JobService from 'services/jobs';
 
@@ -29,6 +30,9 @@ const ExecutionsTable: React.FC = () => {
     {
       dataField: "created_at",
       text: "Run At",
+      formatter: (cell: any, row: any) => {
+        return format(new Date(row.created_at), 'eeee, dd MMMM HH:mm:ss');
+      },
     },
   ];
   
