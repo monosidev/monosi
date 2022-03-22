@@ -14,6 +14,12 @@ class DataSourceResource(CrudResource):
     def key(self):
         return "datasource"
 
+    def _after_destroy(self, sqlalc_obj): # Stop ingestion job
+        track_event(action="connection_destroyed", label=sqlalc_obj.type)
+        from server.middleware.scheduler import manager
+        manager.remove_job(str(sqlalc_obj))
+        
+
 class DataSourceListResource(ListResource):
     @property
     def resource(self):
@@ -57,8 +63,3 @@ class DataSourceTestResource(DataSourceResource):
 
     def put(self, obj_id): # TODO: Change Error Type
         raise NotImplementedError
-
-    def _after_destroy(self, sqlalc_obj): # Stop ingestion job
-        from server.middleware.scheduler import manager
-        manager.remove_job(str(sqlalc_obj))
-        
