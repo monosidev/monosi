@@ -17,7 +17,7 @@ class DataSourceResource(CrudResource):
     def _after_destroy(self, sqlalc_obj): # Stop ingestion job
         track_event(action="connection_destroyed", label=sqlalc_obj.type)
         from server.middleware.scheduler import manager
-        manager.remove_job(str(sqlalc_obj))
+        manager.remove_job(str(sqlalc_obj.id))
         
 
 class DataSourceListResource(ListResource):
