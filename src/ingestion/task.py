@@ -25,4 +25,5 @@ class Task:
         return unit.run(self.extractor)
 
     def run(self):
-        return [self._run_unit(unit) for unit in self.units]
+        for unit in self.units:
+            yield self._run_unit(unit)

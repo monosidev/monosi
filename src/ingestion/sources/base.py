@@ -5,7 +5,7 @@ from enum import Enum
 import logging
 from posixpath import lexists
 from sqlalchemy import create_engine
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Generator, List, Optional
 import abc
 import json
 
@@ -182,15 +182,19 @@ class SQLAlchemyExtractor(Extractor):
 
         multiple_sql = unit.request(self.discovered)
 
-        results = []
-        for sql in multiple_sql:
+        # results = []
+        while True:
             try:
+                sql = next(multiple_sql)
                 result = self._execute(sql)
-                results.append(result)
+                yield result
+                # results.append(result)
+            except StopIteration:
+                break
             except Exception as e:
                 logging.error(e)
 
-        return results
+        # return results
 
 class ColumnMetricType(Enum):
     APPROX_DISTINCTNESS = '_approx_distinctness'
@@ -489,8 +493,10 @@ class SQLAlchemySource(Source):
             schema_name=self.configuration.schema(),
         )
 
-    def _metrics(self, discovery_data) -> List[str]:
-        return self.dialect.table_metrics_query(self.configuration, discovery_data)
+    def _metrics(self, discovery_data) -> Generator:
+        queries = self.dialect.table_metrics_query(self.configuration, discovery_data)
+        for query in queries:
+            yield query
         # return [TaskUnit(request=self.dialect.table_metrics_query()) for table in tables]
 
     def _access_logs(self, _) -> TaskUnit:

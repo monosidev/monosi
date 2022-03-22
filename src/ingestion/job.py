@@ -40,8 +40,22 @@ class MPipe:
         self._create_tasks()
 
         # Run tasks
-        results = [task.run() for task in self.tasks]
+        for task in self.tasks:
+            task_results = task.run()
+            while True:
+                try:
+                    units_result = next(task_results)
+                    
+                    while True:
+                        try:
+                            unit_results = next(units_result)
+                            self.publish([[[unit_results]]])
+                        except StopIteration:
+                            break
+                except StopIteration:
+                    break
+
         
-        # Publish results
-        self.publish(results)
+        # # Publish results
+        # self.publish(results)
 
