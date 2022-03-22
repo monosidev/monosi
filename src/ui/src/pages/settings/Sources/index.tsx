@@ -10,6 +10,7 @@ import BootstrapPage from 'components/BootstrapPage';
 import Flyout from 'components/Flyout';
 import DatasourceForm from 'components/forms/DatasourceForm';
 import { ToastContainer, Toast } from 'react-bootstrap';
+import { format } from 'date-fns'
 
 const SourcesSettings: React.FC = () => {
   const [datasources, setDatasources] = useState<any[]>([]);
@@ -91,6 +92,9 @@ const SourcesSettings: React.FC = () => {
     {
       dataField: "created_at",
       text: "Created At",
+      formatter: (cell: any, row: any) => {
+        return format(new Date(row.created_at), 'eeee, dd MMMM HH:mm:ss');
+      },
     },
     {
       text: "",

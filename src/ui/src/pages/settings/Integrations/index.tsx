@@ -10,6 +10,8 @@ import IntegrationService from 'services/integrations';
 import Flyout from 'components/Flyout';
 import IntegrationForm from 'components/forms/IntegrationForm';
 
+import { format } from 'date-fns';
+
 const IntegrationsSettings: React.FC = () => {
   const [integrations, setIntegrations] = useState([]);
 
@@ -68,6 +70,9 @@ const IntegrationsSettings: React.FC = () => {
     {
       dataField: "created_at",
       text: "Created At",
+      formatter: (cell: any, row: any) => {
+        return format(new Date(row.created_at), 'eeee, dd MMMM HH:mm:ss');
+      },
     },
     {
       text: "",

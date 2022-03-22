@@ -9,6 +9,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
 import Plot from 'react-plotly.js';
+import { format } from 'date-fns';
 
 const MetricsDetail: React.FC = () => {
   const { database, schema, table } = useParams<{ database: string, schema: string, table: string }>();
@@ -102,12 +103,18 @@ const MetricsDetail: React.FC = () => {
     {
       dataField: "time_window_start",
       text: "TS Window Start",
-      sort: true
+      sort: true,
+      formatter: (cell: any, row: any) => {
+        return format(new Date(row.time_window_start), 'eeee, dd MMMM HH:mm:ss');
+      },
     },
     {
       dataField: "time_window_end",
       text: "TS Window End",
-      sort: true
+      sort: true,
+      formatter: (cell: any, row: any) => {
+        return format(new Date(row.time_window_end), 'eeee, dd MMMM HH:mm:ss');
+      },
     },
     {
       dataField: "value",
