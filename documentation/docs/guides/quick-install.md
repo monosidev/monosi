@@ -10,9 +10,9 @@ sidebar_label: Quick Install
 There are three ways to quickly install and run the Monosi application:
 
 - [Docker](#docker): Using `docker-compose` makes it easy to develop Workflows locally.
-- [Helm Charts](#helm-charts): Deploying the Server to [Kubernetes](https://kubernetes.io/) is an easy way to test the system and develop Workflows.
+- (Coming Soon) [Helm Charts](#helm-charts): Deploying the Server to [Kubernetes](https://kubernetes.io/) is an easy way to test the system and develop Workflows.
 
-We do not recommend using any of these methods in a [full (production) environment](/docs/server/production-deployment).
+_Note: These methods are not ready for deployment in a full production environment._
 
 ## Docker
 

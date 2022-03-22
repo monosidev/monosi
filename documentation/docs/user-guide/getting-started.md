@@ -10,8 +10,8 @@ In order to use Monosi successfully, you will need to complete the following ste
 
 1. Deploy Monosi
 2. Connect a data source
-3. Create a data quality monitor
-4. Connect an alerting destination
+3. Connect an alerting destination
+4. Track data quality monitors
 
 
 ## 1. Deploy Monosi
@@ -39,19 +39,7 @@ Then, click the button “Create Data Source” in order to enter the details fo
 
 More detailed information about connecting to your specific data source and a list of supported integrations can be found <a href="/docs/integrations/snowflake">here</a>.
 
-
-## 3. Start Monitoring
-
-Navigate to Monitors from the Home screen by clicking “Centralize & Monitor”.
-
-<img src="/img/monitors/monitors.png" height="700" alt="Monitors" />
-
-Then click the button “Create Monitor” and enter the details for the monitor that you would like to create. Once submitted Monosi will take a moment to get the historical data related to the data quality, and then begin regularly monitoring and alerting you of future issues.
-
-<img src="/img/monitors/create.png" height="700" alt="Create monitor" />
-
-
-## 4. Connect Alerts
+## 3. Connect Alerts
 
 Navigate to alerts by clicking “Add Alerts” on the Home screen.
 
@@ -60,4 +48,17 @@ Navigate to alerts by clicking “Add Alerts” on the Home screen.
 Then, click the button “Create Data Source” in order to enter the details for your alert destination and hit submit. 
 
 <img src="/img/alerts/create.png" height="700" alt="Create alert" />
+
+## 4. Track data quality monitors
+
+Navigate to Monitors from the Home screen by clicking “Centralize & Monitor”. If you don't see any monitors in the list, check the jobs page to ensure that a job has started. If there are no jobs running, wait a few minutes for Monosi to start (if there are no jobs after a few minutes, reach out in our [Slack](https://monosi.dev/slack))
+
+<img src="/img/monitors/monitors.png" height="700" alt="Monitors" />
+
+If you've previously connected a datasource, you should see a list of created monitors that Monosi has automatically profiled for you. Monosi analyzes the historical data related to the data quality of the detected tables and columns, then begins regularly monitoring and alerting you of future issues.
+
+<img src="/img/monitors/monitors_index.png" height="700" alt="Monitor Index" />
+
+
+
 
