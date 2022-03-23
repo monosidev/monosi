@@ -123,6 +123,12 @@ class MsiScheduler(APScheduler):
                 'updated_at': datetime.now(),
             })
         except Exception as err:
+            jobstore.update({
+                'id': execution_id,
+                'state': constants.STATUS_FAILED,
+                'result': repr(err),
+                'updated_at': datetime.now(),
+            })
             logging.error("Error: {0}".format(err))
 
     def add_scheduler_job(self, job_class_string, name, job_id=None, job_args=None, trigger='interval', minutes=720, **kwargs):
