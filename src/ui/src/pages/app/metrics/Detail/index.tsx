@@ -10,6 +10,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 
 import Plot from 'react-plotly.js';
 import { format } from 'date-fns';
+import { formatTimestamp } from 'utils/timestampFormatting';
 import { EuiLoadingContent } from '@elastic/eui';
 
 const MetricsDetail: React.FC = () => {
@@ -117,7 +118,7 @@ const MetricsDetail: React.FC = () => {
       text: "TS Window Start",
       sort: true,
       formatter: (cell: any, row: any) => {
-        return format(new Date(row.time_window_start), 'eeee, dd MMMM HH:mm:ss');
+        return formatTimestamp(row.time_window_start)
       },
     },
     {
@@ -125,7 +126,7 @@ const MetricsDetail: React.FC = () => {
       text: "TS Window End",
       sort: true,
       formatter: (cell: any, row: any) => {
-        return format(new Date(row.time_window_end), 'eeee, dd MMMM HH:mm:ss');
+        return formatTimestamp(row.time_window_end)
       },
     },
     {
