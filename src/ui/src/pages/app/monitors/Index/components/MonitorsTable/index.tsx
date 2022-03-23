@@ -10,7 +10,7 @@ import { format } from "date-fns";
 
 import './table.css';
 
-const BootstrapMonitorsTable: React.FC<{
+const MonitorsTable: React.FC<{
   monitors: any;
 }> = ({ monitors }) => {
 
@@ -117,5 +117,5 @@ const BootstrapMonitorsTable: React.FC<{
   }
 };
 
-export default BootstrapMonitorsTable;
+export default MonitorsTable;
 

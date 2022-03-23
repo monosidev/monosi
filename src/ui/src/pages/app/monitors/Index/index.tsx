@@ -5,7 +5,7 @@ import BootstrapPage from 'components/BootstrapPage';
 import Flyout from 'components/Flyout';
 
 import MonitorForm from './components/MonitorForm';
-import BootstrapMonitorsTable from './components/BootstrapMonitorsTable';
+import MonitorsTable from './components/MonitorsTable';
 
 const MonitorsIndex: React.FC = () => {
   const [monitors, setMonitors] = useState([]);
@@ -31,7 +31,7 @@ const MonitorsIndex: React.FC = () => {
               <h1 className="h2">Monitors</h1>
             </div>
 
-            <BootstrapMonitorsTable
+            <MonitorsTable
               monitors={monitors}
             />
           </main>
