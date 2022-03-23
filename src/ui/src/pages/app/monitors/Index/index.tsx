@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 
 import MonitorService from 'services/monitors';
 import BootstrapPage from 'components/BootstrapPage';
-import Flyout from 'components/Flyout';
-
-import MonitorForm from './components/MonitorForm';
 import MonitorsTable from './components/MonitorsTable';
 
 const MonitorsIndex: React.FC = () => {
   const [monitors, setMonitors] = useState([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const loadMonitors = async () => {
+    setIsLoading(true);
     let res = await MonitorService.getAll();
     if (res && res.monitors) {
       setMonitors(res.monitors);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -33,6 +33,7 @@ const MonitorsIndex: React.FC = () => {
 
             <MonitorsTable
               monitors={monitors}
+              isLoading={isLoading}
             />
           </main>
         </div>

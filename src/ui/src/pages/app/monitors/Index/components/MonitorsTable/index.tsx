@@ -12,7 +12,8 @@ import './table.css';
 
 const MonitorsTable: React.FC<{
   monitors: any;
-}> = ({ monitors }) => {
+  isLoading: boolean;
+}> = ({ monitors, isLoading }) => {
 
   const titleCase = (input: string) => {
     return input.split('_').map((el: string) => el.charAt(0).toUpperCase() + el.slice(1)).join(' ')
@@ -75,45 +76,53 @@ const MonitorsTable: React.FC<{
     },
   ];
 
-  const emptyState = () => {
-    return (
-      <div className="p-5 mb-4 rounded-3" style={{background: '#f1f1f1'}}>
-        <div className="container-fluid py-5">
-          <h1 className="display-5 fw-bold">Sorry, no data quality yet!</h1>
-          <p className="col-md-8 fs-4">You need to create a data source in order to start monitoring, alerting, and increasing your data quality.</p>
-          <small>If you haven't created a data source yet, <a href="/settings/sources">start there</a></small>
-        </div>
+  const emptyState = () => (
+    <div className="p-5 mb-4 rounded-3" style={{background: '#f1f1f1'}}>
+      <div className="container-fluid py-5">
+        <h1 className="display-5 fw-bold">Sorry, no data quality yet!</h1>
+        <p className="col-md-8 fs-4">You need to create a data source in order to start monitoring, alerting, and increasing your data quality.</p>
+        <small>If you haven't created a data source yet, <a href="/settings/sources">start there</a></small>
       </div>
-    )
-  }
+    </div>
+  );
+
+  const loadingState = () => (
+    <div className="p-5 mb-4 rounded-3" style={{background: '#f1f1f1'}}>
+      <div className="container-fluid py-5">
+        <h1 className="display-5 fw-bold">Loading data quality monitors.</h1>
+        <p className="col-md-8 fs-4">This may take a few seconds.</p>
+      </div>
+    </div>
+  );
   
-  if (monitors.length == 0) {
-        return emptyState();
-  }
-  else {
-          return (
-          <ToolkitProvider
-            keyField="id"
-            data={monitors}
-            columns={columns}
-            search
-            >
-            {
-                props => (
-                  <div>
-                    <Search.SearchBar { ...props.searchProps } />
-                    <div className="table-responsive custom-table custom-table-responsive">
-                      <BootstrapTable
-                        { ...props.baseProps }
-                        bordered={false}
-                        pagination={paginationFactory({ sizePerPage: 10 })}
-                      />
-                    </div>
-                  </div>
-                )
-            }
-            </ToolkitProvider>
-          );
+  if(isLoading) {
+    return loadingState();
+  } else if (monitors.length === 0) {
+    return emptyState();
+  } else {
+    return (
+    <ToolkitProvider
+      keyField="id"
+      data={monitors}
+      columns={columns}
+      search
+      >
+      {
+          props => (
+            <div>
+              <Search.SearchBar { ...props.searchProps } />
+              <div className="table-responsive custom-table custom-table-responsive">
+                <BootstrapTable
+                  { ...props.baseProps }
+                  bordered={false}
+                  pagination={paginationFactory({ sizePerPage: 10 })}
+                />
+              </div>
+            </div>
+          )
+      }
+      </ToolkitProvider>
+    );
   }
 };
 
