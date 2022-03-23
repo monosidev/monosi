@@ -10,6 +10,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 
 import Plot from 'react-plotly.js';
 import { format } from 'date-fns';
+import { EuiLoadingContent } from '@elastic/eui';
 
 const MetricsDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +40,8 @@ const MetricsDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    loadMonitor().then(() => loadMetrics());
+    loadMonitor();
+    loadMetrics();
   }, []);
 
 
@@ -144,6 +146,7 @@ const MetricsDetail: React.FC = () => {
     },
   ];
 
+  const loading = !monitor && <EuiLoadingContent lines={1} />;
 
   return (
     <BootstrapPage selectedTab="monitors">
@@ -153,7 +156,7 @@ const MetricsDetail: React.FC = () => {
             <ul className="nav me-auto">
               <li className="nav-item"><a href="/monitors" className="nav-link link-dark px-2 active" aria-current="page">Monitors</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
-              <li className="nav-item"><a href={`/monitors/${id}`} className="nav-link link-dark px-2">{monitor && monitor.table_name} - Table Health</a></li>
+              <li className="nav-item"><a href={`/monitors/${id}`} className="nav-link link-dark px-2">{loading || monitor.table_name} - Table Health</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
               <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{column_name || '-'}</span></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
@@ -171,9 +174,9 @@ const MetricsDetail: React.FC = () => {
             </div>
 
             <div className="btn-toolbar my-2 text-muted" style={{alignContent: 'center'}}>
-               <span><Server /> {monitor && monitor.database}</span>
-               <span style={{marginLeft: 20}}><Diagram3 /> {monitor && monitor.schema}</span>
-               <span style={{marginLeft: 20}}><Table /> {monitor && monitor.table_name}</span>
+               <span><Server /> {loading || monitor.database}</span>
+               <span style={{marginLeft: 20}}><Diagram3 /> {loading || monitor.schema}</span>
+               <span style={{marginLeft: 20}}><Table /> {loading || monitor.table_name}</span>
             </div>
           </div>
         </header>
