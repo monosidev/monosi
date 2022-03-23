@@ -12,24 +12,34 @@ import Plot from 'react-plotly.js';
 import { format } from 'date-fns';
 
 const MetricsDetail: React.FC = () => {
-  const { database, schema, table } = useParams<{ database: string, schema: string, table: string }>();
+  const { id } = useParams<{ id: string }>();
   const params = new URLSearchParams(useLocation().search);
   const column_name = params.get('column_name');
   const metric = params.get('metric');
 
   const [metrics, setMetrics] = useState([]);
+  const [monitor, setMonitor] = useState<any>();
+
+  const loadMonitor = async () => {
+    if (column_name == null || metric == null) return;
+
+    let res = await MonitorService.get(id);
+    if (res && res.monitor) {
+      setMonitor(res.monitor);
+    }
+  };
 
   const loadMetrics = async () => {
     if (column_name == null || metric == null) return;
 
-    let res = await MonitorService.getMetricData(database, schema, table, column_name, metric);
+    let res = await MonitorService.getMetricData(id, column_name, metric);
     if (res && res.metrics) {
       setMetrics(res.metrics);
     }
   };
 
   useEffect(() => {
-    loadMetrics();
+    loadMonitor().then(() => loadMetrics());
   }, []);
 
 
@@ -143,7 +153,7 @@ const MetricsDetail: React.FC = () => {
             <ul className="nav me-auto">
               <li className="nav-item"><a href="/monitors" className="nav-link link-dark px-2 active" aria-current="page">Monitors</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
-              <li className="nav-item"><a href={`/monitors/${database}/${schema}/${table}`} className="nav-link link-dark px-2">{table} - Table Health</a></li>
+              <li className="nav-item"><a href={`/monitors/${id}`} className="nav-link link-dark px-2">{monitor && monitor.table_name} - Table Health</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
               <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{column_name || '-'}</span></li>
               <li className="nav-item"><span className="nav-link link-dark px-2 text-muted">/</span></li>
@@ -161,9 +171,9 @@ const MetricsDetail: React.FC = () => {
             </div>
 
             <div className="btn-toolbar my-2 text-muted" style={{alignContent: 'center'}}>
-               <span><Server /> {database}</span>
-               <span style={{marginLeft: 20}}><Diagram3 /> {schema}</span>
-               <span style={{marginLeft: 20}}><Table /> {table}</span>
+               <span><Server /> {monitor && monitor.database}</span>
+               <span style={{marginLeft: 20}}><Diagram3 /> {monitor && monitor.schema}</span>
+               <span style={{marginLeft: 20}}><Table /> {monitor && monitor.table_name}</span>
             </div>
           </div>
         </header>

@@ -28,7 +28,7 @@ class DataSource(DataClassDictMixin):
     config: str = field(metadata={"sa": Column(JSONType, nullable=False)})
 
     id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('ds_id_seq'), primary_key=True, autoincrement=True)})
-    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
+    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False, server_default=func.now())})
 
     __tablename__ = "msi_sources"
     __sa_dataclass_metadata_key__ = "sa"
@@ -50,7 +50,7 @@ class Integration(DataClassDictMixin, SlackIntegration):
     config: str = field(metadata={"sa": Column(JSONType, nullable=False)})
 
     id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('integ_id_seq'), primary_key=True, autoincrement=True)})
-    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
+    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False, server_default=func.now())})
 
 @mapper_registry.mapped
 @dataclass
@@ -93,7 +93,7 @@ class Monitor(DataClassDictMixin):
     type: str = field(default=None, metadata={"sa": Column(String(100))})
     
     id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('integ_id_seq'), primary_key=True, autoincrement=True)})
-    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False)})
+    created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False, server_default=func.now())})
 
 
     def fqtn(self):

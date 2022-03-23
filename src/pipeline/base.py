@@ -5,7 +5,7 @@ import json
 from ingestion.job import MPipe
 
 from .source import MsiInternalSource, MsiInternalSourceConfiguration
-from .transformers import AnomalyTransformer, MetricTransformer, ZScoreTransformer
+from .transformers import AnomalyTransformer, MonitorTransformer, MetricTransformer, ZScoreTransformer
 from .destination import MsiIntegrationDestination, MsiInternalDestination, MsiInternalDestinationConfiguration, MsiWireDestination
 
 

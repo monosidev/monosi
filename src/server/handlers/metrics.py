@@ -5,6 +5,8 @@ from sqlalchemy import func
 from server.models import Metric, ZScore
 from server.middleware.db import db
 
+from .monitors import MonitorResource
+
 
 
 # class MetricListResource(Resource):
@@ -82,13 +84,15 @@ class MetricListResource(Resource):
             abort(404)
         return metrics
 
-
     # Entrypoint
-    def get(self, database, schema, table_name):
-        if 'column_name' in request.args and 'metric' in request.args:
-            return self.get_detail(table_name, database, schema, request.args)
+    def get(self, monitor_id):
+        monitor_resource = MonitorResource()
+        monitor = monitor_resource.get(obj_id=monitor_id)['monitor']
 
-        obj_list = self._retrieve_by_kwargs(table_name, database, schema)
+        if 'column_name' in request.args and 'metric' in request.args:
+            return self.get_detail(monitor['table_name'], monitor['database'], monitor['schema'], request.args)
+
+        obj_list = self._retrieve_by_kwargs(monitor['table_name'], monitor['database'], monitor['schema'])
         transformed_obj_list = self._transform(obj_list['metrics'])
 
         return {self.key: transformed_obj_list}
