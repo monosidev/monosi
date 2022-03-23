@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import MonitorService from 'services/monitors';
+import React from 'react';
 
 import { Server, Diagram3 } from 'react-bootstrap-icons';
 import BootstrapTable from "react-bootstrap-table-next";
@@ -17,19 +16,6 @@ const BootstrapMonitorsTable: React.FC<{
 
   const titleCase = (input: string) => {
     return input.split('_').map((el: string) => el.charAt(0).toUpperCase() + el.slice(1)).join(' ')
-  }
-
-  const handleDelete = (id: any) => {
-    async function deleteMonitor(id: string) {
-        let res = await MonitorService.delete(id);
-        if (res !== null && res.monitor) {
-          // success
-        } else {
-          //fail
-        }
-    }
-    deleteMonitor(id);
-    window.location.reload();
   }
 
   const columns = [
@@ -86,21 +72,6 @@ const BootstrapMonitorsTable: React.FC<{
         return format(new Date(row.created_at), 'eeee, dd MMMM HH:mm:ss');
       },
       filterValue: (cell: any, row: any) => row.created_at,
-    },
-    {
-      dataField: "id",
-      text: "",
-      formatter: (cell: any, row: any) => {
-          return(
-            <button 
-              onClick={() => handleDelete(row.id)} 
-              type="button" 
-              className="btn btn-sm btn-outline-danger"
-              disabled={process.env.REACT_APP_IS_DEMO === 'true'}>
-              Delete
-            </button>
-          );
-      },
     },
   ];
 
