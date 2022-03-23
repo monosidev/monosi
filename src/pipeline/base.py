@@ -69,17 +69,31 @@ def analysis_task(source: Dict[str, Any], destination: Dict[str, Any], alerts):
 
 
     metrics_source = _create_ipipeline_source(source)
-    wire_destination = _create_ipipeline_zscores_dest(destination, alerts)
+    wire_destination_zscores = _create_ipipeline_zscores_dest(destination, alerts)
     
     ingestion_pipeline = MPipe(sources=[], destinations=[])
     ingestion_pipeline.sources = [metrics_source]
-    ingestion_pipeline.destinations = [wire_destination]
+    ingestion_pipeline.destinations = [wire_destination_zscores]
 
     return ingestion_pipeline
 
 
 # Table Health Metrics Collection Task
 def ingestion_task(source: Dict[str, Any], destination: Dict[str, Any]):
+    def _create_ipipeline_destination_monitors(destination):
+        dest_configuration = MsiInternalDestinationConfiguration(json.dumps(destination))
+        internal_destinations = [
+            MsiInternalDestination(configuration=dest_configuration),
+        ]
+
+        pipeline = MsiPipeline(
+            destinations=internal_destinations,
+            transformers=[MonitorTransformer],
+        )
+        wire_destination = MsiWireDestination(pipeline=pipeline)
+
+        return wire_destination
+
     def _create_ipipeline_destination(destination):
         dest_configuration = MsiInternalDestinationConfiguration(json.dumps(destination))
         internal_destinations = [
@@ -101,9 +115,10 @@ def ingestion_task(source: Dict[str, Any], destination: Dict[str, Any]):
 
         return ingestion_pipeline
 
-    wire_destination = _create_ipipeline_destination(destination)
+    wire_destination_metrics = _create_ipipeline_destination(destination)
+    wire_destination_monitors = _create_ipipeline_destination_monitors(destination)
     
     ingestion_pipeline = _create_ipipeline(source)
-    ingestion_pipeline.destinations = [wire_destination]
+    ingestion_pipeline.destinations = [wire_destination_metrics, wire_destination_monitors]
 
     return ingestion_pipeline

@@ -291,6 +291,7 @@ class MetricsQueryBuilder:
                 '{table}' as "TABLE_NAME",
                 '{database}' as "DATABASE_NAME",
                 '{schema}' as "SCHEMA_NAME",
+                '{timestamp_field}' as "TIMESTAMP_FIELD",
 
                 {select_sql}
             FROM {table} as c

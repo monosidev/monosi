@@ -94,6 +94,16 @@ class SQLAlchemyPublisher(Publisher):
                     session.close()
             except Exception as e:
                 logging.error(e)
+        elif len(sqlalchemy_objs) > 0 and 'table_name' in sqlalchemy_objs[0]:
+            try: 
+                Session = sessionmaker(bind=self.engine)
+                with Session() as session:
+                    from server.models import Monitor
+                    session.bulk_insert_mappings(Monitor, sqlalchemy_objs)
+                    session.commit()
+                    session.close()
+            except Exception as e:
+                logging.error(e)
         else:
             try: 
                 Session = sessionmaker(bind=self.engine)
