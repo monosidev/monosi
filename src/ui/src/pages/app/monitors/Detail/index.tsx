@@ -16,18 +16,26 @@ import { Tab, Tabs } from 'react-bootstrap';
 // import ExecutionsTable from './components/ExecutionsTable';
 
 const MonitorsDetail: React.FC = () => {
-  const { database, schema, table } = useParams<{ database: string, schema: string, table: string }>();
+  const { id } = useParams<{ id: string }>();
+  const [monitor, setMonitor] = useState<any>();
   const [metrics, setMetrics] = useState([]);
 
+  const loadMonitor = async () => {
+    let res = await MonitorService.get(id);
+    if (res && res.monitor) {
+      setMonitor(res.monitor);
+    }
+  };
+
   const loadMetrics = async () => {
-    let res = await MonitorService.getMetrics(database, schema, table);
+    let res = await MonitorService.getMetrics(id);
     if (res && res.metrics) {
       setMetrics(res.metrics);
     }
   };
 
   useEffect(() => {
-    loadMetrics();
+    loadMonitor().then(() => loadMetrics());
   }, []);
 
   const titleCase = (input: string) => {
@@ -64,9 +72,9 @@ const MonitorsDetail: React.FC = () => {
       text: "",
       dataField: "",
       formatter: (cell: any, row: any) => {
-        if (database && schema && table) {
+        if (id) {
           return (
-            <a href={"/monitors/" + database + "/" + schema + "/" + table + "/metrics?column_name=" + row.column_name + "&metric=" + row.metric} type="button" className="btn btn-sm btn-outline-secondary">View</a>
+            <a href={`/monitors/${id}/metrics?column_name=${row.column_name}&metric=${row.metric}`} type="button" className="btn btn-sm btn-outline-secondary">View</a>
           );
         } else { 
           return <a href="#">Pending</a>;
@@ -129,7 +137,7 @@ const MonitorsDetail: React.FC = () => {
             <ul className="nav me-auto">
               <li className="nav-item"><a href="/monitors" className="nav-link link-dark px-2 active" aria-current="page">Monitors</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2">/</span></li>
-              <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{table} - Table Health</span></li>
+              <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{monitor && monitor.table} - Table Health</span></li>
             </ul>
           </div>
         </nav>
@@ -137,17 +145,17 @@ const MonitorsDetail: React.FC = () => {
           <div className="container d-flex flex-wrap justify-content-center">
             <div className="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
               <div className="d-flex flex-column">
-                <span className="fs-4">{table} - Table Health</span>
+                <span className="fs-4">{monitor && monitor.table_name} - Table Health</span>
                 <span className="fs-10 text-muted">
-                       <span><Table /> {table}</span>
-                       <span style={{marginLeft: 20}}><Calendar4Range /> Timestamp Field (Pending)</span>
+                       <span><Table /> {monitor && monitor.table_name}</span>
+                       <span style={{marginLeft: 20}}><Calendar4Range /> {monitor && monitor.timestamp_field}</span>
                 </span>
               </div>
             </div>
 
             <div className="btn-toolbar my-2 text-muted" style={{alignContent: 'center'}}>
-               <span><Server /> {database}</span>
-               <span style={{marginLeft: 20}}><Diagram3 /> {schema}</span>
+               <span><Server /> {monitor && monitor.database}</span>
+               <span style={{marginLeft: 20}}><Diagram3 /> {monitor && monitor.schema}</span>
             </div>
           </div>
         </header>

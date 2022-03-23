@@ -6,8 +6,6 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
-import { format } from "date-fns";
-
 import './table.css';
 
 const MonitorsTable: React.FC<{
@@ -70,7 +68,7 @@ const MonitorsTable: React.FC<{
       text: "Last Update",
       sort: true,
       formatter: (cell: any, row: any) => {
-        return format(new Date(row.created_at), 'eeee, dd MMMM HH:mm:ss');
+        return row.created_at;
       },
       filterValue: (cell: any, row: any) => row.created_at,
     },

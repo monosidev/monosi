@@ -99,8 +99,30 @@ class SQLAlchemyPublisher(Publisher):
                 Session = sessionmaker(bind=self.engine)
                 with Session() as session:
                     from server.models import Monitor
-                    session.bulk_insert_mappings(Monitor, sqlalchemy_objs)
+
+                    entries_to_update = []
+                    entries_to_put = []
+                    # Find all customers that needs to be updated and build mappings
+                    def uniq(monitors):
+                        return [dict(s) for s in set(frozenset(d.items()) for d in monitors)]
+
+                    monitors = uniq(sqlalchemy_objs)
+
+                    for monitor in monitors:
+                        monitors_objs = session.query(Monitor.id).filter(
+                                Monitor.table_name == monitor['table_name'],
+                                Monitor.database == monitor['database'],
+                                Monitor.schema == monitor['schema'],
+                        ).all()
+                        if len(monitors_objs) > 0:
+                            entries_to_update.append(monitor)
+                        else:
+                            entries_to_put.append(monitor)
+
+                    session.bulk_insert_mappings(Monitor, entries_to_put)
+                    session.bulk_update_mappings(Monitor, entries_to_update)
                     session.commit()
+
                     session.close()
             except Exception as e:
                 logging.error(e)

@@ -12,6 +12,7 @@ from .metrics import (
 )
 from .monitors import (
     MonitorListResource,
+    MonitorResource,
 )
 
 def init_api(api):
@@ -23,5 +24,7 @@ def init_api(api):
     api.add_resource(DataSourceTestResource, '/{}/datasources/<int:obj_id>/test'.format(api.PREFIX))
     
     api.add_resource(MonitorListResource, '/{}/monitors'.format(api.PREFIX))
-    api.add_resource(MetricListResource, '/{}/monitors/<string:database>/<string:schema>/<string:table_name>/metrics'.format(api.PREFIX))
+    api.add_resource(MonitorResource, '/{}/monitors/<int:obj_id>'.format(api.PREFIX))
+
+    api.add_resource(MetricListResource, '/{}/monitors/<int:monitor_id>/metrics'.format(api.PREFIX))
 

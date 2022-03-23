@@ -3,7 +3,7 @@ from .base import JSONTransformer
 class MonitorTransformer(JSONTransformer):
     @classmethod
     def _mapped_schema(cls): # TODO: Add table, schema, database
-        return '.[] | .[] | .[] | .rows | .[] | { "table_name": .table_name, "database": .database, "schema": .schema, "timestamp_field": .timestamp_field, "type": "table_health" }'
+        return '.[] | .[] | .[] | .rows | .[] | { "table_name": .TABLE_NAME, "database": .DATABASE_NAME, "schema": .SCHEMA_NAME, "timestamp_field": .TIMESTAMP_FIELD, "type": "table_health" }'
 
     @classmethod
     def _original_schema(cls):
@@ -22,7 +22,6 @@ class MonitorTransformer(JSONTransformer):
             },
             "secret": [ ],
         }
-        pass
         # raise NotImplementedError
 
     @classmethod
