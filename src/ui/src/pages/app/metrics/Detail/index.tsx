@@ -48,7 +48,7 @@ const MetricsDetail: React.FC = () => {
     "x": metrics.map((el: any) => el.time_window_start),
     "y": metrics.map((el: any) => el.value),
     "name": "Values",
-    "hoverinfo": "x",
+    "hoverinfo": "all",
     "mode": "lines+markers",
     "showlegend": false,
     "marker": {
