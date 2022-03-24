@@ -2,7 +2,7 @@ import logging
 from math import sqrt
 from typing import Any, List
 
-from .base import Transformer
+from ingestion.transformers.base import Transformer
 
 
 class ZScoreAlgorithm:

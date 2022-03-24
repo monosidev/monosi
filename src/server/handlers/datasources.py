@@ -34,7 +34,7 @@ class DataSourceListResource(ListResource):
         try:
             from server.middleware.scheduler import manager
             manager.add_job(
-                job_class_string='server.jobs.metadata.MetadataJob',
+                job_class_string='server.jobs.base.SchemaJob',
                 job_id=str(sqlalc_obj.id),
                 name='DataSource Ingestion: {}'.format(sqlalc_obj.name),
                 args=[sqlalc_obj.id]
@@ -63,3 +63,4 @@ class DataSourceTestResource(DataSourceResource):
 
     def put(self, obj_id): # TODO: Change Error Type
         raise NotImplementedError
+

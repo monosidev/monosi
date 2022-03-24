@@ -45,31 +45,7 @@ class Pipe(Destination):
 
     def _push(self, input_dict):
         transformed_dict = self._transform(input_dict)
-        output_normalized_json = transformed_dict
+        # output_normalized_json = transformed_dict
+        self.publish(transformed_dict)
 
-        self.publish(output_normalized_json)
-
-    def run(self):
-        # Create Tasks
-        tasks = self._create_tasks()
-
-        # Run tasks
-        for task in tasks:
-            task_results_gen = task.run()
-            while True:
-                try:
-                    units_results_gen = next(task_results_gen)
-                    
-                    while True:
-                        try:
-                            unit_results = next(units_results_gen)
-                            self.push(unit_results)
-                        except StopIteration:
-                            break
-                except StopIteration:
-                    break
-
-        
-        # # Publish results
-        # self.publish(results)
 

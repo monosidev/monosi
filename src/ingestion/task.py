@@ -7,7 +7,7 @@ class TaskUnit:
     request: Any
 
     def run(self, extractor):
-        return extractor.run(self)
+        yield extractor.run(self)
 
 @dataclass
 class MultiTaskUnit(TaskUnit):

@@ -1,32 +1,33 @@
-import logging
 from typing import Any, Dict, Type
+import logging
 import json
 
 from .base import (
     Destination,
-    DestinationConfiguration,
-    Publisher,
+    DestinationConfiguration
 )
+from .monosi import MonosiDestination, MonosiDestinationConfiguration
+
 
 class DestinationFactory:
     @classmethod
     def _configuration_cls(cls, config_type: str) -> Type[DestinationConfiguration]:
-        if False:
-            return
+        config_type = config_type.lower()
+        if config_type == "monosi":
+            return MonosiDestinationConfiguration
         else:
             raise Exception("Error: Unknown destination type.")
 
     @classmethod
     def _destination_cls(cls, config_type: str) -> Type[Destination]:
-        if False:
-            return
+        config_type == config_type.lower()
+        if config_type == "monosi":
+            return MonosiDestination
         else:
             raise Exception("Error: Unknown destination type.")
 
     @classmethod
     def create(cls, configuration: Dict[str, Any]) -> Destination:
-        logging.warn("You should not be creating a destination with the factory at the moment.")
-
         config_type = configuration.get('type')
         if config_type == None:
             raise Exception("Error: No destination type set.")
@@ -40,3 +41,4 @@ class DestinationFactory:
         destination = destination_cls(configuration_obj)
 
         return destination
+

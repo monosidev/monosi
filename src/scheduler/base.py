@@ -129,7 +129,9 @@ class MsiScheduler(APScheduler):
                 'result': repr(err),
                 'updated_at': datetime.now(),
             })
-            logging.error("Error: {0}".format(err))
+            import traceback
+            traceback.print_exc()
+            logging.error("Error: {}".format(repr(err)))
 
     def add_scheduler_job(self, job_class_string, name, job_id=None, job_args=None, trigger='interval', minutes=720, **kwargs):
         if not job_args:
@@ -153,4 +155,8 @@ class MsiScheduler(APScheduler):
         from flask_apscheduler import api
         self._add_url_route('get_job', '/jobs/<job_id>', api.get_job, 'GET')
         self._add_url_route('get_jobs', '/jobs', api.get_jobs, 'GET')
+
+        self._add_url_route('pause_job', '/jobs/<job_id>/pause', api.pause_job, 'POST')
+        self._add_url_route('resume_job', '/jobs/<job_id>/resume', api.resume_job, 'POST')
+        # self._add_url_route('run_job', '/jobs/<job_id>/run', api.run_job, 'POST') # TODO
 

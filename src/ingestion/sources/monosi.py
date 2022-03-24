@@ -1,4 +1,3 @@
-import json
 import logging
 from sqlalchemy.orm import sessionmaker, Session
 from typing import List
@@ -7,7 +6,7 @@ from ingestion.sources.postgresql import PostgreSQLSourceConfiguration
 from ingestion.sources import PostgreSQLSource, SQLAlchemyExtractor
 from ingestion.task import TaskUnit
 
-class MsiInternalSourceExtractor(SQLAlchemyExtractor):
+class MonosiSourceExtractor(SQLAlchemyExtractor):
     def __init__(self, configuration):
         self.configuration = configuration
         self.engine = None
@@ -39,24 +38,18 @@ class MsiInternalSourceExtractor(SQLAlchemyExtractor):
 
         return results
 
-class MsiInternalSourceConfiguration(PostgreSQLSourceConfiguration):
+class MonosiSourceConfiguration(PostgreSQLSourceConfiguration):
     @property
     def type(self):
-        return "msi_internal"
+        return "monosi"
 
-class MsiInternalSource(PostgreSQLSource):
-    def __init__(self, configuration: MsiInternalSourceConfiguration):
+class MonosiSource(PostgreSQLSource):
+    def __init__(self, configuration: MonosiSourceConfiguration):
         super().__init__(configuration)
 
-    def _metrics(self):
-        from server.models import Metric
-        return Metric
-
     def task_units(self) -> List[TaskUnit]:
-        return [
-            TaskUnit(request=self._metrics)
-        ]
+        return []
 
     def extractor(self):
-        return MsiInternalSourceExtractor(self.configuration)
+        return MonosiSourceExtractor(self.configuration)
 
