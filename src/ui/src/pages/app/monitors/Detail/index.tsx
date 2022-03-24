@@ -142,7 +142,7 @@ const MonitorsDetail: React.FC = () => {
             <ul className="nav me-auto">
               <li className="nav-item"><a href="/monitors" className="nav-link link-dark px-2 active" aria-current="page">Monitors</a></li>
               <li className="nav-item"><span className="nav-link link-dark px-2">/</span></li>
-              <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{loading || monitor.table} - Table Health</span></li>
+              <li className="nav-item"><span className="nav-link link-dark text-muted px-2">{loading || monitor.table_name} - Table Health</span></li>
             </ul>
           </div>
         </nav>
