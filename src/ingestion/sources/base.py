@@ -105,7 +105,6 @@ class Extractor(object):
     def run(self, request):
         raise NotImplementedError
 
-
 # Base SQL
 
 class SQLAlchemyExtractor(Extractor):
@@ -515,9 +514,9 @@ class SQLAlchemySource(Source):
 
     def task_units(self) -> List[TaskUnit]:
         units = [
-            # TaskUnit(request=self._columns_schema),
+            TaskUnit(request=self._columns_schema),
             # TaskUnit(request=self._tables_schema),
-            MultiTaskUnit(request=self._metrics),
+            # MultiTaskUnit(request=self._metrics),
             # TaskUnit(request=self._access_logs),
             # TaskUnit(request=self._copy_and_load_logs),
         ]

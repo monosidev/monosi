@@ -1,4 +1,4 @@
-from .base import JSONTransformer
+from ingestion.transformers.base import JSONTransformer
 
 class MetricTransformer(JSONTransformer):
     @classmethod

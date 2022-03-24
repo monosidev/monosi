@@ -1,3 +1,5 @@
+import logging
+from jsonschema import validate
 import abc
 import json
 import pyjq
@@ -5,9 +7,7 @@ import pyjq
 class Transformer:
     @classmethod
     def match(cls, input, schema):
-        # matches input against schema given
-        # raise NotImplementedError
-        return True
+        raise NotImplementedError
 
     @abc.abstractclassmethod
     def _original_schema():
@@ -31,8 +31,8 @@ class Transformer:
 
         outgoing_json = cls._transform(incoming_json)
 
-        if cls.match(outgoing_json, cls._normalized_schema()) == False:
-            raise Exception("Error: Can't transform, outgoing JSON doesn't match schema.\n\nSchema: {}\n\nOutgoing: {}", cls._normalized_schema(), outgoing_json)
+        # if cls.match(outgoing_json, cls._normalized_schema()) == False:
+        #     raise Exception("Error: Can't transform, outgoing JSON doesn't match schema.\n\nSchema: {}\n\nOutgoing: {}", cls._normalized_schema(), outgoing_json)
 
         return outgoing_json
 
@@ -42,10 +42,21 @@ class JSONTransformer(Transformer):
         raise NotImplementedError
 
     @classmethod
-    def _transform(cls, json_input):
-        json_input = json.loads(json.dumps(json_input, indent=4, sort_keys=True, default=str))
+    def _transform(cls, input):
+        json_input = json.loads(json.dumps(input, indent=4, sort_keys=True, default=str))
         transformed_results = pyjq.all(
             cls._mapped_schema(),
             json_input,
         )
         return transformed_results
+
+    @classmethod
+    def match(cls, input, schema):
+        try:
+            validate(instance=input, schema=schema)
+            return True
+        except Exception as e:
+            logging.info(e)
+            return False
+
+

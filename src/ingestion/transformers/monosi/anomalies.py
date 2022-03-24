@@ -1,4 +1,4 @@
-from .base import Transformer
+from ingestion.transformers.base import Transformer
 
 class AnomalyTransformer(Transformer):
     @classmethod

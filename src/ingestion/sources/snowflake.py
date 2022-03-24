@@ -104,15 +104,15 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
     def schema_columns_query(cls, database_name, schema_name):
         return """
             SELECT
-                lower(c.table_name) AS name,
-                lower(c.column_name) AS col_name,
-                lower(c.data_type) AS col_type,
-                c.comment AS col_description,
-                lower(c.ordinal_position) AS col_sort_order,
-                lower(c.table_catalog) AS database,
-                lower(c.table_schema) AS schema,
-                t.comment AS description,
-                decode(lower(t.table_type), 'view', 'true', 'false') AS is_view
+                lower(c.table_name) AS NAME,
+                lower(c.column_name) AS COL_NAME,
+                lower(c.data_type) AS COL_TYPE,
+                c.comment AS COL_DESCRIPTION,
+                lower(c.ordinal_position) AS COL_SORT_ORDER,
+                lower(c.table_catalog) AS DATABASE,
+                lower(c.table_schema) AS SCHEMA,
+                t.comment AS DESCRIPTION,
+                decode(lower(t.table_type), 'view', 'true', 'false') AS IS_VIEW
             FROM
                 {database_name}.INFORMATION_SCHEMA.COLUMNS AS c
             LEFT JOIN
