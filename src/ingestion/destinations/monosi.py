@@ -42,12 +42,26 @@ class SQLAlchemyPublisher(Publisher):
                 session.close()
         except Exception as e:
             logging.error(e)
+    
+    def _terminate(self):
+        if not self.engine and not self.connection:
+            return
+
+        if self.connection is not None:
+            self.connection.close()
+            self.connection = None
+        
+        if self.engine is not None:
+            self.engine.dispose()
+            self.engine = None
 
 
     def run(self, data: List[Any]):
         self._initialize()
+        result = self._execute(data)
+        self._terminate()
 
-        return self._execute(data)
+        return result
 
 
 class MonosiDestinationConfiguration(PostgreSQLSourceConfiguration):
