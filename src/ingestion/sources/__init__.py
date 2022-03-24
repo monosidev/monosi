@@ -15,7 +15,8 @@ from .redshift import RedshiftSource, RedshiftSourceConfiguration
 class SourceFactory:
     @classmethod
     def _configuration_cls(cls, config_type: str) -> Type[SourceConfiguration]:
-        if config_type.lower() == 'postgresql':
+        config_type = config_type.lower()
+        if config_type == 'postgresql':
             return PostgreSQLSourceConfiguration
         elif config_type == 'snowflake':
             return SnowflakeSourceConfiguration
@@ -26,11 +27,12 @@ class SourceFactory:
 
     @classmethod
     def _source_cls(cls, config_type: str) -> Type[Source]:
-        if config_type.lower() == 'postgresql':
+        config_type = config_type.lower()
+        if config_type == 'postgresql':
             return PostgreSQLSource
-        elif config_type.lower() == 'snowflake':
+        elif config_type == 'snowflake':
             return SnowflakeSource
-        elif config_type.lower() == 'redshift':
+        elif config_type == 'redshift':
             return RedshiftSource
         else:
             raise Exception("Error: Unknown source type.")
