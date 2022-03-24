@@ -148,10 +148,24 @@ class SQLAlchemyExtractor(Extractor):
 
         return results
 
+    def _terminate(self):
+        if not self.engine and not self.connection:
+            return
+
+        if self.connection is not None:
+            self.connection.close()
+            self.connection = None
+        
+        if self.engine is not None:
+            self.engine.dispose()
+            self.engine = None
+
     def test(self):
         try:
             self._initialize()
             result = self._execute("SELECT 1")
+            self._terminate()
+
             rows = result["rows"]
             columns = result["columns"]
 
@@ -166,6 +180,8 @@ class SQLAlchemyExtractor(Extractor):
         sql = unit.request
         results = self._execute(sql)
 
+        self._terminate()
+
         return results
 
     def run_multiple(self, unit: TaskUnit):
@@ -173,19 +189,17 @@ class SQLAlchemyExtractor(Extractor):
 
         multiple_sql = unit.request
 
-        # results = []
         while True:
             try:
                 sql = next(multiple_sql)
                 result = self._execute(sql)
                 yield result
-                # results.append(result)
             except StopIteration:
                 break
             except Exception as e:
                 logging.error(e)
 
-        # return results
+        self._terminate()
 
 class ColumnMetricType(Enum):
     APPROX_DISTINCTNESS = '_approx_distinctness'

@@ -30,11 +30,25 @@ class MonosiSourceExtractor(SQLAlchemyExtractor):
 
         return objs
     
+    def _terminate(self):
+        if not self.engine and not self.connection:
+            return
+
+        if self.connection is not None:
+            self.connection.close()
+            self.connection = None
+        
+        if self.engine is not None:
+            self.engine.dispose()
+            self.engine = None
+    
     def run(self, unit: TaskUnit):
         self._initialize()
 
         model = unit.request()
         results = self._execute(model)
+
+        self._terminate()
 
         return results
 
