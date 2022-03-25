@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { CpuFill, Collection } from 'react-bootstrap-icons';
+import { CpuFill, Collection, CloudDownloadFill } from 'react-bootstrap-icons';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
@@ -116,7 +116,7 @@ const IntegrationsSettings: React.FC = () => {
                            </a>
                            <a href="/settings/sources" className="list-group-item list-group-item-action">
                               <div className="d-flex w-100">
-                                 <CpuFill className="bi" width="24" height="24" />
+                                 <CloudDownloadFill className="bi" width="24" height="24" />
                                  <h5 className="mb-1 mx-3">Data Sources</h5>
                               </div>
                               <small className="text-muted">Manage connected data sources</small>

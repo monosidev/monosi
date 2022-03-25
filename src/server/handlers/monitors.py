@@ -17,8 +17,12 @@ class MonitorListResource(ListResource):
 
     @staticmethod
     def _transform(obj):
+        metrics = obj[0] # hack
+        if obj[0] == 1:
+            metrics = 0
+
         return {
-            'metrics': obj[0],
+            'metrics': metrics,
             'id': obj[1],
             'table_name': obj[2],
             'database': obj[3],

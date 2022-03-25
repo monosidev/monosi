@@ -2,6 +2,8 @@ import json
 from typing import Any
 from urllib.parse import quote
 
+from ingestion.task import TaskUnit
+
 from .base import (
     SourceConfiguration,
     SQLAlchemySourceDialect,
@@ -180,18 +182,16 @@ class SnowflakeSourceDialect(SQLAlchemySourceDialect):
             ORDER BY LAST_LOAD_TIME DESC;
         """
 
-class SnowflakeSourceExtractor(SQLAlchemyExtractor):
-    def discovery_query(self):
-        return SnowflakeSourceDialect.schema_columns_query(
-            database_name=self.configuration.database(),
-            schema_name=self.configuration.schema(),
-        )
-
 class SnowflakeSource(SQLAlchemySource):
     def __init__(self, configuration: SnowflakeSourceConfiguration):
         self.configuration = configuration
         self.dialect = SnowflakeSourceDialect
 
-    def extractor(self):
-        return SnowflakeSourceExtractor(self.configuration)
+    def discovery_query(self):
+        return TaskUnit(
+            request=SnowflakeSourceDialect.schema_columns_query(
+                database_name=self.configuration.database(),
+                schema_name=self.configuration.schema(),
+            )
+        )
 

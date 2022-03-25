@@ -35,6 +35,7 @@ class MonitorTransformer(JSONTransformer):
                           "COL_SORT_ORDER":{
                              "type":[
                                 "string",
+                                "integer",
                                 "null"
                              ]
                           },

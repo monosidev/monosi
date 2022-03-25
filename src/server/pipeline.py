@@ -1,4 +1,5 @@
-from ingestion.job import Pipe
+import json
+from ingestion.pipeline import Pipeline
 from ingestion.transformers import (
     # AnomalyTransformer,
     # MetricTransformer,
@@ -20,7 +21,7 @@ import server.models as models
 
 
 def resolve_to_model(data: List[Any]):
-    if len(data) == 0:
+    if data is None or len(data) == 0:
         raise Exception("Could not resolve to model. Data is empty.")
 
     model_dict = data[0]
@@ -58,9 +59,14 @@ class SQLAlchemyPublisher(Publisher):
         try: 
             model = resolve_to_model(data)
 
+            def uniq(arr):
+                return [dict(s) for s in set(frozenset(d.items()) for d in arr)]
+
+            unique_data = uniq(data)
+
             Session = sessionmaker(bind=self.engine)
             with Session() as session:
-                session.bulk_insert_mappings(model, data)
+                session.bulk_insert_mappings(model, unique_data)
                 session.commit()
                 session.close()
         except Exception as e:
@@ -88,11 +94,10 @@ class MonosiDestination(Destination):
 
 
 
-configuration = MonosiDestinationConfiguration(str(destination_dict))
+configuration = MonosiDestinationConfiguration(json.dumps(destination_dict))
 msi_db = MonosiDestination(configuration)
 
-msi_pipeline = Pipe(
-    sources=[],
+msi_pipeline = Pipeline(
     transformers=[
         # AnomalyTransformer,
         # MetricTransformer,
