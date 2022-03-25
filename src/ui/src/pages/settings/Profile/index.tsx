@@ -1,5 +1,5 @@
 import React from 'react';
-import { CpuFill, Collection, CloudDownloadFill } from 'react-bootstrap-icons';
+import { CpuFill, Collection, CloudDownloadFill, PersonCircle } from 'react-bootstrap-icons';
 import BootstrapPage from 'components/BootstrapPage';
 
 import ProfileForm from 'components/forms/ProfileForm';
@@ -21,7 +21,7 @@ const ProfileSettings: React.FC = () => {
                         <div className="list-group">
                            <a href="/settings/profile" className="list-group-item list-group-item-action active" aria-current="true">
                               <div className="d-flex w-100">
-                                 <CpuFill className="bi" width="24" height="24" />
+                                 <PersonCircle className="bi" width="24" height="24" />
                                  <h5 className="mb-1 mx-3">Profile</h5>
                               </div>
                               <small>Edit account details</small>
