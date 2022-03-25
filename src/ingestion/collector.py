@@ -71,7 +71,6 @@ class Collector:
         if self.state.fetched_data is None:
             return
 
-        print(self.state.fetched_data)
         [pipeline.push(self.state.fetched_data) for pipeline in self.pipelines]
         self.state.fetched_data = None
     
