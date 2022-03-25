@@ -87,11 +87,15 @@ class Source:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def task_units(self):
+    def task_units(self, discovered_data) -> List[TaskUnit]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def test(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def discovery_query(self):
         raise NotImplementedError
 
     def pull(self):
@@ -112,7 +116,6 @@ class SQLAlchemyExtractor(Extractor):
         self.configuration = configuration
         self.engine = None
         self.connection = None
-        self.discovered = None
 
     def _create_engine(self):
         try:
@@ -129,21 +132,12 @@ class SQLAlchemyExtractor(Extractor):
             "rows": rows,
         }
 
-    def discovery_query(self):
-        raise NotImplementedError
-
     def _initialize(self):
         if self.engine and self.connection:
             return
 
         self.engine = self._create_engine()
         self.connection = self.engine.connect()
-
-    def _discover(self):
-        if self.discovered:
-            return
-        
-        self.discovered = self._execute(self.discovery_query())
 
     def _execute(self, sql: str):
         if not self.connection:
@@ -168,18 +162,16 @@ class SQLAlchemyExtractor(Extractor):
 
     def run(self, unit: TaskUnit):
         self._initialize()
-        self._discover()
 
-        sql = unit.request(self.discovered)
+        sql = unit.request
         results = self._execute(sql)
 
         return results
 
     def run_multiple(self, unit: TaskUnit):
         self._initialize()
-        self._discover()
 
-        multiple_sql = unit.request(self.discovered)
+        multiple_sql = unit.request
 
         # results = []
         while True:
@@ -506,15 +498,15 @@ class SQLAlchemySource(Source):
         return self.dialect.copy_and_load_logs_query()
 
     def extractor(self):
-        raise NotImplementedError
+        return SQLAlchemyExtractor(self.configuration)
 
     def test(self):
         extractor = self.extractor()
         return extractor.test()
 
-    def task_units(self) -> List[TaskUnit]:
+    def task_units(self, discovered_data) -> List[TaskUnit]:
         units = [
-            TaskUnit(request=self._columns_schema),
+            TaskUnit(request=self._columns_schema(discovered_data)),
             # TaskUnit(request=self._tables_schema),
             # MultiTaskUnit(request=self._metrics),
             # TaskUnit(request=self._access_logs),

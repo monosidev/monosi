@@ -5,7 +5,7 @@ from typing import Any, List
 
 from ingestion.sources.postgresql import PostgreSQLSourceConfiguration
 
-from .base import Destination, DestinationConfiguration, Publisher
+from .base import Destination, Publisher
 
 
 class SQLAlchemyPublisher(Publisher):

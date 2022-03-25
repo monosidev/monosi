@@ -1,4 +1,4 @@
-from ingestion.job import Pipe
+from ingestion.collector import Collector
 
 from scheduler import job
 from telemetry.events import track_event
@@ -8,7 +8,7 @@ from server.middleware.db import db
 from server.pipeline import msi_pipeline
 
 
-class SchemaJob(job.JobBase):
+class CollectorJob(job.JobBase):
     MAX_RETRIES = 3
     TIMEOUT = 10
     
@@ -21,12 +21,12 @@ class SchemaJob(job.JobBase):
 
         return source_configuration
 
-    def _create_pipeline(self, source):
-        pipeline = Pipe.from_configuration(
-            sources=[source],
+    def _create_collector(self, source):
+        collector = Collector.from_configuration(
+            source_dict=source,
         )
-        pipeline.destinations = [msi_pipeline]
-        return pipeline
+        collector.pipelines = [msi_pipeline]
+        return collector
 
     @classmethod
     def meta_info(cls):
@@ -42,8 +42,7 @@ class SchemaJob(job.JobBase):
         track_event(action="metadata_ingestion_start", label="server")
 
         source = self._retrieve_source_configuration(datasource_id)
-        source['only'] = 'schema'
 
-        collector_pipeline = self._create_pipeline(source)
+        collector_pipeline = self._create_collector(source)
         collector_pipeline.run()
 

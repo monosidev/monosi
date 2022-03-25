@@ -22,12 +22,18 @@ const MonitorsTable: React.FC<{
 
   const columns = [
     {
-      dataField: "metrics",
+      dataField: 'metrics',
       text: "Status",
       formatter: (cell: any, row: any) => {
-        return (
-          <span className="badge rounded-pill bg-success">{row.metrics} passed</span>
-        );
+        if (row.metrics == 0) {
+                return (
+                  <span className="badge rounded-pill bg-warning">Pending</span>
+                );
+        } else {
+                return (
+                  <span className="badge rounded-pill bg-success">Enabled</span>
+                );
+        }
       },
       search: false,
     },

@@ -1,5 +1,7 @@
 import json
 
+from ingestion.task import TaskUnit
+
 from .base import MetricsQueryBuilder, SQLAlchemyExtractor, SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
 
 class PostgreSQLMetricsQueryBuilder(MetricsQueryBuilder):
@@ -145,18 +147,17 @@ class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
     def query_copy_logs_query(cls):
         raise NotImplementedError
 
-class PostgreSQLSourceExtractor(SQLAlchemyExtractor):
-    def discovery_query(self):
-        return PostgreSQLSourceDialect.schema_columns_query(
-            database_name=self.configuration.database(),
-            schema_name=self.configuration.schema(),
-        )
-
 class PostgreSQLSource(SQLAlchemySource):
     def __init__(self, configuration: PostgreSQLSourceConfiguration):
         self.configuration = configuration
         self.dialect = PostgreSQLSourceDialect
 
-    def extractor(self):
-        return PostgreSQLSourceExtractor(self.configuration)
+    def discovery_query(self):
+        return TaskUnit(
+            request=PostgreSQLSourceDialect.schema_columns_query(
+                database_name=self.configuration.database(),
+                schema_name=self.configuration.schema(),
+            )
+        )
+
 
