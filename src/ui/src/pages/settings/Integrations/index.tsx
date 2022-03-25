@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { CpuFill, Collection, CloudDownloadFill } from 'react-bootstrap-icons';
+import { CpuFill, Collection, CloudDownloadFill, PersonCircle } from 'react-bootstrap-icons';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
@@ -109,7 +109,7 @@ const IntegrationsSettings: React.FC = () => {
                         <div className="list-group">
                            <a href="/settings/profile" className="list-group-item list-group-item-action" aria-current="true">
                               <div className="d-flex w-100">
-                                 <CpuFill className="bi" width="24" height="24" />
+                                 <PersonCircle className="bi" width="24" height="24" />
                                  <h5 className="mb-1 mx-3">Profile</h5>
                               </div>
                               <small className="text-muted">Edit account details</small>
