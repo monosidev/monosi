@@ -2,6 +2,8 @@ import React from 'react';
 
 import BootstrapPage from 'components/BootstrapPage';
 import ExecutionsTable from './components/ExecutionsTable';
+import JobsTable from './components/JobsTable';
+import { Tab, Tabs } from 'react-bootstrap';
 
 const ExecutionsIndex: React.FC = () => {
   return (
@@ -13,7 +15,14 @@ const ExecutionsIndex: React.FC = () => {
               <h1 className="h2">Executions</h1>
             </div>
 
-            <ExecutionsTable />
+            <Tabs defaultActiveKey="executions" id="tabs" className="mb-4">
+                <Tab eventKey="executions" title="Executions">
+                    <ExecutionsTable />
+                </Tab>
+                <Tab eventKey="jobs" title="Jobs">
+                    <JobsTable />
+                </Tab>
+            </Tabs>
           </main>
         </div>
       </div>

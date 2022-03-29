@@ -1,6 +1,9 @@
 from dataclasses import dataclass
+from enum import Enum
 import itertools
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
+
+from mashumaro.serializer.base.dict import DataClassDictMixin
 from ingestion.sources import SourceFactory
 
 from ingestion.sources.base import Source
@@ -9,50 +12,57 @@ from ingestion.task import Task
 from .pipeline import Pipeline
 
 
-def flatten(arr):
-    return list(itertools.chain.from_iterable(arr))
+class MonitorType(Enum):
+    SCHEMA = 'schema'
+    TABLE = 'table'
 
 @dataclass
-class CollectorState:
-    discovered_data: Any = None
-    fetched_data: Any = None
+class Monitor(DataClassDictMixin):
+    type: str
+    definition: Optional[Dict] = None
+
+@dataclass
+class CollectorConfiguration(DataClassDictMixin): # This is technically repr of what YAML used to be
+    monitors: List[Monitor]
+
+    @classmethod
+    def default(cls):
+        return cls(monitors=[])
+
+    def filter_by_monitors(self, ddata):
+        pass
 
 @dataclass
 class Collector:
     source: Source
-    filters: List[Any] # pure py function
     pipelines: List[Pipeline]
-    state: CollectorState = CollectorState()
+    configuration: CollectorConfiguration = CollectorConfiguration.default()
 
-    def _create_tasks(self):
+    def _create_tasks(self, discovered_data):
         extractor = self.source.extractor()
-        task_units = self.source.task_units(self.state.discovered_data)
+        # monitors = self.configuration.filter_by_monitors(discovered_data)
+        monitors = discovered_data
+        task_type = self.configuration.monitors[0].type
+        task_units = self.source.task_units(monitors, task_type) # hack
 
         return [Task(extractor=extractor, units=[unit]) for unit in task_units]
 
-    def _filter_data(self, discovered_data):
-        for data_filter in self.filters:
-            discovered_data = data_filter(discovered_data)
-        return discovered_data
-
     @classmethod
-    def from_configuration(cls, source_dict: Dict[str, Any], filters = [], pipelines = []):
+    def from_configuration(cls, source_dict: Dict[str, Any], pipelines = [], configuration = {'monitors': []}):
         source = SourceFactory.create(source_dict)
+        configuration = CollectorConfiguration.from_dict(configuration)
 
-        return cls(source=source, filters=filters, pipelines=pipelines)
+        return cls(source=source, pipelines=pipelines, configuration=configuration)
 
     def discover_data(self):
         discovery_query = self.source.discovery_query()
         extractor = self.source.extractor()
 
-        discovered_data = extractor.run(discovery_query)
-        discovered_data_filtered = self._filter_data(discovered_data)
+        return extractor.run(discovery_query)
 
-        self.state.discovered_data = discovered_data_filtered
-
-    def fetch_data(self):
+    def fetch_data(self, discovered_data):
         # Run tasks
-        for task in self._create_tasks():
+        for task in self._create_tasks(discovered_data):
             task_results_gen = task.run()
             while True:
                 try:
@@ -60,22 +70,47 @@ class Collector:
                     
                     while True:
                         try:
-                            self.state.fetched_data = next(units_results_gen)
-                            self.pass_data()
+                            fetched_data = next(units_results_gen)
+                            self.pass_data(fetched_data)
                         except StopIteration:
                             break
                 except StopIteration:
                     break
 
-    def pass_data(self):
-        if self.state.fetched_data is None:
-            return
+    def pass_data(self, data):
+        try:
+            [pipeline.push(data) for pipeline in self.pipelines]
+        except Exception as e:
+            print(e)
 
-        [pipeline.push(self.state.fetched_data) for pipeline in self.pipelines]
-        self.state.fetched_data = None
+    # def _create_tasks(self):
+    #     extractor = self.source.extractor()
+    #     task_units = self.source.task_units(self.configuration)
+
+    #     return [Task(extractor=extractor, units=[unit]) for unit in task_units]
+
+    # def fetch_and_send_data(self):
+    #     # Run tasks
+    #     for task in self._create_tasks():
+    #         task_results_gen = task.run()
+    #         while True:
+    #             try:
+    #                 units_results_gen = next(task_results_gen)
+                    
+    #                 while True:
+    #                     try:
+    #                         fetched_data = next(units_results_gen)
+    #                         self.pass_data(fetched_data)
+    #                     except StopIteration:
+    #                         break
+    #             except StopIteration:
+    #                 break
     
+    # def run(self):
+    #     self.fetch_and_send_data()
+
     def run(self):
-        self.discover_data()
-        self.fetch_data()
-        self.pass_data()
+        discovered_data = self.discover_data() # TODO: Move Discover, Fetch, Return to tasks, create from monitor def
+        data = self.fetch_data(discovered_data)
+        self.pass_data(data)
 

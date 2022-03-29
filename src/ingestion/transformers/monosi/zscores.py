@@ -75,6 +75,7 @@ class ZScoreTransformer(Transformer):
 
     @classmethod
     def _transform(cls, metrics):
+        print("We do the zscore peipeline")
         sensitivity = 2.5
         zscores = []
 
@@ -92,28 +93,25 @@ class ZScoreTransformer(Transformer):
 
     @classmethod
     def _original_schema(cls):
-        # List of 
-        return {
-            "type": "object",
-            "properties": {
-                "metric": { "type": "string" },
-                "column_name": { "type": "string" },
-                "value": { "type": "string" },
 
-                # A bunch of possible/optional metrics
-            },
-            "secret": [ ],
+        return {
+           "$schema":"http://json-schema.org/draft-04/schema#",
+           "type":"array"
+             # "items":[
+             #    {
+             #       "type":"object",
+             #       "properties" : {
+             #            "metric": { "type": "string" },
+             #            "column_name": { "type": "string" },
+             #            "value": { "type": "string" }
+             #        }
+             #    }
+            # ]
         }
-        # raise NotImplementedError
 
     @classmethod
     def _normalized_schema(cls):
         return {
-            "type": "object",
-            "properties": {
-                "zscore": { "type": "string" },
-                "expected_range_start": { "type": "string" },
-                "expected_range_end": { "type": "string" },
-            },
-            "secret": [ ],
+           "$schema":"http://json-schema.org/draft-04/schema#",
+           "type":"object",
         }
