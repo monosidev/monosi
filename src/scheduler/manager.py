@@ -61,3 +61,9 @@ class JobManager:
     def resume_job(self, job_id):
         return self.scheduler.resume_job(job_id)
 
+    def add_listener(self, listener, events):
+        return self.scheduler.add_listener(listener, events)
+
+    def remove_listener(self, listener):
+        return self.scheduler.remove_listener(listener)
+

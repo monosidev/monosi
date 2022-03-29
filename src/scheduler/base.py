@@ -131,7 +131,7 @@ class MsiScheduler(APScheduler):
             })
             import traceback
             traceback.print_exc()
-            logging.error("Error: {}".format(repr(err)))
+            logging.error("SchedulerError: {}".format(repr(err)))
 
     def add_scheduler_job(self, job_class_string, name, job_id=None, job_args=None, trigger='interval', minutes=720, **kwargs):
         if not job_args:
@@ -144,7 +144,11 @@ class MsiScheduler(APScheduler):
         args.extend(job_args)
 
         start_date = datetime.now() - timedelta(minutes=(minutes-1)) # start one minute after schedule
-        self.add_job(func=self.run_job, id=job_id, args=args, trigger=trigger, minutes=minutes, start_date=start_date, name=name, **kwargs)
+
+        if trigger == 'date': # hack
+            self.add_job(func=self.run_job, id=job_id, args=args, trigger=trigger, name=name, **kwargs)
+        else:
+            self.add_job(func=self.run_job, id=job_id, args=args, trigger=trigger, minutes=minutes, start_date=start_date, name=name, **kwargs)
 
         return job_id
 

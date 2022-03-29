@@ -87,7 +87,7 @@ class Source:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def task_units(self, discovered_data) -> List[TaskUnit]:
+    def task_units(self, discovered_data, task_type) -> List[TaskUnit]: # hack
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -237,7 +237,7 @@ class ColumnMetricType(Enum):
     @classmethod
     def default_for(cls, data_type): 
         data_type = data_type.lower()
-        if data_type == 'number':
+        if 'num' in data_type or 'int' in data_type:
             return [
                 cls.ZERO_RATE,
                 cls.NEGATIVE_RATE,
@@ -248,7 +248,7 @@ class ColumnMetricType(Enum):
                 cls.COMPLETENESS,
                 cls.APPROX_DISTINCTNESS,
             ]
-        elif data_type == 'text':
+        elif 'text' in data_type or 'character' in data_type:
             return [
                 cls.APPROX_DISTINCT_COUNT,
                 cls.MEAN_LENGTH,
@@ -262,6 +262,10 @@ class ColumnMetricType(Enum):
                 cls.TEXT_NULL_KEYWORD_RATE,
                 cls.COMPLETENESS,
                 cls.APPROX_DISTINCTNESS,
+            ]
+        else:
+            return [
+                cls.COMPLETENESS,
             ]
             
 
@@ -504,14 +508,13 @@ class SQLAlchemySource(Source):
         extractor = self.extractor()
         return extractor.test()
 
-    def task_units(self, discovered_data) -> List[TaskUnit]:
-        units = [
-            TaskUnit(request=self._columns_schema(discovered_data)),
-            # TaskUnit(request=self._tables_schema),
-            # MultiTaskUnit(request=self._metrics),
-            # TaskUnit(request=self._access_logs),
-            # TaskUnit(request=self._copy_and_load_logs),
-        ]
+    def task_units(self, discovered_data, task_type) -> List[TaskUnit]:
+        units = []
+
+        if task_type == 'schema':
+            units.append(TaskUnit(request=self._columns_schema(discovered_data)))
+        elif task_type == "table_health":
+            units.append(MultiTaskUnit(request=self._metrics(discovered_data)))
 
         return units
 

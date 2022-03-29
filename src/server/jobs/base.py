@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from ingestion.collector import Collector
 
 from scheduler import job
@@ -5,7 +6,6 @@ from telemetry.events import track_event
 
 from server.models import DataSource
 from server.middleware.db import db
-from server.pipeline import msi_pipeline
 
 
 class CollectorJob(job.JobBase):
@@ -21,11 +21,12 @@ class CollectorJob(job.JobBase):
 
         return source_configuration
 
-    def _create_collector(self, source):
+    def _create_collector(self, source, pipelines, configuration):
         collector = Collector.from_configuration(
             source_dict=source,
+            pipelines=pipelines,
+            configuration=configuration,
         )
-        collector.pipelines = [msi_pipeline]
         return collector
 
     @classmethod
@@ -38,11 +39,23 @@ class CollectorJob(job.JobBase):
             ],
         }
 
+    @abstractmethod
+    def pipelines(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def configuration(self):
+        raise NotImplementedError
+
     def run(self, datasource_id, *args, **kwargs):
         track_event(action="metadata_ingestion_start", label="server")
 
         source = self._retrieve_source_configuration(datasource_id)
 
-        collector_pipeline = self._create_collector(source)
+        collector_pipeline = self._create_collector(source, self.pipelines(), self.configuration())
         collector_pipeline.run()
+
+
+
+
 

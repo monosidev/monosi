@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import ExecutionService from 'services/executions';
-import JobService from 'services/jobs';
 
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -46,7 +45,7 @@ const ExecutionsTable: React.FC = () => {
     return (
       <div className="p-5 mb-4 rounded-3" style={{background: '#f1f1f1'}}>
         <div className="container-fluid py-5">
-          <h1 className="display-5 fw-bold">No jobs yet!</h1>
+          <h1 className="display-5 fw-bold">No executions yet!</h1>
           <p className="col-md-8 fs-4">You need to create a data source in order to start tracking the status of ingestion jobs</p>
           <small>If you haven't created a data source yet, <a href="/settings/sources">start there</a></small>
         </div>

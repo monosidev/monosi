@@ -1,10 +1,10 @@
 import json
 from ingestion.pipeline import Pipeline
 from ingestion.transformers import (
-    # AnomalyTransformer,
-    # MetricTransformer,
+    AnomalyTransformer,
+    MetricTransformer,
     MonitorTransformer,
-    # ZScoreTransformer,
+    ZScoreTransformer,
 )
 
 from .config import db_config as destination_dict
@@ -20,17 +20,17 @@ from ingestion.destinations.base import Destination, Publisher
 import server.models as models
 
 
-def resolve_to_model(data: List[Any]):
-    if data is None or len(data) == 0:
-        raise Exception("Could not resolve to model. Data is empty.")
+def resolve_to_model(data: List[Any]): # TODO: Handle resolution
+    if len(data) == 0:
+        return
 
-    model_dict = data[0]
-
-    try:
-        models.Monitor.from_dict(model_dict)
+    example_dict = data[0]
+    if 'metric' in example_dict.keys():
+        return models.Metric
+    elif 'timestamp_field' in example_dict.keys():
         return models.Monitor
-    except:
-        raise Exception("Could not resolve to model. Did not match.")
+
+    raise Exception("Could not resolve to model. Did not match.")
 
 
 class SQLAlchemyPublisher(Publisher):
@@ -56,14 +56,19 @@ class SQLAlchemyPublisher(Publisher):
         if self.engine is None:
             raise Exception("Initialize publisher before execution.")
 
+        if data is None or len(data) == 0:
+            logging.warn("No data to persist")
+            return
+
         try: 
             model = resolve_to_model(data)
 
-            def uniq(arr):
+            def uniq(arr): # TODO: Transformer should handle uniqueness
                 return [dict(s) for s in set(frozenset(d.items()) for d in arr)]
 
             unique_data = uniq(data)
 
+            # TODO: Handle insert vs. update
             Session = sessionmaker(bind=self.engine)
             with Session() as session:
                 session.bulk_insert_mappings(model, unique_data)
@@ -97,13 +102,23 @@ class MonosiDestination(Destination):
 configuration = MonosiDestinationConfiguration(json.dumps(destination_dict))
 msi_db = MonosiDestination(configuration)
 
-msi_pipeline = Pipeline(
-    transformers=[
-        # AnomalyTransformer,
-        # MetricTransformer,
-        MonitorTransformer,
-        # ZScoreTransformer
-    ],
-    destinations=[msi_db],
+anomalies_pipeline = Pipeline(
+    transformers=[AnomalyTransformer],
+    destinations=[msi_db] # TODO: Figure out how to send to integrations destination
+)
+
+zscores_pipeline = Pipeline(
+    transformers=[ZScoreTransformer],
+    destinations=[msi_db, anomalies_pipeline]
+)
+
+metrics_pipeline = Pipeline(
+    transformers=[MetricTransformer],
+    destinations=[msi_db, zscores_pipeline]
+)
+
+monitors_pipeline = Pipeline(
+    transformers=[MonitorTransformer],
+    destinations=[msi_db] # TODO: Table health monitor creator destination?
 )
 
