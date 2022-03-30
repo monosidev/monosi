@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { format } from 'date-fns';
 import JobService from 'services/jobs';
 
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import { formatTimestamp } from 'utils/timestampFormatting';
 
 const JobsTable: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
@@ -38,14 +38,14 @@ const JobsTable: React.FC = () => {
       dataField: "start_date",
       text: "Start Date",
       formatter: (cell: any, row: any) => {
-        return format(new Date(row.start_date), 'eeee, dd MMMM HH:mm:ss');
+        return formatTimestamp(row.start_date);
       },
     },
     {
       dataField: "next_run_time",
       text: "Next Run Time",
       formatter: (cell: any, row: any) => {
-        return format(new Date(row.next_run_time), 'eeee, dd MMMM HH:mm:ss');
+        return formatTimestamp(row.next_run_time);
       },
     },
   ];

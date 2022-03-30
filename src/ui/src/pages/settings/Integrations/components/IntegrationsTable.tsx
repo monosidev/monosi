@@ -6,7 +6,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 
 import IntegrationService from 'services/integrations';
 
-import { format } from 'date-fns';
+import { formatTimestamp } from 'utils/timestampFormatting';
 
 const IntegrationsTable: React.FC = () => {
   const [integrations, setIntegrations] = useState([]);
@@ -66,7 +66,7 @@ const IntegrationsTable: React.FC = () => {
       dataField: "created_at",
       text: "Created At",
       formatter: (cell: any, row: any) => {
-        return format(new Date(row.created_at), 'eeee, dd MMMM HH:mm:ss');
+        return formatTimestamp(row.created_at);
       },
     },
     {
