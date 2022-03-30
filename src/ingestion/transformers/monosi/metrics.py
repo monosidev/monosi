@@ -1,3 +1,4 @@
+from uuid import uuid4
 from ingestion.transformers.base import JSONTransformer
 
 class MetricTransformer(JSONTransformer):
@@ -36,4 +37,10 @@ class MetricTransformer(JSONTransformer):
            "$schema":"http://json-schema.org/draft-04/schema#",
            "type":"object"
         }
+
+    @classmethod
+    def _after_transform(cls, input):
+        for metric in input:
+            metric['id'] = uuid4().hex
+        return input
 

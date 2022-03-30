@@ -29,6 +29,8 @@ def resolve_to_model(data: List[Any]): # TODO: Handle resolution
         return models.Metric
     elif 'timestamp_field' in example_dict.keys():
         return models.Monitor
+    elif 'zscore' in example_dict.keys():
+        return models.ZScore
 
     raise Exception("Could not resolve to model. Did not match.")
 
