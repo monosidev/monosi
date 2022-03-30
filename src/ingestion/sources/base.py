@@ -300,8 +300,8 @@ class MetricsQueryBuilder:
             table=table,
             timestamp_field=timestamp_field,
             minutes_ago=self.minutes_ago,
-            database=self.monitor['database'].upper(),
-            schema=self.monitor['schema'].upper(),
+            database=self.monitor['database'],
+            schema=self.monitor['schema'],
         )
 
     def _extract_col_info(self, column):
