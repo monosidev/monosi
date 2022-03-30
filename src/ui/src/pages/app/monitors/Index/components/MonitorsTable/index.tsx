@@ -25,7 +25,6 @@ const MonitorsTable: React.FC<{
       dataField: 'metrics',
       text: "Status",
       formatter: (cell: any, row: any) => {
-      console.log(row)
         if (row.timestamp_field === null) {
                 return (
                   <span className="badge rounded-pill bg-danger">Disabled</span>

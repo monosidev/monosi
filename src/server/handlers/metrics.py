@@ -77,7 +77,7 @@ class MetricListResource(Resource):
                 Metric.schema==schema,
                 Metric.metric == metric,
                 Metric.column_name == column_name
-            ).all() # TODO: ORDER BY
+                ).order_by(Metric.time_window_end).all() # TODO: ORDER BY
             metrics = [(lambda d: (d.update(obj[1].to_dict()) or d) if obj[1] else d)(obj[0].to_dict()) for obj in objs]
         except Exception as e:
             logging.warn(e)

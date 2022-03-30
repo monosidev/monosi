@@ -17,7 +17,7 @@ class CollectorJob(job.JobBase):
         source_configuration = source.config
 
         source_configuration['type'] = source.type
-        source_configuration['start_date'] = str(self.last_run)
+        source_configuration['start_date'] = str(self.last_run) if self.last_run else None
 
         return source_configuration
 
