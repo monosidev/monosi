@@ -6,6 +6,7 @@ from ingestion.transformers import (
     MonitorTransformer,
     ZScoreTransformer,
 )
+from server.middleware import db
 
 from .config import db_config as destination_dict
 
@@ -109,14 +110,27 @@ class MonosiDestination(Destination):
         publisher = MonosiPublisher(self.configuration)
         publisher.run(data)
 
+        
+class MsiIntegrationDestination(Destination):
+    def __init__(self, integration):
+        self.integration = integration
+
+    def _push(self, zscores):
+        [self.integration.send(zscore['metric_id'], self.integration.config) for zscore in zscores]
+
 
 
 configuration = MonosiDestinationConfiguration(json.dumps(destination_dict))
 msi_db = MonosiDestination(configuration)
 
+
+anomalies_destinations = []
+[anomalies_destinations.append(MsiIntegrationDestination(integration)) for integration in db.db.session.query(models.Integration).all()]
+anomalies_destinations.append(msi_db)
+
 anomalies_pipeline = Pipeline(
     transformers=[AnomalyTransformer],
-    destinations=[msi_db] # TODO: Figure out how to send to integrations destination
+    destinations=anomalies_destinations
 )
 
 zscores_pipeline = Pipeline(
