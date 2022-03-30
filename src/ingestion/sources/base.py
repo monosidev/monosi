@@ -149,9 +149,6 @@ class SQLAlchemyExtractor(Extractor):
         return results
 
     def _terminate(self):
-        if not self.engine and not self.connection:
-            return
-
         if self.connection is not None:
             self.connection.close()
             self.connection = None
