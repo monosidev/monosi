@@ -167,14 +167,14 @@ const DatasourceForm = () => {
               value={port}
             />
           </EuiFormRow>
-          <EuiFormRow label="Database">
+          <EuiFormRow label="Database (case-sensitive)">
             <EuiFieldText
               placeholder="postgres"
               onChange={(e) => setDatabase(e.target.value)}
               value={database}
             />
           </EuiFormRow>
-          <EuiFormRow label="Schema">
+          <EuiFormRow label="Schema (case-sensitive)">
             <EuiFieldText
               placeholder="public"
               onChange={(e) => setSchema(e.target.value)}
@@ -226,14 +226,14 @@ const DatasourceForm = () => {
               value={port}
             />
           </EuiFormRow>
-          <EuiFormRow label="Database">
+          <EuiFormRow label="Database (case-sensitive)">
             <EuiFieldText
               placeholder="dev"
               onChange={(e) => setDatabase(e.target.value)}
               value={database}
             />
           </EuiFormRow>
-          <EuiFormRow label="Schema">
+          <EuiFormRow label="Schema (case-sensitive)">
             <EuiFieldText
               placeholder="public"
               onChange={(e) => setSchema(e.target.value)}
@@ -285,14 +285,14 @@ const DatasourceForm = () => {
               value={password}
             />
           </EuiFormRow>
-          <EuiFormRow label="Database">
+          <EuiFormRow label="Database (case-sensitive)">
             <EuiFieldText
               placeholder="SNOWFLAKE_SAMPLE_DATA"
               onChange={(e) => setDatabase(e.target.value)}
               value={database}
             />
           </EuiFormRow>
-          <EuiFormRow label="Schema">
+          <EuiFormRow label="Schema (case-sensitive)">
             <EuiFieldText
               placeholder="tpch_sf1000"
               onChange={(e) => setSchema(e.target.value)}

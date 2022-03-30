@@ -73,12 +73,12 @@ const MonitorForm: React.FC = () => {
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicDatabase">
-          <Form.Label>Database</Form.Label>
+          <Form.Label>Database (case-sensitive)</Form.Label>
           <Form.Control type="text" placeholder="SNOWFLAKE_SAMPLE_DATA" disabled value={database} />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicSchema">
-          <Form.Label>Schema</Form.Label>
+          <Form.Label>Schema (case-sensitive)</Form.Label>
           <Form.Control type="text" placeholder="TPCH_SF1000" disabled value={schema} />
         </Form.Group>
 
