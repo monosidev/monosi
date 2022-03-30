@@ -1,10 +1,11 @@
-from ingestion.transformers.base import JSONTransformer
+from ingestion.transformers.base import Transformer#, JSONTransformer
 
-class MonitorTransformer(JSONTransformer):
-    @classmethod
-    def _mapped_schema(cls):
-        return '.rows | .[] | { "table_name": .NAME, "database": .DATABASE, "schema": .SCHEMA, "timestamp_field": .TIMESTAMP_FIELD, "type": "table_health" }'
+# class MonitorTransformer(JSONTransformer):
+    # @classmethod
+    # def _mapped_schema(cls):
+    #     return '.rows | .[] | { "table_name": .NAME, "database": .DATABASE, "schema": .SCHEMA, "timestamp_field": .TIMESTAMP_FIELD, "type": "table_health" }'
 
+class MonitorTransformer(Transformer):
     @classmethod
     def _original_schema(cls):
         return {
@@ -96,7 +97,48 @@ class MonitorTransformer(JSONTransformer):
                 "time_window_end": { "type": "datetime" },
                 "interval_length_sec": { "type": "integer" },
             },
-            "secret": [ ],
         }
 
+    @classmethod
+    def _fqtn_info(cls, item):
+        return item['DATABASE'], item['SCHEMA'], item['NAME']
 
+    @classmethod
+    def _col_info(cls, item):
+        return item['COL_NAME'], item['COL_TYPE']
+
+    @classmethod
+    def _parse_timestamps(cls, item, timestamp_fields):
+        fqtn_info = cls._fqtn_info(item)
+        col_name, col_type = cls._col_info(item)
+
+        if fqtn_info not in timestamp_fields:
+            timestamp_fields[fqtn_info] = []
+
+        if 'date' in col_type or "timestamp" in col_type:
+            timestamp_fields[fqtn_info].append(col_name)
+
+    @classmethod
+    def _timestamp_field(cls, cols): # TODO: Improve
+        if len(cols) == 0:
+            return None
+
+        return cols[0]
+
+    @classmethod
+    def _transform(cls, input):
+        monitors = []
+
+        table_timestamps = {}
+        [cls._parse_timestamps(item, table_timestamps) for item in input['rows']]
+
+        for fqtn, timestamp_cols in table_timestamps.items():
+            monitors.append({
+                'table_name': fqtn[2],
+                'database': fqtn[0],
+                'schema': fqtn[1],
+                'timestamp_field': cls._timestamp_field(timestamp_cols), # What do
+                'type': 'table_health',
+            })
+
+        return monitors

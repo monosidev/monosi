@@ -41,7 +41,7 @@ class Collector:
     def _create_tasks(self, discovered_data):
         extractor = self.source.extractor()
         # monitors = self.configuration.filter_by_monitors(discovered_data)
-        monitors = discovered_data
+        monitors = discovered_data # TODO: Filter
         task_type = self.configuration.monitors[0].type
         task_units = self.source.task_units(monitors, task_type) # hack
 
