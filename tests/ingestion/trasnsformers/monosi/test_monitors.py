@@ -25,7 +25,7 @@ def schema():
                 'COL_TYPE': 'text',
                 'COL_DESCRIPTION': None,
                 'COL_SORT_ORDER': '3',
-                'DATABASE': 'daatbase',
+                'DATABASE': 'database',
                 'SCHEMA': 'schema',
                 'DESCRIPTION': None,
                 'IS_VIEW': 'false'
@@ -36,7 +36,7 @@ def schema():
                 'COL_TYPE': 'int',
                 'COL_DESCRIPTION': None,
                 'COL_SORT_ORDER': '3',
-                'DATABASE': 'daatbase',
+                'DATABASE': 'database',
                 'SCHEMA': 'schema',
                 'DESCRIPTION': None,
                 'IS_VIEW': 'false'
@@ -45,7 +45,7 @@ def schema():
     }
 
 def test__transform_empty():
-    input_arr = []
+    input_arr = {'rows': []}
     output_arr = monitors.MonitorTransformer._transform(input_arr)
 
     assert len(output_arr) == 0
