@@ -89,10 +89,10 @@ const MonitorsDetail: React.FC = () => {
     return (
       <div className="p-4 py-2 mb-4 rounded-3" style={{background: '#f1f1f1'}}>
         <div className="container-fluid py-5">
-          <h1 className="display-7 fw-bold">Pending</h1>
-          <p className="col-md-10 fs-4">This monitor is still scheduled to run. Please check back shortly to see results.
+          <h1 className="display-7 fw-bold">{monitor && monitor.timestamp_field == undefined ? "Disabled" : "Pending" }</h1>
+          <p className="col-md-10 fs-4">This monitor still has not run. Please check back shortly to see results if pending. Otherwise, a timestamp field could not be detected to enable this monitor.
           </p>
-         <small>If you are still seeing this message after 24 hours, <a href="https://github.com/monosidev/monosi/issues" target="_blank">please submit an issue.</a></small>
+         <small>If you are still seeing "Pending" after 24 hours, <a href="https://github.com/monosidev/monosi/issues" target="_blank">please submit an issue.</a></small>
         </div>
       </div>
     )

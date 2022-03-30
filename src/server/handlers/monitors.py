@@ -31,6 +31,7 @@ class MonitorListResource(ListResource):
             'source': obj[6],
             'workspace': obj[7],
             'created_at': obj[8].strftime("%b %d, %Y %H:%M:%S"),
+            'timestamp_field': obj[9],
         }
 
     def _all(self):
@@ -44,7 +45,8 @@ class MonitorListResource(ListResource):
                     Monitor.type,
                     Monitor.source,
                     Monitor.workspace,
-                    Monitor.created_at
+                    Monitor.created_at,
+                    Monitor.timestamp_field,
                 ).outerjoin(
                     Metric,
                     (Monitor.table_name==Metric.table_name) &
@@ -58,7 +60,8 @@ class MonitorListResource(ListResource):
                     Monitor.type,
                     Monitor.source,
                     Monitor.workspace,
-                    Monitor.created_at
+                    Monitor.created_at,
+                    Monitor.timestamp_field,
                 ).all()
         except:
             abort(500)

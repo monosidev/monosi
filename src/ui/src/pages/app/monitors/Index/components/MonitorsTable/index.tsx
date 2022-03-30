@@ -25,7 +25,12 @@ const MonitorsTable: React.FC<{
       dataField: 'metrics',
       text: "Status",
       formatter: (cell: any, row: any) => {
-        if (row.metrics == 0) {
+      console.log(row)
+        if (row.timestamp_field === null) {
+                return (
+                  <span className="badge rounded-pill bg-danger">Disabled</span>
+                )
+        } else if (row.metrics == 0) {
                 return (
                   <span className="badge rounded-pill bg-warning">Pending</span>
                 );

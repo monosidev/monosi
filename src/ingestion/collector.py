@@ -29,9 +29,6 @@ class CollectorConfiguration(DataClassDictMixin): # This is technically repr of 
     def default(cls):
         return cls(monitors=[])
 
-    def filter_by_monitors(self, ddata):
-        pass
-
 @dataclass
 class Collector:
     source: Source
@@ -40,10 +37,7 @@ class Collector:
 
     def _create_tasks(self, discovered_data):
         extractor = self.source.extractor()
-        # monitors = self.configuration.filter_by_monitors(discovered_data)
-        monitors = discovered_data # TODO: Filter
-        task_type = self.configuration.monitors[0].type
-        task_units = self.source.task_units(monitors, task_type) # hack
+        task_units = self.source.task_units(discovered_data, self.configuration.monitors)
 
         return [Task(extractor=extractor, units=[unit]) for unit in task_units]
 

@@ -87,7 +87,7 @@ class Source:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def task_units(self, discovered_data, task_type) -> List[TaskUnit]: # hack
+    def task_units(self, discovered_data, monitors) -> List[TaskUnit]: # hack
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -272,10 +272,11 @@ class ColumnMetricType(Enum):
         return cls.default()
 
 class MetricsQueryBuilder:
-    def __init__(self, dialect, configuration, ddata):
+    def __init__(self, dialect, monitor, ddata, minutes_ago):
         self.dialect = dialect
-        self.configuration = configuration
+        self.monitor = monitor
         self.ddata = ddata
+        self.minutes_ago = minutes_ago
 
     def _base_query(self, select_sql, table, timestamp_field):
         return """
@@ -298,9 +299,9 @@ class MetricsQueryBuilder:
             select_sql=select_sql,
             table=table,
             timestamp_field=timestamp_field,
-            minutes_ago=self.configuration.minutes_ago(),
-            database=self.configuration.database(),
-            schema=self.configuration.schema(),
+            minutes_ago=self.minutes_ago,
+            database=self.monitor['database'].upper(),
+            schema=self.monitor['schema'].upper(),
         )
 
     def _extract_col_info(self, column):
@@ -362,10 +363,11 @@ class MetricsQueryBuilder:
     def compile(self) -> List[str]:
         metrics_queries = []
 
-        select_sql = self._select_sql(self.ddata['rows'])
+        table_cols = filter(lambda x: x['NAME'] == self.monitor['table_name'], self.ddata['rows'])
+        select_sql = self._select_sql(table_cols)
         for table_name, cols in select_sql.items():
             cols_sql = cols['sql']
-            timestamp_field = self._timestamp_field(cols)
+            timestamp_field = self.monitor['timestamp_field']
 
             if timestamp_field is not None:
                 metrics_queries.append(self._base_query(
@@ -459,10 +461,10 @@ class SQLAlchemySourceDialect:
         raise NotImplementedError
 
     @classmethod
-    def table_metrics_query(cls, configuration, discovery_data):
-        builder = MetricsQueryBuilder(cls, configuration, discovery_data)
-        queries = builder.compile()
-        return queries
+    def table_metrics_query(cls, monitor, discovery_data, minutes_ago):
+        builder = MetricsQueryBuilder(cls, monitor, discovery_data, minutes_ago)
+        query = builder.compile()
+        return query
 
     @classmethod
     def access_logs_query(cls):
@@ -489,8 +491,8 @@ class SQLAlchemySource(Source):
             schema_name=self.configuration.schema(),
         )
 
-    def _metrics(self, discovery_data) -> Generator:
-        queries = self.dialect.table_metrics_query(self.configuration, discovery_data)
+    def _metrics(self, discovery_data, monitor) -> Generator:
+        queries = self.dialect.table_metrics_query(monitor, discovery_data, self.configuration.minutes_ago())
         for query in queries:
             yield query
         # return [TaskUnit(request=self.dialect.table_metrics_query()) for table in tables]
@@ -508,13 +510,14 @@ class SQLAlchemySource(Source):
         extractor = self.extractor()
         return extractor.test()
 
-    def task_units(self, discovered_data, task_type) -> List[TaskUnit]:
+    def task_units(self, discovered_data, monitors) -> List[TaskUnit]:
         units = []
 
-        if task_type == 'schema':
-            units.append(TaskUnit(request=self._columns_schema(discovered_data)))
-        elif task_type == "table_health":
-            units.append(MultiTaskUnit(request=self._metrics(discovered_data)))
+        for monitor in monitors:
+            if monitor.type == 'schema':
+                units.append(TaskUnit(request=self._columns_schema(discovered_data)))
+            elif monitor.type == "table_health":
+                units.append(MultiTaskUnit(request=self._metrics(discovered_data, monitor.definition)))
 
         return units
 

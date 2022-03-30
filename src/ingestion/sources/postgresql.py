@@ -25,9 +25,9 @@ class PostgreSQLMetricsQueryBuilder(MetricsQueryBuilder):
             select_sql=select_sql,
             table=table,
             timestamp_field=timestamp_field,
-            minutes_ago=self.configuration.minutes_ago(),
-            database=self.configuration.database(),
-            schema=self.configuration.schema(),
+            minutes_ago=self.minutes_ago,
+            database=self.monitor['database'].upper(),
+            schema=self.monitor['schema'].upper(),
         )
 
 class PostgreSQLSourceConfiguration(SourceConfiguration):
@@ -113,10 +113,10 @@ class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
         raise NotImplementedError
 
     @classmethod
-    def table_metrics_query(cls, configuration, discovery_data):
-        builder = PostgreSQLMetricsQueryBuilder(cls, configuration, discovery_data)
-        queries = builder.compile()
-        return queries
+    def table_metrics_query(cls, monitor, discovery_data, minutes_ago):
+        builder = PostgreSQLMetricsQueryBuilder(cls, monitor, discovery_data, minutes_ago)
+        query = builder.compile()
+        return query
 
     @classmethod
     def schema_columns_query(cls, database_name, schema_name):
