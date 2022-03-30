@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import BootstrapNavigation from 'components/BootstrapNavigation';
+import Navigation from 'components/Navigation';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './bootstrap_page.css';
@@ -10,13 +10,13 @@ interface PageProps {
   selectedTab: string
 }
 
-const BootstrapPage: React.FC<PageProps> = ({ children, selectedTab }) => {
+const Page: React.FC<PageProps> = ({ children, selectedTab }) => {
   return (
           <div className="bg-light faux-body">
 
             <div className="container-fluid">
               <div className="row">
-                <BootstrapNavigation selectedTab={selectedTab} />
+                <Navigation selectedTab={selectedTab} />
                 {children}
               </div>
             </div>
@@ -24,4 +24,4 @@ const BootstrapPage: React.FC<PageProps> = ({ children, selectedTab }) => {
   );
 };
 
-export default BootstrapPage;
+export default Page;

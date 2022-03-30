@@ -4,7 +4,6 @@ import { CloudDownloadFill, PersonCircle, Tools } from 'react-bootstrap-icons';
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
-import BootstrapPage from 'components/BootstrapPage';
 import IntegrationService from 'services/integrations';
 
 import { format } from 'date-fns';
