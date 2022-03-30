@@ -55,7 +55,7 @@ class MsiJobStore(SQLAlchemyJobStore):
         try:
             Session = sessionmaker(self.engine)
             with Session() as session:
-                obj = session.query(Execution).filter(Execution.datasource_id == id).order_by(Execution.created_at).first()
+                obj = session.query(Execution).filter(Execution.job_id == id).order_by(Execution.created_at).first()
                 if obj is not None:
                     execution = obj.to_dict()
 

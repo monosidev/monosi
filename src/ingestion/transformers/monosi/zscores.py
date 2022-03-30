@@ -34,7 +34,7 @@ class ZScoreAlgorithm:
                 return []
 
             try:
-                value = float(metric['value'])
+                value = round(float(metric['value']), 2)
                 if std_dev == 0:
                     z_score = 0
                 else:
