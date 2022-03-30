@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { ChevronRight, ClipboardData, Server, Diagram3, Table, CpuFill, ListColumnsReverse } from 'react-bootstrap-icons';
 
 import MonitorService from 'services/monitors';
-import BootstrapPage from 'components/BootstrapPage';
+import Page from 'components/Page';
 
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -150,7 +150,7 @@ const MetricsDetail: React.FC = () => {
   const loading = !monitor && <EuiLoadingContent lines={1} />;
 
   return (
-    <BootstrapPage selectedTab="monitors">
+    <Page selectedTab="monitors">
       <div style={{paddingLeft: '96px'}}>
         <nav className="py-2 bg-light border-bottom">
           <div className="container d-flex flex-wrap">
@@ -214,7 +214,7 @@ const MetricsDetail: React.FC = () => {
           </main>
         </div>
       </div>
-    </BootstrapPage>
+    </Page>
   );
 };
 

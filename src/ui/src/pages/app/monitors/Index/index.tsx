@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import MonitorService from 'services/monitors';
-import BootstrapPage from 'components/BootstrapPage';
+import Page from 'components/Page';
 import MonitorsTable from './components/MonitorsTable';
 
 const MonitorsIndex: React.FC = () => {
@@ -23,7 +23,7 @@ const MonitorsIndex: React.FC = () => {
 
 
   return (
-    <BootstrapPage selectedTab="monitors">
+    <Page selectedTab="monitors">
       <div style={{paddingLeft: 96}} className="bg-light">
         <div className="container">
           <main className="col-md-12 ms-sm-auto col-lg-12">
@@ -38,7 +38,7 @@ const MonitorsIndex: React.FC = () => {
           </main>
         </div>
       </div>
-    </BootstrapPage>
+    </Page>
   );
 };
 

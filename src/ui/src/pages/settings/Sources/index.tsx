@@ -5,7 +5,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
 import datasourceService from 'services/datasources';
-import BootstrapPage from 'components/BootstrapPage';
+import Page from 'components/Page';
 
 import Flyout from 'components/Flyout';
 import DatasourceForm from 'components/forms/DatasourceForm';
@@ -137,7 +137,7 @@ const SourcesSettings: React.FC = () => {
   );
 
   return (
-      <BootstrapPage selectedTab="settings">
+      <Page selectedTab="settings">
          <div style={{paddingLeft: 96}} className="bg-light">
            <div className="container">
              <main className="col-md-12 ms-sm-auto col-lg-12">
@@ -201,7 +201,7 @@ const SourcesSettings: React.FC = () => {
            </div>
          </div>
          {toastVisible && <SourceToasts />}
-      </BootstrapPage>
+      </Page>
   );
 };
 

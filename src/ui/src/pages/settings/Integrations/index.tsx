@@ -4,7 +4,7 @@ import { CpuFill, Collection, CloudDownloadFill, PersonCircle } from 'react-boot
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
-import BootstrapPage from 'components/BootstrapPage';
+import Page from 'components/Page';
 import IntegrationService from 'services/integrations';
 
 import Flyout from 'components/Flyout';
@@ -94,7 +94,7 @@ const IntegrationsSettings: React.FC = () => {
   ];
 
   return (
-      <BootstrapPage selectedTab="settings">
+      <Page selectedTab="settings">
          <div style={{paddingLeft: 96}} className="bg-light">
            <div className="container">
              <main className="col-md-12 ms-sm-auto col-lg-12">
@@ -157,7 +157,7 @@ const IntegrationsSettings: React.FC = () => {
              </main>
            </div>
          </div>
-      </BootstrapPage>
+      </Page>
   );
 };
 

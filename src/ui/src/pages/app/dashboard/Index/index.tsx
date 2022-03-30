@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, CloudArrowUpFill, CpuFill, ExclamationTriangle, ExclamationTriangleFill } from 'react-bootstrap-icons';
 
-import BootstrapPage from 'components/BootstrapPage';
+import Page from 'components/Page';
 
 import './dashboard.css';
 
 
 const DashboardIndex: React.FC = () => {
   return (
-    <BootstrapPage selectedTab="dashboard">
+    <Page selectedTab="dashboard">
       <div style={{paddingLeft: 96}} className="bg-light">
         <div className="container">
           <main className="col-md-12 ms-sm-auto col-lg-12">
@@ -108,7 +108,7 @@ const DashboardIndex: React.FC = () => {
           </main>
         </div>
       </div>
-    </BootstrapPage>
+    </Page>
   );
 };
 

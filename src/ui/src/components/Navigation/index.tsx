@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Alarm, Book, Collection, GearFill, HouseDoor, PersonCircle } from 'react-bootstrap-icons';
 
-const BootstrapNavigation: React.FC<{selectedTab: string}> = ({selectedTab}: any) => {
+const Navigation: React.FC<{selectedTab: string}> = ({selectedTab}: any) => {
 
   const classSelector = (tabName: string) => {
     const nonActiveClassNames = "nav-link py-3 border-bottom";
@@ -49,7 +49,7 @@ const BootstrapNavigation: React.FC<{selectedTab: string}> = ({selectedTab}: any
               <Book className="bi" width={24} height={24} />
             </a>
           </div>
-          <div className="dropdown border-top">
+          {/* <div className="dropdown border-top">
             <a href="#" className="d-flex align-items-center justify-content-center p-3 text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
               <PersonCircle className="bi" width={24} height={24} />
             </a>
@@ -60,7 +60,7 @@ const BootstrapNavigation: React.FC<{selectedTab: string}> = ({selectedTab}: any
               <li><hr className="dropdown-divider" /></li>
               <li><a className="dropdown-item" href="#">Sign out</a></li>
             </ul>
-          </div>
+          </div> */ }
         </div>
 
         <div className="b-example-divider"></div>
@@ -69,4 +69,4 @@ const BootstrapNavigation: React.FC<{selectedTab: string}> = ({selectedTab}: any
   );
 };
 
-export default BootstrapNavigation;
+export default Navigation;

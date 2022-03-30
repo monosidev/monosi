@@ -1,13 +1,13 @@
 import React from 'react';
 
-import BootstrapPage from 'components/BootstrapPage';
+import Page from 'components/Page';
 import ExecutionsTable from './components/ExecutionsTable';
 import JobsTable from './components/JobsTable';
 import { Tab, Tabs } from 'react-bootstrap';
 
 const ExecutionsIndex: React.FC = () => {
   return (
-    <BootstrapPage selectedTab="executions">
+    <Page selectedTab="executions">
       <div style={{paddingLeft: 96}} className="bg-light">
         <div className="container">
           <main className="col-md-12 ms-sm-auto col-lg-12">
@@ -26,7 +26,7 @@ const ExecutionsIndex: React.FC = () => {
           </main>
         </div>
       </div>
-    </BootstrapPage>
+    </Page>
   );
 };
 

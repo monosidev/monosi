@@ -1,12 +1,12 @@
 import React from 'react';
 import { CloudDownloadFill, PersonCircle, Tools } from 'react-bootstrap-icons';
-import BootstrapPage from 'components/BootstrapPage';
+import Page from 'components/Page';
 
 import ProfileForm from 'components/forms/ProfileForm';
 
 const ProfileSettings: React.FC = () => {
   return (
-      <BootstrapPage selectedTab="settings">
+      <Page selectedTab="settings">
          <div style={{paddingLeft: 96}} className="bg-light">
            <div className="container">
              <main className="col-md-12 ms-sm-auto col-lg-12">
@@ -58,7 +58,7 @@ const ProfileSettings: React.FC = () => {
              </main>
            </div>
          </div>
-      </BootstrapPage>
+      </Page>
   );
 };
 
