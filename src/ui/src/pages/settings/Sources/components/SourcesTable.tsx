@@ -5,9 +5,9 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
 import { ToastContainer, Toast } from 'react-bootstrap';
-import { format } from 'date-fns'
 
 import datasourceService from 'services/datasources';
+import { formatTimestamp } from 'utils/timestampFormatting';
 
 const SourcesTable: React.FC = () => {
   const [toastVisible, setToastVisible] = useState<boolean>(false);
@@ -84,7 +84,7 @@ const SourcesTable: React.FC = () => {
       dataField: "created_at",
       text: "Created At",
       formatter: (cell: any, row: any) => {
-        return format(new Date(row.created_at), 'eeee, dd MMMM HH:mm:ss');
+        return formatTimestamp(row.created_at)
       },
     },
     {
