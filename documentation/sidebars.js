@@ -90,6 +90,7 @@ module.exports = {
           label: "Support & FAQ",
           collapsed: true,
           items: [
+            "supportfaq/usage-data-preferences"
           ]
         },
       ],
