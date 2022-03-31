@@ -1,5 +1,7 @@
 import json
 
+from ingestion.sources.base import SQLAlchemyExtractor
+
 from .postgresql import PostgreSQLSource, PostgreSQLSourceConfiguration
 
 class RedshiftSourceConfiguration(PostgreSQLSourceConfiguration):
@@ -10,14 +12,12 @@ class RedshiftSourceConfiguration(PostgreSQLSourceConfiguration):
     def type(self):
         return "redshift"
 
+class RedshiftExtractor(SQLAlchemyExtractor):
+    def _initialize(self):
+        super()._initialize()
+        self._execute("SET enable_case_sensitive_identifier TO true;")
+
 class RedshiftSource(PostgreSQLSource):
-    pass
+    def extractor(self):
+        return RedshiftExtractor(self.configuration)
 
-# NOTE: Classes not currently used
-
-# class RedshiftSourceDialect(PostgreSQLSourceDialect):
-    # TODO: Potential dialect override necessary
-    # pass
-
-# class RedshiftSourceExtractor(PostgreSQLSourceExtractor):
-#     pass
