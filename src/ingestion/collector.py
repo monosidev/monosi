@@ -65,7 +65,7 @@ class Collector:
                     while True:
                         try:
                             fetched_data = next(units_results_gen)
-                            return fetched_data
+                            self.pass_data(fetched_data)
                         except StopIteration:
                             break
                 except StopIteration:
@@ -106,5 +106,5 @@ class Collector:
     def run(self):
         discovered_data = self.discover_data() # TODO: Move Discover, Fetch, Return to tasks, create from monitor def
         data = self.fetch_data(discovered_data)
-        self.pass_data(data)
+        # self.pass_data(data)
 
