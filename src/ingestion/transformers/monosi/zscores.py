@@ -92,13 +92,23 @@ class ZScoreTransformer(Transformer):
     @classmethod
     def _original_schema(cls):
         return {
-           "$schema":"http://json-schema.org/draft-04/schema#",
-           "type":"array"
+           "type":"array",
+           "items": {
+                "type": "object",
+                "properties": {"metric_id": "string"},
+                "required": ["metric_id"]
+            },
+           "minItems": 1,
         }
 
     @classmethod
     def _normalized_schema(cls):
         return {
-           "$schema":"http://json-schema.org/draft-04/schema#",
-           "type":"array"
+           "type":"array",
+           "items": {
+                "type": "object",
+                "properties": {"metric_id": "string"},
+                "required": ["metric_id"]
+            },
+           "minItems": 1,
         }
