@@ -21,7 +21,7 @@ class Pipeline(Destination):
             if transformer.match(input_normalized_json, transformer._original_schema()):
                 return transformer.transform(input_normalized_json)
 
-        return input_normalized_json
+        return []
 
     def publish(self, data):
         return [destination.push(data) for destination in self.destinations]

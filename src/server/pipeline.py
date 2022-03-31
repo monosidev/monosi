@@ -19,6 +19,7 @@ from ingestion.sources.postgresql import PostgreSQLSourceConfiguration
 
 from ingestion.destinations.base import Destination, Publisher
 import server.models as models
+from server.jobs.analysis import activator as zscores_activator
 
 
 def resolve_to_model(data: List[Any]): # TODO: Handle resolution
@@ -55,6 +56,25 @@ class SQLAlchemyPublisher(Publisher):
         self.engine = self._create_engine()
         self.connection = self.engine.connect()
 
+    def upsert_data(self, og_entries, key="metric_id"):
+        model = models.ZScore
+        entries = {}
+        for entry in og_entries:
+            entries[entry[key]] = entry
+        entries_to_insert = []
+        
+        Session = sessionmaker(bind=self.engine)
+        with Session() as session:
+            for each in session.query(model).filter(models.ZScore.metric_id.in_(entries.keys())).all():
+                entry = entries.pop(each.metric_id)
+
+        for entry in entries.values():
+            entries_to_insert.append(entry)
+
+        session.bulk_insert_mappings(model, entries_to_insert)
+
+        session.commit()
+
     def _execute(self, data: List[Any]):
         if self.engine is None:
             raise Exception("Initialize publisher before execution.")
@@ -71,6 +91,10 @@ class SQLAlchemyPublisher(Publisher):
 
             unique_data = uniq(data)
 
+            if len(unique_data) > 0 and 'metric_id' in unique_data[0].keys():
+                self.upsert_data(unique_data)
+                return
+
             # TODO: Handle insert vs. update
             Session = sessionmaker(bind=self.engine)
             with Session() as session:
@@ -78,7 +102,10 @@ class SQLAlchemyPublisher(Publisher):
                 session.commit()
                 session.close()
         except Exception as e:
-            logging.error(e)
+            import traceback
+            traceback.print_exc()
+            logging.error("Issue persisting information: {}".format(e))
+            raise e
 
     def _terminate(self):
         if self.connection is not None:
@@ -126,7 +153,6 @@ msi_db = MonosiDestination(configuration)
 
 anomalies_destinations = []
 [anomalies_destinations.append(MsiIntegrationDestination(integration)) for integration in db.db.session.query(models.Integration).all()]
-anomalies_destinations.append(msi_db)
 
 anomalies_pipeline = Pipeline(
     transformers=[AnomalyTransformer],
@@ -140,7 +166,7 @@ zscores_pipeline = Pipeline(
 
 metrics_pipeline = Pipeline(
     transformers=[MetricTransformer],
-    destinations=[msi_db, zscores_pipeline]
+    destinations=[msi_db, zscores_activator]
 )
 
 monitors_pipeline = Pipeline(
