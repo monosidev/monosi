@@ -65,7 +65,7 @@ class Collector:
                     while True:
                         try:
                             fetched_data = next(units_results_gen)
-                            self.pass_data(fetched_data)
+                            return fetched_data
                         except StopIteration:
                             break
                 except StopIteration:
