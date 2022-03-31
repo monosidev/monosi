@@ -73,7 +73,6 @@ class Collector:
 
     def pass_data(self, data):
         try:
-            print(data)
             [pipeline.push(data) for pipeline in self.pipelines]
         except Exception as e:
             print(e)
