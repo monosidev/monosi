@@ -6,7 +6,6 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
-import { format } from 'date-fns';
 import { formatTimestamp } from 'utils/timestampFormatting';
 
 import './table.css';
@@ -92,7 +91,9 @@ const MonitorsTable: React.FC<{
       <div className="container-fluid py-5">
         <h1 className="display-5 fw-bold">Sorry, no data quality yet!</h1>
         <p className="col-md-8 fs-4">You need to create a data source in order to start monitoring, alerting, and increasing your data quality.</p>
-        <small>If you haven't created a data source yet, <a href="/settings/sources">start there</a></small>
+        <small>If you haven't created a data source yet, <a href="/settings/sources">start there.</a></small>
+        <br/>
+        <small>If you have already created a datasource, monitors may be pending or disabled.</small>
       </div>
     </div>
   );
