@@ -5,17 +5,9 @@ import MonitorService from 'services/monitors';
 import Page from 'components/Page';
 import MonitorsTable from './components/MonitorsTable';
 
-enum MonitorFilters {
-  ENABLED = "enabled", 
-  PENDING = "pending", 
-  DISABLED = "disabled"
-}
-
 
 const MonitorsIndex: React.FC = () => {
   const [monitors, setMonitors] = useState<any[]>([]);
-  const [monitorFilter, setMonitorFilter] = useState<MonitorFilters>(MonitorFilters.ENABLED);
-  const [filteredMonitors, setFilteredMonitors] = useState<any[]>(monitors);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const loadMonitors = async () => {
@@ -23,7 +15,6 @@ const MonitorsIndex: React.FC = () => {
     let res = await MonitorService.getAll();
     if (res && res.monitors) {
       setMonitors(res.monitors);
-      filterMonitors(MonitorFilters.ENABLED, res.monitors);
     }
     setIsLoading(false);
   };
@@ -31,28 +22,6 @@ const MonitorsIndex: React.FC = () => {
   useEffect(() => {
     loadMonitors();
   }, []);
-
-  const filterMonitors = async (filterType: MonitorFilters, monitors: any[]) => {
-    setMonitorFilter(filterType);
-    let filteredMonitors = [];
-
-    switch (filterType) {
-      case MonitorFilters.PENDING: { 
-        filteredMonitors = monitors.filter(m => m.metrics === 0 && m.timestamp_field !== null)
-        break; 
-     } 
-     case MonitorFilters.DISABLED: {
-        filteredMonitors = monitors.filter(m => m.timestamp_field === null)
-        break; 
-     } 
-     default: { 
-        filteredMonitors = monitors.filter(m => m.timestamp_field !== null && m.metrics !== 0)
-        break; 
-     } 
-    }
-
-    setFilteredMonitors(filteredMonitors);
-  }
 
   return (
     <Page selectedTab="monitors">
@@ -63,14 +32,8 @@ const MonitorsIndex: React.FC = () => {
               <h1 className="h2">Monitors</h1>
             </div>
 
-            <ButtonGroup aria-label="Status Filter" style={{paddingBottom: 24}}>
-              <Button variant={monitorFilter === MonitorFilters.ENABLED ? "primary" : "secondary"} onClick={() => filterMonitors(MonitorFilters.ENABLED, monitors)}>Succeeded</Button>
-              <Button variant={monitorFilter === MonitorFilters.PENDING ? "primary" : "secondary"} onClick={() => filterMonitors(MonitorFilters.PENDING, monitors)}>Pending</Button>
-              <Button variant={monitorFilter === MonitorFilters.DISABLED ? "primary" : "secondary"} onClick={() => filterMonitors(MonitorFilters.DISABLED, monitors)}>Disabled</Button>
-            </ButtonGroup>
-
             <MonitorsTable
-              monitors={filteredMonitors}
+              monitors={monitors}
               isLoading={isLoading}
             />
           </main>
