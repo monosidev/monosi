@@ -4,10 +4,6 @@ import ingestion.transformers.monosi.anomalies as anomalies
 
 
 @pytest.fixture
-def zscores():
-    return []
-
-@pytest.fixture
 def zscore():
     return {
         'metric_id': 1,
