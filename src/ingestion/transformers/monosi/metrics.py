@@ -16,7 +16,8 @@ class MetricTransformer(JSONTransformer):
                  "type":"array",
                  "items": {
                    "type": "object"
-                 }
+                 },
+                 "minItems": 1
               },
               "columns":{
                  "type":"array",
@@ -34,9 +35,25 @@ class MetricTransformer(JSONTransformer):
     @classmethod
     def _normalized_schema(cls):
         return {
-           "$schema":"http://json-schema.org/draft-04/schema#",
-           "type":"object"
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "string"},
+                    "table_name": {"type": "string"},
+                    "schema": {"type": "string"},
+                    "database": {"type": "string"},
+                    "column_name": {"type": "string"},
+                    "metric": {"type": "string"},
+                    "value": {"type": "string"},
+                    "time_window_start": {"type": "string"},
+                    "time_window_end": {"type": "string"}
+                },
+                "required": ["id"]
+            },
+            "minItems": 1
         }
+
 
     @classmethod
     def _after_transform(cls, input):
