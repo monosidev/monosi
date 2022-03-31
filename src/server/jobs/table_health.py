@@ -20,3 +20,4 @@ class TableHealthCollectorJob(CollectorJob):
 
         return { 'monitors': monitors }
 
+

@@ -55,7 +55,3 @@ class CollectorJob(job.JobBase):
         collector_pipeline = self._create_collector(source, self.pipelines(), self.configuration())
         collector_pipeline.run()
 
-
-
-
-

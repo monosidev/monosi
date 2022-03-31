@@ -6,21 +6,21 @@ import ingestion.transformers.monosi.anomalies as anomalies
 @pytest.fixture
 def zscore():
     return {
-        'metric_id': 1,
+        'metric_id': '680e8f6a890f473caa7cdc7ad6ceddb0',
         'expected_range_start': 0.0,
-        'expected_range_end': 1.0,
-        'error': False,
-        'zscore': 0.5,
+        'expected_range_end': 0.0, 
+        'error': False, 
+        'zscore': 0
     }
 
 @pytest.fixture
 def zscore_error():
     return {
-        'metric_id': 3,
-        'expected_range_start': 1.5,
-        'expected_range_end': 9.0,
-        'error': True,
-        'zscore': 0.2,
+        'metric_id': '680e8f6a890f473caa7cdc7ad6ceddb0',
+        'expected_range_start': 0.0,
+        'expected_range_end': 0.0, 
+        'error': True, 
+        'zscore': 0
     }
 
 def test__transform_empty_zscores():

@@ -11,9 +11,6 @@ class AnomalyTransformer(Transformer):
           "type": "array",
           "items": {
             "type": "object",
-            "properties": {
-                "error": { "type": "boolean" },
-            },
             "required": ["error"]
           },
           "minItems": 1

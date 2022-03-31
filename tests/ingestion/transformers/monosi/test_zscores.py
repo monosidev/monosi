@@ -26,16 +26,17 @@ def zscore_error():
 @pytest.fixture
 def metric():
     return {
-        "id": str(uuid4().hex),
-        "table_name": "table",
-        "schema": "schema",
-        "database": "database",
-        "column_name": "col_name",
-        "metric": "metric-name",
-        "value": "84848.9",
-        "time_window_start": str(datetime.now()),
-        "time_window_end": str(datetime.now()),
-        "created_at": str(datetime.now())
+        'table_name': 'msi_monitors', 
+        'schema': 'public',
+        'database': 'postgres',
+        'column_name': 'id', 
+        'metric': 'completeness',
+        'value': '1.00000000000000000000',
+        'time_window_start': '2022-03-31T12:00:00-07:00',
+        'time_window_end': '2022-03-31T13:00:00-07:00',
+        'interval_length_sec': None,
+        'id': '9e8c2f029fbd4db8a52fe72c62fe8a8c',
+        'created_at': '2022-03-31T12:07:37.686462-07:00'
     }
 
 @pytest.fixture

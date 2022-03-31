@@ -50,7 +50,7 @@ class ZScoreAlgorithm:
                 zscores.append(zscore_point)
 
             except Exception as e:
-                logging.error(e)
+                logging.error("Issue creating zscores: {}".format(e))
 
         return zscores
 
@@ -95,8 +95,7 @@ class ZScoreTransformer(Transformer):
            "type":"array",
            "items": {
                 "type": "object",
-                "properties": {"metric_id": "string"},
-                "required": ["metric_id"]
+                "required": ["id"]
             },
            "minItems": 1,
         }
