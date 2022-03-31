@@ -3,30 +3,35 @@ from ingestion.transformers.base import Transformer
 class AnomalyTransformer(Transformer):
     @classmethod
     def _transform(cls, zscores):
-        sensitivity = 2.5
-
-        anomalies = []
-        for zscore in zscores:
-            if abs(zscore['zscore']) > sensitivity:
-                anomalies.append(zscore)
-
-        return zscores
+        return list(filter(lambda x: x['error'] == True, zscores))
 
     @classmethod
     def _original_schema(cls):
         return {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
+                "error": { "type": "boolean" },
             },
-            "secret": [ ],
+            "required": ["error"]
+          },
+          "minItems": 1
         }
 
     @classmethod
     def _normalized_schema(cls):
         return {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
+                "error": { 
+                    "type": "boolean",
+                    "const": True
+                },
             },
-            "secret": [ ],
+            "required": ["error"]
+          },
+          "minItems": 1
         }
-
