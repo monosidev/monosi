@@ -23,8 +23,8 @@ class DataSourceResource(CrudResource):
         schema = ds.config['schema']
 
         objs = db.session.query(model).filter(
-            model.database == database,
-            model.schema == schema,
+            model.database.ilike(f'%{database}%'),
+            model.schema.ilike(f'%{schema}%'),
         ).delete(synchronize_session=False)
     
     def delete(self, obj_id):
