@@ -145,18 +145,22 @@ class MsiIntegrationDestination(Destination):
     def _push(self, zscores):
         [self.integration.send(zscore['metric_id'], self.integration.config) for zscore in zscores]
 
+class MsiIntegrationShim(Destination):
+    def _push(self, anomalies):
+        anomalies_destinations = []
+        [anomalies_destinations.append(MsiIntegrationDestination(integration)) for integration in db.db.session.query(models.Integration).all()]
+
+        [destination.push(anomalies) for destination in anomalies_destinations]
 
 
 configuration = MonosiDestinationConfiguration(json.dumps(destination_dict))
 msi_db = MonosiDestination(configuration)
 
-
-anomalies_destinations = []
-[anomalies_destinations.append(MsiIntegrationDestination(integration)) for integration in db.db.session.query(models.Integration).all()]
+integration_shim_destination = MsiIntegrationShim('{}')
 
 anomalies_pipeline = Pipeline(
     transformers=[AnomalyTransformer],
-    destinations=anomalies_destinations
+    destinations=[integration_shim_destination]
 )
 
 zscores_pipeline = Pipeline(
