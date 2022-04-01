@@ -1,9 +1,10 @@
 import logging
 
 from apscheduler.events import EVENT_JOB_EXECUTED
+from server.middleware.db import db
 from telemetry.events import track_event
 
-from server.models import DataSource
+from server.models import DataSource, Metric, Monitor
 
 from .base import CrudResource, ListResource
 
@@ -15,6 +16,21 @@ class DataSourceResource(CrudResource):
     @property
     def key(self):
         return "datasource"
+
+    def _delete_associated(self, obj_id, model):
+        ds = self._retrieve_by_id(obj_id)
+        database = ds.config['database'] # TODO: If more than one source shares these, they will all be deleted.
+        schema = ds.config['schema']
+
+        objs = db.session.query(model).filter(
+            model.database == database,
+            model.schema == schema,
+        ).delete(synchronize_session=False)
+    
+    def delete(self, obj_id):
+        self._delete_associated(obj_id, Monitor)
+        self._delete_associated(obj_id, Metric)
+        super().delete(obj_id)
 
     def _after_destroy(self, sqlalc_obj): # Stop ingestion job
         track_event(action="connection_destroyed", label=sqlalc_obj.type)
