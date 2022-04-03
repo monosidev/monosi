@@ -143,7 +143,7 @@ class MsiIntegrationDestination(Destination):
         self.integration = integration
 
     def _push(self, zscores):
-        [self.integration.send(zscore['metric_id'], self.integration.config) for zscore in zscores]
+        self.integration.send(zscores, self.integration.config)
 
 class MsiIntegrationShim(Destination):
     def _push(self, anomalies):
