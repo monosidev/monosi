@@ -49,7 +49,7 @@ export const Integrations = () => {
           to={useBaseUrl("/docs/integrations/webhooks")}
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="https://cdn.worldvectorlogo.com/logos/webhooks.svg" alt="Webhook logo" />
+          <img className="h-16 w-16" src="/img/webhooks.svg" alt="Webhook logo" />
           <p className="text-lg">Webhooks</p>
         </Link>
         <Link
@@ -63,28 +63,28 @@ export const Integrations = () => {
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
           disabled
           >
-          <img className="h-16 w-16" src="https://cdn.worldvectorlogo.com/logos/google-bigquery-logo-1.svg" alt="BigQuery logo" />
+          <img className="h-16 w-16" src="/img/bigquery.svg" alt="BigQuery logo" />
           <p className="text-lg">Google BigQuery</p>
         </Link>
         <Link
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="https://asset.brandfetch.io/idofJOT4bu/id3jbLcFnO.png" alt="dbt Logo" />
+          <img className="h-16 w-16" src="/img/dbt.png" alt="dbt Logo" />
           <p className="text-lg">dbt</p>
         </Link>
         <Link
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16" src="https://seeklogo.com/images/G/google-looker-logo-B27BD25E4E-seeklogo.com.png" alt="Looker logo" />
+          <img className="h-16" src="/img/looker.png" alt="Looker logo" />
           <p className="text-lg">Looker</p>
         </Link>
         <Link
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="https://iconape.com/wp-content/files/cw/345108/svg/345108.svg" alt="Mode logo" />
+          <img className="h-16 w-16" src="/img/mode.svg" alt="Mode logo" />
           <p className="text-lg">Mode</p>
         </Link>
         <Link
@@ -98,35 +98,35 @@ export const Integrations = () => {
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16" src="https://financeandbusiness.ucdavis.edu/sites/g/files/dgvnsk4871/files/styles/sf_landscape_16x9/public/images/article/tableau_logo.png?h=c673cd1c&itok=5J3wvhE8" alt="Tableau logo" />
+          <img className="h-16" src="/img/tableau.png" alt="Tableau logo" />
           <p className="text-lg">Tableau</p>
         </Link>
         <Link
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="https://download.logo.wine/logo/MySQL/MySQL-Logo.wine.png" alt="MySQL logo" />
+          <img className="h-16 w-16" src="/img/mysql.png" alt="MySQL logo" />
           <p className="text-lg">MySQL</p>
         </Link>
         <Link
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="https://avatars.githubusercontent.com/u/33643075?s=280&v=4" alt="Airflow logo" />
+          <img className="h-16 w-16" src="/img/airflow.png" alt="Airflow logo" />
           <p className="text-lg">Airflow</p>
         </Link>
         <Link
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="https://symbols.getvecta.com/stencil_91/7_pagerduty-icon.32302d0739.png" alt="PagerDuty logo" />
+          <img className="h-16 w-16" src="/img/pagerduty.png" alt="PagerDuty logo" />
           <p className="text-lg">PagerDuty</p>
         </Link>
         <Link
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
-          <img className="h-16 w-16" src="https://cdn.iconscout.com/icon/free/png-256/power-bi-3244521-2701891.png" alt="Power BI logo" />
+          <img className="h-16 w-16" src="/img/powerbi.png" alt="Power BI logo" />
           <p className="text-lg">Power BI</p>
         </Link>
       </div>
