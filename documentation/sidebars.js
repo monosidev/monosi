@@ -19,7 +19,7 @@ module.exports = {
         {
           type: "category",
           label: "Data Monitors",
-          collapsible: false,
+          collapsible: true,
           collapsed: false,
           items: [
             "user-guide/table-health",
