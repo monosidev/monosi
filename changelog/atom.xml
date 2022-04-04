@@ -2,81 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://docs.monosi.dev/changelog</id>
     <title>Monosi Documentation Blog</title>
-    <updated>2022-03-07T00:00:00.000Z</updated>
+    <updated>2022-04-01T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://docs.monosi.dev/changelog"/>
     <subtitle>Monosi Documentation Blog</subtitle>
     <icon>https://docs.monosi.dev/img/favicon.png</icon>
     <rights>Copyright © 2022 Vocable Inc. dba Monosi</rights>
     <entry>
-        <title type="html"><![CDATA[v0.1.0-alpha Release]]></title>
+        <title type="html"><![CDATA[v0.1.0 Release]]></title>
         <id>latest-release</id>
         <link href="https://docs.monosi.dev/changelog/latest-release"/>
-        <updated>2022-03-07T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Monosi Alpha Release]]></summary>
-        <content type="html"><![CDATA[<p>Monosi Alpha Release</p><hr/><p>Monosi&#x27;s v0.1.0-alpha release brings a new UI, ease of use &amp; deployment, and much more.</p><h3>Overhauled Web Interface</h3><p>The release brings a new design to the UI with an updated information heirarchy. You can quickly get started with data monitoring by following the directions displayed on the home page of the new UI.</p><p>Furthermore, monitor details have been expanded upon to provide details about each run and anomaly analysis.</p><img alt="Monosi Release" class="case-study-header" src="/img/example.gif"/><h3>Updated Deployment</h3><p>Deploying has been simplified with Docker and Docker Compose. All the necessary dependencies for Monosi to run are managed through Docker Compose, making it easy to start with just 3 commands:</p><pre><code>git clone https://github.com/monosidev/monosi.git
+        <updated>2022-04-01T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Monosi v0.1.0 Release]]></summary>
+        <content type="html"><![CDATA[<p>Monosi v0.1.0 Release</p><hr/><p>Monosi&#x27;s v0.1.0 release brings a new UI, ease of use &amp; deployment, and much more.</p><h3>Web Application &amp; UI</h3><p>In order to use the Monosi application, a web frontend and server are provided to add data sources, receive alerts, and view data quality analysis of the monitors that are running.</p><img alt="Monosi Release" class="case-study-header" src="/img/example.gif"/><h2>Automatic Scheduler</h2><p>Built-in scheduling is provided out of the box with Monosi so that you can set it and forget it - until you receive an alert - or choose to view regularly up-to-date data at any time.</p><h2>Profiler</h2><p>Built-in profiling allows for the automatic creation of data monitors and quality checks when a data source is added.</p><h3>Deployment</h3><p>Deploying has been simplified with Docker and Docker Compose. All the necessary dependencies for Monosi to run are managed through Docker Compose, making it easy to start with just 3 commands:</p><pre><code>git clone https://github.com/monosidev/monosi.git
 cd monosi
 make compose
-</code></pre><h3>Updated Documentation</h3><p>As you can see by the new location of the changelog, we have enhanced our documentation from a content, UI, and information hierarchy perspective (powered by <a href="https://docusaurus.io/">Docusaurus</a>). Deployed through Github Pages and versioned in the Monosi monorepo.</p><p>It should be easier to understand and get started using Monosi. If there any issues that appear in the docs, please open an <a href="https://github.com/monosidev/monosi/issues">issue on Github</a>.</p><h3>Testing &amp; Bug fixes</h3><p>More tests have been added to ensure the reliability of the code. Furthermore, bug fixes and code changes have been made to make Monosi increasingly more stable.</p>]]></content>
-        <author>
-            <name>Kevin Unkrich</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[v0.0.3 Release]]></title>
-        <id>v003</id>
-        <link href="https://docs.monosi.dev/changelog/v003"/>
-        <updated>2022-02-07T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Web Interface, PostgreSQL Support, Slack Alerting, & more.]]></summary>
-        <content type="html"><![CDATA[<p>Web Interface, PostgreSQL Support, Slack Alerting, &amp; more.</p><hr/><p>Monosi&#x27;s v0.0.3 alpha release continues to enrich the available functionality provided by the observability toolkit.</p><h3>Monosi Web Interface &amp; Server</h3><p>With the release of v0.0.3 comes a new interface for interacting with Monosi. A simple and robust web application can now be used to set up monitors on specific data sources and alert on anomalies.</p><p>Find more information on getting started with the Monosi web interface <a href="/docs/user-guide/introduction">here</a>.</p><img src="/img/changelog/v003/ui_interface_v003.gif"/><h3>Docker Image Deployment</h3><p>We have provided a Monosi <a href="https://hub.docker.com/r/monosi/monosi">docker image</a> to run the new web interface and simplify deployment.</p><p>You can run the application via docker and deploy it accordingly with dockerfiles/compose/nginx config files. More information can be found <a href="/docs/guides/quick-install">here</a>.</p><pre><code>docker run -d -p 3000:3000 monosi/monosi
-</code></pre><h3>PostgreSQL Support</h3><p>Monosi now supports PostgreSQL as a core driver. More information on setting up a Postgres connection for the CLI can be found <a href="/docs/integrations/postgresql">here</a>. To setup a connection in the web interface, simply navigate to the datasources page.</p><p>Along with adding PostgreSQL, the driver implementation has been refactored to simplify adding support for other datasources. <a href="https://github.com/monosidev/monosi/issues">Open an issue</a> for the data source you want Monosi to support.</p><pre><code>cat ~/.monosi/workspaces.yml
-
-default:
-  sources:
-    default: 
-      type: postgres
-      user: &lt;USER&gt;
-      password: &lt;PASSWORD&gt;
-      host: &lt;HOST&gt;
-      port: &lt;PORT&gt;
-      database: &lt;DATABASE&gt;
-</code></pre><h3>Slack Alert Integrations</h3><p>Monosi can now send alerts to Slack channels when anomalies are detected (Web Interface only). Alerts are sent through <a href="https://api.slack.com/messaging/webhooks">channel webhooks</a>. More information can be found <a href="/docs/integrations/slack">here</a>.</p><p>The Slack alert format is still being determined. Join the discussion on how to format alerts in our <a href="https://monosi.dev/slack">Slack community</a>.</p><img src="/img/changelog/v003/Monosi_Slack_Alert.svg"/><h3>Schema Change Monitoring</h3><p>We have added a new monitor type for tracking schema changes (CLI only). If at any point a monitored table experiences a schema change, Monosi will alert on the anomaly. More information on schema monitors can be found <a href="https://docs.monosi.dev/">here</a>.</p><pre><code>monosi:
-  monitors:
-    - type: schema
-      table: snowflake_sample_data.tpch_sf100.orders
-      columns:
-        - name: o_custkey
-          type: integer
-          order: 1
-        - name: o_orderdate
-          type: date
-          order: 2
-        - name: o_comment
-          type: string
-          order: 3
-</code></pre><h3>Driver Refactors &amp; Bug Fixes</h3><p>A driver code refactor was introduced with v0.0.3 to support easier development of database driver integrations.</p><p>Furthermore, bug fixes and code changes have been made to make Monosi increasingly more stable as we approach v0.1.</p>]]></content>
-        <author>
-            <name>Kevin Unkrich</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[v0.0.2 Release]]></title>
-        <id>v002</id>
-        <link href="https://docs.monosi.dev/changelog/v002"/>
-        <updated>2022-01-20T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Built-in Scheduler, Custom SQL Monitors, Database Profiler, & more.]]></summary>
-        <content type="html"><![CDATA[<p>Built-in Scheduler, Custom SQL Monitors, Database Profiler, &amp; more.</p><hr/><p>Monosi&#x27;s v0.0.2 release brings a number of compelling features to the toolkit, which we believe will be incredibly useful.</p><p>Dive into the features that we&#x27;ve introduced below, or take a look at past updates.</p><h3>Monosi Scheduler &amp; Server</h3><p>With the introduction of v0.0.2 comes a built-in scheduler and server. With this addition, users can run a single command to allow continuous monitoring of their data sources for data quality issues.</p><p>While other data quality packages require setting up complicated pipelines and regularly recurring checks, Monosi has added support for running your monitors on the schedule you define continuously.</p><img src="/img/changelog/v002/scheduler.gif"/><br/><h3>Monosi Profiler</h3><p>The Monosi Profiler automatically profiles your database to suggest and create new monitors for you to run from scratch.</p><p>New Monosi users can run the profile command to instantly bootstrap their library of data quality checks and start monitoring in minutes.</p><img src="/img/changelog/v002/profile.gif"/><br/><h3>Custom SQL Monitors</h3><p>We&#x27;re constantly working on adding more data quality checks to Monosi. Accordingly, we&#x27;ve introduced Custom SQL Monitors so that you can write custom rules and thresholds for any query.</p><p>In the future, be on the outlook for additional monitor types for freshness, schema checks, distribution, and more.</p><img src="/img/changelog/v002/custom_monitor.gif"/><br/><h3>Bug Fixes</h3><p>Bug fixes and code changes have been made to make Monosi increasingly more stable as we approach v0.1.</p>]]></content>
-        <author>
-            <name>Kevin Unkrich</name>
-        </author>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[v0.0.1 Release]]></title>
-        <id>v001</id>
-        <link href="https://docs.monosi.dev/changelog/v001"/>
-        <updated>2022-01-01T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Initial release - monitor table health metrics via CLI.]]></summary>
-        <content type="html"><![CDATA[<p>Initial release - monitor table health metrics via CLI.</p>]]></content>
+</code></pre><h2>Integration Support</h2><p>Support for Snowflake, PostgreSQL, and Redshift has been added. </p><p>You can also receive alerts via webhooks and Slack.</p><h3>Documentation</h3><p>Documentation has been added to the project and is available at <a href="https://docs.monosi.dev">https://docs.monosi.dev</a></p><h3>Testing &amp; Bug fixes</h3><p>More tests have been added to ensure the reliability of the code. Furthermore, bug fixes and code changes have been made to make Monosi increasingly more stable.</p>]]></content>
         <author>
             <name>Kevin Unkrich</name>
         </author>

@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmonosi_documentation=self.webpackChunkmonosi_documentation||[]).push([[29],{4076:function(o){o.exports=JSON.parse('{"permalink":"/changelog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"previousPage":null,"nextPage":null,"blogDescription":"Blog","blogTitle":"Monosi Changelog"}')}}]);
