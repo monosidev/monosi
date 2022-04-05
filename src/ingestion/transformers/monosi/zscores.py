@@ -60,16 +60,20 @@ class ZScoreTransformer(Transformer):
     def _organize(cls, metrics):
         groups = {}
         for obj in metrics:
+            table = obj['table_name']
             metric = obj['metric']
             column_name = obj['column_name']
 
-            if metric not in groups:
-                groups[metric] = {}
+            if table not in groups:
+                groups[table] = {}
+
+            if metric not in groups[table]:
+                groups[table][metric] = {}
 
             if column_name not in groups[metric]:
-                groups[metric][column_name] = []
+                groups[table][metric][column_name] = []
 
-            groups[metric][column_name].append(obj)
+            groups[table][metric][column_name].append(obj)
 
         return groups
 
@@ -80,12 +84,13 @@ class ZScoreTransformer(Transformer):
 
         groups = cls._organize(metrics)
 
-        for metric in groups:
-            for column_name in groups[metric]:
-                group_metrics = groups[metric][column_name]
-                group_metrics.sort(key=lambda x: x['time_window_start'])
+        for table in groups:
+            for metric in groups[table]:
+                for column_name in groups[table][metric]:
+                    group_metrics = groups[table][metric][column_name]
+                    group_metrics.sort(key=lambda x: x['time_window_start'])
 
-                zscores += ZScoreAlgorithm.run(group_metrics, sensitivity)
+                    zscores += ZScoreAlgorithm.run(group_metrics, sensitivity)
 
         return zscores
 
