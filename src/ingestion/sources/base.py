@@ -201,6 +201,7 @@ class SQLAlchemyExtractor(Extractor):
 class ColumnMetricType(Enum):
     APPROX_DISTINCTNESS = '_approx_distinctness'
     COMPLETENESS = '_completeness'
+    FRESHNESS = '_freshness'
     ZERO_RATE = '_zero_rate'
     NEGATIVE_RATE = '_negative_rate'
     NUMERIC_MEAN = '_numeric_mean'
@@ -243,6 +244,7 @@ class ColumnMetricType(Enum):
             cls.TEXT_UUID_RATE,
             cls.TEXT_ALL_SPACES_RATE,
             cls.TEXT_NULL_KEYWORD_RATE,
+            cls.FRESHNESS,
         ]
 
     @classmethod
@@ -273,6 +275,10 @@ class ColumnMetricType(Enum):
                 cls.TEXT_NULL_KEYWORD_RATE,
                 cls.COMPLETENESS,
                 cls.APPROX_DISTINCTNESS,
+            ]
+        elif 'date' in data_type or "timestamp" in data_type:
+            return [
+                cls.FRESHNESS,
             ]
         else:
             return [
@@ -419,6 +425,10 @@ class SQLAlchemySourceDialect:
     @classmethod
     def _approx_distinctness(cls):
         return "{} / CAST(COUNT(*) AS NUMERIC)".format(cls._approx_distinct_count())
+
+    @classmethod
+    def _freshness(cls):
+        return "TIMEDIFF(minutes, MAX({}), CURRENT_TIMESTAMP)"
 
     @classmethod
     def _numeric_mean(cls):

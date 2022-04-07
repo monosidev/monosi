@@ -88,7 +88,6 @@ class ZScoreTransformer(Transformer):
             for metric in groups[table]:
                 for column_name in groups[table][metric]:
                     group_metrics = groups[table][metric][column_name]
-                    print(group_metrics)
                     group_metrics.sort(key=lambda x: x['time_window_start'])
 
                     zscores += ZScoreAlgorithm.run(group_metrics, sensitivity)
