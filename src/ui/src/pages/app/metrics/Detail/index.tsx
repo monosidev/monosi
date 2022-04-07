@@ -103,6 +103,7 @@ const MetricsDetail: React.FC = () => {
     {
       dataField: "status",
       text: "Status",
+      sort: true,
       formatter: (cell: any, row: any) => {
         return (
           <>
