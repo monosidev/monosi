@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 import itertools
+import logging
 from typing import Any, Dict, List, Optional
 
 from mashumaro.serializer.base.dict import DataClassDictMixin
@@ -75,7 +76,10 @@ class Collector:
         try:
             [pipeline.push(data) for pipeline in self.pipelines]
         except Exception as e:
-            print(e)
+            import traceback
+            traceback.print_exc()
+            logging.error("Issue passing data to next pipeline")
+            logging.error(e)
 
     # def _create_tasks(self):
     #     extractor = self.source.extractor()

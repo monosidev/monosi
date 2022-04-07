@@ -289,7 +289,26 @@ class MetricsQueryBuilder:
         self.ddata = ddata
         self.minutes_ago = minutes_ago
 
-    def _base_query(self, select_sql, table, timestamp_field):
+    def _base_query_sample(self, select_sql):
+        return """
+            SELECT 
+                CURRENT_TIMESTAMP as "WINDOW_START", 
+                CURRENT_TIMESTAMP as "WINDOW_END", 
+                COUNT(*) as "ROW_COUNT", 
+                '{table}' as "TABLE_NAME",
+                '{database}' as "DATABASE_NAME",
+                '{schema}' as "SCHEMA_NAME",
+
+                {select_sql}
+            FROM {table};
+        """.format(
+            select_sql=select_sql,
+            table=self.monitor['table_name'],
+            schema=self.monitor['schema'],
+            database=self.monitor['database'],
+        )
+
+    def _base_query_backfill(self, select_sql, table, timestamp_field):
         return """
             SELECT 
                 DATE_TRUNC('HOUR', {timestamp_field}) as "WINDOW_START", 
@@ -378,14 +397,16 @@ class MetricsQueryBuilder:
         select_sql = self._select_sql(table_cols)
         for table_name, cols in select_sql.items():
             cols_sql = cols['sql']
-            timestamp_field = self.monitor['timestamp_field']
+            metrics_queries.append(self._base_query_sample(cols_sql))
 
-            if timestamp_field is not None:
-                metrics_queries.append(self._base_query(
-                    cols_sql,
-                    table_name,
-                    timestamp_field,
-                ))
+            # timestamp_field = self.monitor['timestamp_field']
+
+            # if timestamp_field is not None:
+            #     metrics_queries.append(self._base_query(
+            #         cols_sql,
+            #         table_name,
+            #         timestamp_field,
+            #     ))
 
         return metrics_queries
 

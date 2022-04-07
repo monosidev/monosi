@@ -113,17 +113,17 @@ const MetricsDetail: React.FC = () => {
         );
       } 
     },
-    {
-      dataField: "time_window_start",
-      text: "TS Window Start",
-      sort: true,
-      formatter: (cell: any, row: any) => {
-        return formatTimestamp(row.time_window_start)
-      },
-    },
+    // {
+    //   dataField: "time_window_start",
+    //   text: "TS Window Start",
+    //   sort: true,
+    //   formatter: (cell: any, row: any) => {
+    //     return formatTimestamp(row.time_window_start)
+    //   },
+    // },
     {
       dataField: "time_window_end",
-      text: "TS Window End",
+      text: "Timestamp",
       sort: true,
       formatter: (cell: any, row: any) => {
         return formatTimestamp(row.time_window_end)
