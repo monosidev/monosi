@@ -108,7 +108,7 @@ module.exports = {
       `,
     },
     gtag: {
-      trackingID: "",
+      trackingID: "G-M6MW4MGZS8",
     },
     algolia: {
       apiKey: "api", // TODO: INSERT UPDATE
