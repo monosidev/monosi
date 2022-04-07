@@ -40,6 +40,7 @@ class MetricListResource(Resource):
                 'metric': obj[0],
                 'column_name': obj[1],
                 'count': obj[2],
+                'error': obj[3]
             }
             for obj in objs
         ]
@@ -53,7 +54,11 @@ class MetricListResource(Resource):
                     Metric.table_name,
                     Metric.database,
                     Metric.schema,
-                    func.max(Metric.created_at)
+                    func.max(Metric.created_at),
+                    ZScore.error,
+                ).join(
+                    ZScore,
+                    ZScore.id == ZScore.metric_id,
                 ).filter(
                     table_name == Metric.table_name,
                     database == Metric.database,
