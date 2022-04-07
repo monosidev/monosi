@@ -73,6 +73,10 @@ class PostgreSQLSourceConfiguration(SourceConfiguration):
 
 class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
     @classmethod
+    def _freshness(cls):
+        return "(DATE_PART('day', CURRENT_TIMESTAMP - MAX({0})) * 24 + DATE_PART('hour', CURRENT_TIMESTAMP - MAX({0}))) * 60 + DATE_PART('minute', CURRENT_TIMESTAMP - MAX({0}))"
+
+    @classmethod
     def _numeric_std(cls):
         return "STDDEV(CAST({} as double precision))"
     
