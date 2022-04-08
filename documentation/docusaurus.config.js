@@ -111,9 +111,9 @@ module.exports = {
       trackingID: "G-M6MW4MGZS8",
     },
     algolia: {
-      apiKey: "api", // TODO: INSERT UPDATE
+      apiKey: "53bfbe8a5227e168e89437292698846f",
+      appId: "GNDLCIWQCJ",
       indexName: "monosi",
-      // contextualSearch: true, // Optional, If you different version of docs etc (v1 and v2) doesn't display dup results
     },
   },
   presets: [
