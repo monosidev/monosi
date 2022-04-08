@@ -1,6 +1,6 @@
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List
 from sqlalchemy import (
     Boolean,
     Column,
@@ -11,11 +11,14 @@ from sqlalchemy import (
     String,
     UniqueConstraint,
 )
-from sqlalchemy.orm import registry, relationship
+from sqlalchemy.orm import registry
 from sqlalchemy.sql import func
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy_utils import JSONType
 from mashumaro import DataClassDictMixin
+
+from telemetry.events import set_user_id
+
 
 from .integrations.slack import SlackIntegration
 
@@ -112,3 +115,48 @@ class Metric(DataClassDictMixin):
     interval_length_sec: int = field(default=None, metadata={"sa": Column(Integer)})
     id: str = field(default=None, metadata={"sa": Column(String(100), primary_key=True)})
     created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False, server_default=func.now())})
+
+@mapper_registry.mapped
+@dataclass
+class User(DataClassDictMixin):
+    __tablename__ = "msi_users"
+    __sa_dataclass_metadata_key__ = "sa"
+
+    anonymize_usage_data: bool = field(default=False, metadata={"sa": Column(Boolean)})
+    receive_updates: bool = field(default=False, metadata={"sa": Column(Boolean)})
+    setup_completed: bool = field(default=False, metadata={"sa": Column(Boolean)})
+    email: str = field(default=None, metadata={"sa": Column(String(50))})
+    id: str = field(default=None, metadata={"sa": Column(String(100), primary_key=True)})
+
+    @classmethod
+    def create_or_load(cls):
+        from .middleware.db import db
+        def extract_count(num_users):
+            try:
+                return num_users[0][0]
+            except:
+                return 0
+
+        num_users = db.session.query(db.func.count(cls.id)).all()
+        if extract_count(num_users) == 0:
+            db.session.add(User(id=uuid.uuid4().hex))
+            db.session.commit()
+
+        return db.session.query(cls).one()
+
+    @classmethod
+    def update(cls, updates):
+        from .middleware.db import db
+        obj = cls.create_or_load()
+        try:
+            for k, v in updates.items():
+                setattr(obj, k, v)
+
+            db.session.add(obj)
+            db.session.commit()
+
+            set_user_id(obj.id, obj.email)
+        except Exception as e:
+            raise Exception("DB: Couldn't update record")
+
+        return obj

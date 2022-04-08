@@ -8,7 +8,6 @@ src_path = os.path.abspath(os.path.join(curr_path, "../"))
 sys.path.append(src_path)
 
 from server.middleware import middleware
-from server.user import User
 from telemetry.events import set_user_id, track_event
 
 
@@ -25,7 +24,9 @@ def create_app():
     # Middleware
     [func(app) for func in middleware]
 
-    set_user_id(User.create_or_load())
+    from server.models import User
+    user = User.create_or_load()
+    set_user_id(user.id, user.email)
     track_event(action="server_start")
 
     return app

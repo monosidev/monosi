@@ -12,15 +12,14 @@ interface PageProps {
 
 const Page: React.FC<PageProps> = ({ children, selectedTab }) => {
   return (
-          <div className="bg-light faux-body">
-
-            <div className="container-fluid">
-              <div className="row">
-                <Navigation selectedTab={selectedTab} />
-                {children}
-              </div>
-            </div>
-          </div>
+    <div className="bg-light faux-body">
+      <div className="container-fluid">
+        <div className="row">
+          <Navigation selectedTab={selectedTab} />
+          {children}
+        </div>
+      </div>
+    </div>
   );
 };
 
