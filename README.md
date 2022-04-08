@@ -20,9 +20,16 @@
   <a href="https://monosi.dev/slack">Join the Data Reliability Engineering Community</a>
 </p>
 
-Monosi is a stand-alone & extensible platform for data observability and monitoring. It ensures data quality by automatically monitoring your data stack for anomalies, alerting you of issues, and analyzing the root cause.
 
-This project is an OSS alternative to proprietary data quality and observability systems. Get started monitoring your data in [less than 10 minutes](https://docs.monosi.dev/docs/user-guide/getting-started)
+Monosi offers data quality monitoring as a service to root cause data issues with end-to-end observability.
+
+🏆 Ensure data quality
+
+🚨 Monitor your data & alert on anomalies
+
+🎛 Analyze root cause of data issues
+
+This project is an OSS alternative to proprietary data quality and observability systems. Get started monitoring your data in [less than 10 minutes](https://docs.monosi.dev/docs/user-guide/getting-started).
 
 
 ## Installation
@@ -53,10 +60,9 @@ Start the UI through Docker and quickly connect your data sources and alert inte
 
 <img alt="web interface" src="/documentation/static/img/example.gif"/>
 
-
 Get alerts in slack when Monosi detects anomalies in defined monitors.
 
-![monosi slack alerts](https://www.monosi.dev/images/Monosi_Slack_Alert.svg)
+<img alt="monosi slack alert" src="/documentation/static/img/slack_alert.svg">
 
 ### Own your stack
 Avoid integration pitfalls with fragmented, legacy tools by using open source & prevent vendor lock-in by owning your (meta)data. 
