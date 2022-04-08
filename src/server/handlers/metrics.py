@@ -58,7 +58,7 @@ class MetricListResource(Resource):
                     ZScore.error,
                 ).join(
                     ZScore,
-                    ZScore.id == ZScore.metric_id,
+                    Metric.id == ZScore.metric_id,
                 ).filter(
                     table_name == Metric.table_name,
                     database == Metric.database,
