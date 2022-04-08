@@ -14,6 +14,7 @@ from .monitors import (
     MonitorListResource,
     MonitorResource,
 )
+from .users import UserResource
 
 def init_api(api):
     api.add_resource(IntegrationListResource, '/{}/integrations'.format(api.PREFIX))
@@ -27,4 +28,6 @@ def init_api(api):
     api.add_resource(MonitorResource, '/{}/monitors/<int:obj_id>'.format(api.PREFIX))
 
     api.add_resource(MetricListResource, '/{}/monitors/<int:monitor_id>/metrics'.format(api.PREFIX))
+
+    api.add_resource(UserResource, '/{}/users'.format(api.PREFIX))
 
