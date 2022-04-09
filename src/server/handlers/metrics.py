@@ -51,26 +51,29 @@ class MetricListResource(Resource):
                     Metric.metric,
                     Metric.column_name,
                     func.count(Metric.id),
+                    ZScore.error,
                     Metric.table_name,
                     Metric.database,
                     Metric.schema,
                     func.max(Metric.created_at),
-                    ZScore.error,
                 ).join(
                     ZScore,
                     Metric.id == ZScore.metric_id,
                 ).filter(
                     table_name == Metric.table_name,
                     database == Metric.database,
-                    schema == Metric.schema
+                    schema == Metric.schema,
                 ).group_by(
                     Metric.table_name, 
                     Metric.database, 
                     Metric.schema,
                     Metric.column_name,
                     Metric.metric,
+                    ZScore.error,
                 ).all()
-        except:
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
             abort(404)
         return {'table_name': table_name, 'database': database, 'schema': schema, 'type': 'table_health', 'metrics': obj}
 

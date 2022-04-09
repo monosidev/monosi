@@ -7,6 +7,9 @@ from .integrations import (
     IntegrationListResource,
     IntegrationResource,
 )
+from .issues import (
+    IssueListResource,
+)
 from .metrics import (
     MetricListResource,
 )
@@ -18,6 +21,8 @@ from .monitors import (
 def init_api(api):
     api.add_resource(IntegrationListResource, '/{}/integrations'.format(api.PREFIX))
     api.add_resource(IntegrationResource, '/{}/integrations/<int:obj_id>'.format(api.PREFIX))
+
+    api.add_resource(IssueListResource, '/{}/issues'.format(api.PREFIX))
 
     api.add_resource(DataSourceListResource, '/{}/datasources'.format(api.PREFIX))
     api.add_resource(DataSourceResource, '/{}/datasources/<int:obj_id>'.format(api.PREFIX))

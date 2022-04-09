@@ -4,6 +4,7 @@ from .base import (
 
 from .monosi import (
     AnomalyTransformer,
+    IssueTransformer,
     MetricTransformer,
     MonitorTransformer,
     ZScoreTransformer,

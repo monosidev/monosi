@@ -119,7 +119,7 @@ const MonitorsTable: React.FC<{
         break; 
      } 
      case MonitorFilters.DISABLED: {
-        filteredMonitors = monitors.filter(m => m.timestamp_field === null)
+        filteredMonitors = []
         break; 
      } 
      default: { 

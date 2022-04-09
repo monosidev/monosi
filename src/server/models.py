@@ -56,6 +56,19 @@ class Integration(DataClassDictMixin, SlackIntegration):
 
 @mapper_registry.mapped
 @dataclass
+class Issue(DataClassDictMixin):
+    __tablename__ = "msi_issues"
+    __sa_dataclass_metadata_key__ = "sa"
+
+    type: str = field(metadata={"sa": Column(String(100))})
+    entity: str = field(metadata={"sa": Column(String(100))})
+    message: str = field(metadata={"sa": Column(String(100))})
+    value: str = field(metadata={"sa": Column(String(100))})
+    created_at: datetime = field(metadata={"sa": Column(DateTime(timezone=True), nullable=False, server_default=func.now())})
+    id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('issue_id_seq'), primary_key=True, autoincrement=True)})
+
+@mapper_registry.mapped
+@dataclass
 class Monitor(DataClassDictMixin):
     __tablename__ = "msi_monitors"
     __sa_dataclass_metadata_key__ = "sa"
