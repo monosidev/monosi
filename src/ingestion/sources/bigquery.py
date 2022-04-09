@@ -9,15 +9,15 @@ class BigQueryMetricsQueryBuilder(MetricsQueryBuilder):
     def _base_query_sample(self, select_sql):
         return """
             SELECT 
-                CURRENT_TIMESTAMP as `WINDOW_START`, 
-                CURRENT_TIMESTAMP as `WINDOW_END`, 
+                CURRENT_TIMESTAMP() as `WINDOW_START`, 
+                CURRENT_TIMESTAMP() as `WINDOW_END`, 
                 COUNT(*) as `ROW_COUNT`, 
                 '{table}' as `TABLE_NAME`,
                 '{database}' as `DATABASE_NAME`,
                 '{schema}' as `SCHEMA_NAME`,
 
                 {select_sql}
-            FROM {schema}.{table};
+            FROM {database}.{schema}.{table};
         """.format(
             select_sql=select_sql,
             table=self.monitor['table_name'],
@@ -146,10 +146,6 @@ class BigQuerySourceDialect(SQLAlchemySourceDialect):
         return "TIMESTAMP_DIFF(MAX({}), CURRENT_TIMESTAMP, MINUTE)"
 
     @classmethod
-    def schema_tables_query(cls, database_name, schema_name):
-        raise NotImplementedError
-
-    @classmethod
     def table_metrics_query(cls, monitor, discovery_data, minutes_ago):
         builder = BigQueryMetricsQueryBuilder(cls, monitor, discovery_data, minutes_ago)
         query = builder.compile()
@@ -176,14 +172,6 @@ class BigQuerySourceDialect(SQLAlchemySourceDialect):
         WHERE LOWER(c.table_schema) = LOWER('{schema_name}')
             AND LOWER(c.table_catalog) = LOWER('{database_name}')
         """.format(database_name=database_name, schema_name=schema_name)
-
-    @classmethod
-    def query_access_logs_query(cls):
-        raise NotImplementedError
-        
-    @classmethod
-    def query_copy_logs_query(cls):
-        raise NotImplementedError
 
 class BigQuerySource(SQLAlchemySource):
     def __init__(self, configuration: BigQuerySourceConfiguration):
