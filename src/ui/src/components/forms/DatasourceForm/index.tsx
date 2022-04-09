@@ -356,7 +356,7 @@ const DatasourceForm = () => {
       {datasourceType === DataSourceTypes.BIGQUERY && (
         <div>
           <EuiPageHeader
-            iconType="https://cdn.worldvectorlogo.com/logos/google-bigquery-logo-1.svg"
+            iconType={BigQueryLogo}
             pageTitle="BigQuery"
             description="Connect to Google BigQuery Data Warehouse"
           />
