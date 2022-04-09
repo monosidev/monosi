@@ -32,6 +32,7 @@ html[data-theme="dark"] {
   --ifm-blockquote-color: #eeeeee;
   /* --ifm-code-background: var(--ifm-color-primary-dark); */
   --ifm-color: #ffffff;
+  --ifm-color-highlight: #ffffff;
   --ifm-background-color: #141414;
   --ifm-footer-background-color: #000;
   --ifm-card-background-color: #1a1a1a;
@@ -49,7 +50,8 @@ html[data-theme="light"] {
   /* --ifm-code-background: var(--ifm-color-primary-lightest); */
   --ifm-color-input-background: #ffffff;
   --ifm-color: #270d5b;
-  --ifm-background-color: #f9f7f1;
+  --ifm-color-highlight: #7344d2;
+  --ifm-background-color: #f8f9fa;
   --ifm-footer-background-color: #ffffff;
   --ifm-card-background-color: #ffffff;
   --ifm-badge-background-color: rgba(239, 246, 255);
