@@ -20,7 +20,7 @@ from mashumaro import DataClassDictMixin
 from telemetry.events import set_user_id
 
 
-from .integrations.slack import SlackIntegration
+from .integrations import SlackIntegration, WebhookIntegration
 
 
 mapper_registry = registry()
@@ -46,7 +46,7 @@ class DataSource(DataClassDictMixin):
 
 @mapper_registry.mapped
 @dataclass
-class Integration(DataClassDictMixin, SlackIntegration):
+class Integration(DataClassDictMixin):
     __tablename__ = "msi_integrations"
     __sa_dataclass_metadata_key__ = "sa"
 
@@ -56,6 +56,12 @@ class Integration(DataClassDictMixin, SlackIntegration):
 
     id: int = field(default=None, metadata={"sa": Column(Integer, Sequence('integ_id_seq'), primary_key=True, autoincrement=True)})
     created_at: datetime = field(default=datetime.now(), metadata={"sa": Column(DateTime(timezone=True), nullable=False, server_default=func.now())})
+
+    def send(self, anomalies, config):
+        if self.type == 'slack':
+            SlackIntegration.send(anomalies, config)
+        elif self.type == 'webhook':
+            WebhookIntegration.send(anomalies, config)
 
 @mapper_registry.mapped
 @dataclass
