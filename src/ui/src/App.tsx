@@ -12,6 +12,7 @@ import 'App.css';
 import UserService from 'services/users';
 
 import IntegrationsSettings from 'pages/settings/Integrations';
+import IssuesIndex from 'pages/app/issues/Index';
 import SourcesSettings from 'pages/settings/Sources';
 import ProfileSettings from 'pages/settings/Profile';
 import DashboardIndex from 'pages/app/dashboard/Index';
@@ -59,6 +60,9 @@ function App() {
           </Route>
           <Route exact path="/monitors">
               <MonitorsIndex />
+          </Route>
+          <Route exact path="/issues">
+              <IssuesIndex />
           </Route>
           <Route exact path="/monitors/:id">
               <MonitorsDetail />

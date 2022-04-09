@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { Button, ButtonGroup } from 'react-bootstrap';
 import MonitorService from 'services/monitors';
 import Page from 'components/Page';
 import MonitorsTable from './components/MonitorsTable';

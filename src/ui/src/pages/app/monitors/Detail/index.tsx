@@ -46,13 +46,17 @@ const MonitorsDetail: React.FC = () => {
 
   const columns = [
     {
-      dataField: "status",
+      dataField: 'status',
       text: "Status",
       formatter: (cell: any, row: any) => {
         return (
-          <span className="badge rounded-pill bg-success">Enabled</span>
+          <>
+          {row.error == false && <span className="badge rounded-pill bg-success">Healthy</span>}
+          {row.error == true && <span className="badge rounded-pill bg-danger">Unheathy</span>}
+          </>
         );
-      } 
+      },
+      sort: true,
     },
     {
       dataField: "column_name",

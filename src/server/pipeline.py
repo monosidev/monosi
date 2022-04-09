@@ -2,6 +2,7 @@ import json
 from ingestion.pipeline import Pipeline
 from ingestion.transformers import (
     AnomalyTransformer,
+    IssueTransformer,
     MetricTransformer,
     MonitorTransformer,
     ZScoreTransformer,
@@ -33,6 +34,8 @@ def resolve_to_model(data: List[Any]): # TODO: Handle resolution
         return models.Monitor
     elif 'zscore' in example_dict.keys():
         return models.ZScore
+    elif 'entity' in example_dict.keys():
+        return models.Issue
 
     raise Exception("Could not resolve to model. Did not match.")
 
@@ -152,15 +155,29 @@ class MsiIntegrationShim(Destination):
 
         [destination.push(anomalies) for destination in anomalies_destinations]
 
+class MsiIssueShim(Destination):
+    def _push(self, anomalies):
+        metric_ids = [anomaly['metric_id'] for anomaly in anomalies]
+        metrics = db.db.session.query(models.Metric).filter(models.Metric.id.in_(metric_ids)).all()
+        metrics_dicts = [metric.to_dict() for metric in metrics]
+        issues_pipeline.push(metrics_dicts)
+
 
 configuration = MonosiDestinationConfiguration(json.dumps(destination_dict))
 msi_db = MonosiDestination(configuration)
 
 integration_shim_destination = MsiIntegrationShim('{}')
 
+issues_pipeline = Pipeline(
+    transformers=[IssueTransformer],
+    destinations=[msi_db],
+)
+
+issue_shim_destination = MsiIssueShim('{}')
+
 anomalies_pipeline = Pipeline(
     transformers=[AnomalyTransformer],
-    destinations=[integration_shim_destination]
+    destinations=[integration_shim_destination, issue_shim_destination]
 )
 
 zscores_pipeline = Pipeline(
