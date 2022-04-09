@@ -5,7 +5,7 @@ from ingestion.task import TaskUnit
 from .base import MetricsQueryBuilder, SQLAlchemyExtractor, SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
 
 class PostgreSQLMetricsQueryBuilder(MetricsQueryBuilder):
-    def _base_query(self, select_sql, table, timestamp_field):
+    def _base_query_backfill(self, select_sql, table, timestamp_field): # TODO
         return """
             SELECT 
                 DATE_TRUNC('HOUR', {timestamp_field}) as "WINDOW_START", 
