@@ -143,7 +143,7 @@ class BigQuerySourceDialect(SQLAlchemySourceDialect):
     
     @classmethod
     def _freshness(cls):
-        return "TIMESTAMP_DIFF(MAX({}), CURRENT_TIMESTAMP, MINUTE)"
+        return "TIMESTAMP_DIFF(MAX(CAST({} AS TIMESTAMP)), CURRENT_TIMESTAMP(), MINUTE)"
 
     @classmethod
     def table_metrics_query(cls, monitor, discovery_data, minutes_ago):
