@@ -47,8 +47,9 @@ module.exports = {
           collapsed: true,
           items: [
             "integrations/snowflake",
-            "integrations/postgresql",
             "integrations/redshift",
+            "integrations/postgresql",
+            "integrations/bigquery",
           ]
         },
         {
