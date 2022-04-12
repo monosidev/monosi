@@ -250,7 +250,12 @@ class ColumnMetricType(Enum):
     @classmethod
     def default_for(cls, data_type): 
         data_type = data_type.lower()
-        if 'num' in data_type or 'int' in data_type:
+
+        num_types = ['num', 'int', 'float']
+        text_types = ['text', 'character', 'string']
+        date_types = ['date', 'timestamp']
+
+        if any(n in data_type for n in num_types):
             return [
                 cls.ZERO_RATE,
                 cls.NEGATIVE_RATE,
@@ -261,7 +266,7 @@ class ColumnMetricType(Enum):
                 cls.COMPLETENESS,
                 cls.APPROX_DISTINCTNESS,
             ]
-        elif 'text' in data_type or 'character' in data_type:
+        elif any(t in data_type for t in text_types):
             return [
                 cls.APPROX_DISTINCT_COUNT,
                 cls.MEAN_LENGTH,
@@ -276,7 +281,7 @@ class ColumnMetricType(Enum):
                 cls.COMPLETENESS,
                 cls.APPROX_DISTINCTNESS,
             ]
-        elif 'date' in data_type or "timestamp" in data_type:
+        elif any(d in data_type for d in date_types):
             return [
                 cls.FRESHNESS,
             ]
