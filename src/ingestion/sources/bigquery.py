@@ -61,8 +61,8 @@ class BigQuerySourceConfiguration(SourceConfiguration):
         return {
             "type": "object",
             "properties": {
-                "project": { "type": "string" },
-                "dataset": { "type": "string" },
+                "database": { "type": "string" },
+                "schema": { "type": "string" },
                 "credentials_base64": { "type": "string" },
             },
         }
@@ -73,9 +73,9 @@ class BigQuerySourceConfiguration(SourceConfiguration):
     def connection_string(self) -> str:
         configuration = json.loads(self.configuration)
         connection_string_prefix = self._connection_string_prefix()
-        connection_string_base = '{project}/{dataset}'.format(
-            project=configuration.get('project'),
-            dataset=configuration.get('dataset'),
+        connection_string_base = '{database}/{schema}'.format(
+            database=configuration.get('database'),
+            schema=configuration.get('schema'),
         )
         connection_string_params = '?credentials_base64={credentials_base64}'.format(
             credentials_base64=configuration.get('credentials_base64')
@@ -88,13 +88,6 @@ class BigQuerySourceConfiguration(SourceConfiguration):
         )
 
         return make_url(connection_string)
-
-
-    def database(self):
-        return json.loads(self.configuration).get("project")
-
-    def schema(self):
-        return json.loads(self.configuration).get('dataset')
 
     @property
     def type(self):
