@@ -119,7 +119,7 @@ class BigQuerySourceDialect(SQLAlchemySourceDialect):
 
     @classmethod
     def _text_uuid_rate(cls):
-        return "SUM(ARRAY_LENGTH(REGEXP_EXTRACT_ALL(CAST({} AS STRING2), r'^([0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}})$'))) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(ARRAY_LENGTH(REGEXP_EXTRACT_ALL(CAST({} AS STRING), r'^([0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}})$'))) / CAST(COUNT(*) AS NUMERIC)"
 
     @classmethod
     def _text_all_spaces_rate(cls):
