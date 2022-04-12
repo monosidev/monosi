@@ -2,7 +2,7 @@ import json
 
 from ingestion.sources.base import SQLAlchemyExtractor
 
-from .postgresql import PostgreSQLSource, PostgreSQLSourceConfiguration
+from .postgresql import PostgreSQLSource, PostgreSQLSourceConfiguration, PostgreSQLSourceDialect
 
 class RedshiftSourceConfiguration(PostgreSQLSourceConfiguration):
     def _connection_string_prefix(self) -> str:
@@ -11,6 +11,12 @@ class RedshiftSourceConfiguration(PostgreSQLSourceConfiguration):
     @property
     def type(self):
         return "redshift"
+
+class RedshiftSourceDialect(PostgreSQLSourceDialect):
+    @classmethod
+    def _freshness(cls):
+        return "DATEDIFF(MINUTE, MAX(CAST({} AS TIMESTAMP)), GETDATE())"
+
 
 class RedshiftExtractor(SQLAlchemyExtractor):
     def _initialize(self):
@@ -25,6 +31,10 @@ class RedshiftExtractor(SQLAlchemyExtractor):
         self.connection.execute(sql)
 
 class RedshiftSource(PostgreSQLSource):
+    def __init__(self, configuration: RedshiftSourceConfiguration):
+        self.configuration = configuration
+        self.dialect = RedshiftSourceDialect
+        
     def extractor(self):
         return RedshiftExtractor(self.configuration)
 
