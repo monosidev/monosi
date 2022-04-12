@@ -123,7 +123,7 @@ const MonitorsTable: React.FC<{
         break; 
      } 
      default: { 
-        filteredMonitors = monitors.filter(m => m.timestamp_field !== null && m.metrics !== 0)
+        filteredMonitors = monitors.filter(m => m.metrics !== 0)
         break; 
      } 
     }
