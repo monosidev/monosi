@@ -115,7 +115,7 @@ const MonitorsTable: React.FC<{
 
     switch (filterType) {
       case MonitorFilters.PENDING: { 
-        filteredMonitors = monitors.filter(m => m.metrics === 0 && m.timestamp_field !== null)
+        filteredMonitors = monitors.filter(m => m.metrics === 0)
         break; 
      } 
      case MonitorFilters.DISABLED: {
