@@ -23,15 +23,7 @@ Bug reports help make monosi better for everyone. To create a bug report, [raise
 
 ## Development Environment Setup
 
-To get the project setup locally and be ready for development:
-
-1. Fork the repository
-2. Clone the repository to your development machine & navigate into it
-3. Start a python virtual environment `python3 -m virtualenv .venv && source .venv/bin/activate`
-4. Run `make init`
-5. Install the current dev version by running `python3 -m setup.py install`
-
-You are now running the development version of monosi. If you have any questions, reach out on Slack
+Please follow the [instructions outlined in the Monosi docs](https://docs.monosi.dev/docs/contributing/local-development) to get set up with a local instance of the project for development.
 
 ## First-time contributors
 
@@ -51,6 +43,6 @@ If you want to speak to us before doing lots of work, just ping us in [Slack](ht
 
 ## Questions
 
-Come say hi to us on [Slack](https://monosi.dev/slack)! :wave:
+Come say hi to us on [Slack](https://monosi.dev/slack)! 👋
 
 Or if you prefer, email us at [support@monosi.dev](mailto:support@monosi.dev) — we're always happy to chat!
