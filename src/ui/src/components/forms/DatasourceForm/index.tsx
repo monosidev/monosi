@@ -77,8 +77,8 @@ const DatasourceForm = () => {
       const credentials_base64 = await toBase64(file);
 
       config = {
-        project,
-        dataset,
+        database: project,
+        schema: dataset,
         credentials_base64,
       };
     }
