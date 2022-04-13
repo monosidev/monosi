@@ -50,14 +50,14 @@ function SDKs() {
         <li className="">
           <Link
             className="flex items-center space-x-3 hover:underline"
-            to={useBaseUrl("/docs/integrations/bigquery")}
+            to={useBaseUrl("/docs/integrations/postgresql")}
           >
             <img
               className="h-8 w-8 transition hover:scale-110"
-              src="/img/bigquery.svg"
-              alt="BigQuery logo"
+              src="/img/postgresql.svg"
+              alt="PostgreSQL logo"
             />
-            <p className="font-semibold">BigQuery</p>
+            <p className="font-semibold">PostgreSQL</p>
           </Link>
         </li>
 
