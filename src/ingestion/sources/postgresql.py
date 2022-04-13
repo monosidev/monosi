@@ -5,7 +5,7 @@ from ingestion.task import TaskUnit
 from .base import MetricsQueryBuilder, SQLAlchemyExtractor, SourceConfiguration, SQLAlchemySourceDialect, SQLAlchemySource
 
 class PostgreSQLMetricsQueryBuilder(MetricsQueryBuilder):
-    def _base_query(self, select_sql, table, timestamp_field):
+    def _base_query_backfill(self, select_sql, table, timestamp_field): # TODO
         return """
             SELECT 
                 DATE_TRUNC('HOUR', {timestamp_field}) as "WINDOW_START", 
@@ -72,6 +72,10 @@ class PostgreSQLSourceConfiguration(SourceConfiguration):
         return "postgresql"
 
 class PostgreSQLSourceDialect(SQLAlchemySourceDialect):
+    @classmethod
+    def _freshness(cls):
+        return "(DATE_PART('day', CURRENT_TIMESTAMP - MAX({0})) * 24 + DATE_PART('hour', CURRENT_TIMESTAMP - MAX({0}))) * 60 + DATE_PART('minute', CURRENT_TIMESTAMP - MAX({0}))"
+
     @classmethod
     def _numeric_std(cls):
         return "STDDEV(CAST({} as double precision))"

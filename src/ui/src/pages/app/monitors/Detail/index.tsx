@@ -46,13 +46,17 @@ const MonitorsDetail: React.FC = () => {
 
   const columns = [
     {
-      dataField: "status",
+      dataField: 'status',
       text: "Status",
       formatter: (cell: any, row: any) => {
         return (
-          <span className="badge rounded-pill bg-success">Enabled</span>
+          <>
+          {row.error == false && <span className="badge rounded-pill bg-success">Healthy</span>}
+          {row.error == true && <span className="badge rounded-pill bg-danger">Unheathy</span>}
+          </>
         );
-      } 
+      },
+      sort: true,
     },
     {
       dataField: "column_name",
@@ -89,7 +93,7 @@ const MonitorsDetail: React.FC = () => {
     return (
       <div className="p-4 py-2 mb-4 rounded-3" style={{background: '#f1f1f1'}}>
         <div className="container-fluid py-5">
-          <h1 className="display-7 fw-bold">{monitor && monitor.timestamp_field == undefined ? "Disabled" : "Pending" }</h1>
+          <h1 className="display-7 fw-bold">Pending</h1>
           <p className="col-md-10 fs-4">Please check back shortly to see results if pending. Monitors run by default every 2 hours and start with a lookback of 24 hours.</p>
          <small>If you are still seeing "Pending" after the monitor completes, it's likely the timestamp field being used to calculate the metric does not have any values in the past 24 hours or new data since monitoring started.</small>
          <br />

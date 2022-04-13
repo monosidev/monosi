@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '@elastic/eui/dist/eui_theme_light.css';
 import {
   BrowserRouter as Router,
@@ -9,8 +9,10 @@ import {
 
 import 'App.css';
 // import MonitorsDetail from 'pages/app/monitors/Detail';
+import UserService from 'services/users';
 
 import IntegrationsSettings from 'pages/settings/Integrations';
+import IssuesIndex from 'pages/app/issues/Index';
 import SourcesSettings from 'pages/settings/Sources';
 import ProfileSettings from 'pages/settings/Profile';
 import DashboardIndex from 'pages/app/dashboard/Index';
@@ -18,17 +20,49 @@ import ExecutionsIndex from 'pages/app/executions/Index';
 import MonitorsIndex from 'pages/app/monitors/Index';
 import MonitorsDetail from 'pages/app/monitors/Detail';
 import MetricsDetail from 'pages/app/metrics/Detail';
+import OnboardingGettingStarted from 'pages/app/onboarding/GettingStarted';
+
+function RequireSetup({ children }: { children: JSX.Element }) {
+  const [isSetup, setIsSetup] = useState(true);
+
+  useEffect(() => {
+    const retrieveUser = async () => {
+      let user;
+      let resp = await UserService.getAll();
+      if (resp && resp['user']) {
+      user = resp['user'];
+      }
+      setIsSetup(user !== null && user['email'] !== null);
+    }
+    retrieveUser();
+  }, [])
+
+  if (isSetup) {
+     return children;
+  } else {
+    return <Switch>
+      <Route exact path="/getting-started">
+        <OnboardingGettingStarted />
+      </Route>
+      <Redirect to={'/getting-started'} />
+      </Switch>;
+  }
+}
 
 function App() {
   return (
     <div className="App" style={{ minHeight: '100vh' }}>
       <Router>
+        <RequireSetup>
         <Switch>
           <Route exact path="/">
               <DashboardIndex />
           </Route>
           <Route exact path="/monitors">
               <MonitorsIndex />
+          </Route>
+          <Route exact path="/issues">
+              <IssuesIndex />
           </Route>
           <Route exact path="/monitors/:id">
               <MonitorsDetail />
@@ -40,9 +74,6 @@ function App() {
           <Route exact path="/executions">
               <ExecutionsIndex />
           </Route>
-{/*          <Route exact path="/monitors/:id">
-              <MonitorsDetail />
-          </Route>*/}
 
           <Route exact path="/settings">
               <Redirect to="/settings/profile" />
@@ -56,11 +87,11 @@ function App() {
           <Route exact path="/settings/integrations">
               <IntegrationsSettings />
           </Route>
-
           <Route path="*">
-              <Redirect to="/monitors" />
+              <Redirect to="/" />
           </Route>
         </Switch>
+        </RequireSetup>
       </Router>
     </div>
   );

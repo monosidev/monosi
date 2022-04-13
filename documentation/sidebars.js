@@ -19,7 +19,7 @@ module.exports = {
         {
           type: "category",
           label: "Data Monitors",
-          collapsible: false,
+          collapsible: true,
           collapsed: false,
           items: [
             "user-guide/table-health",
@@ -47,8 +47,9 @@ module.exports = {
           collapsed: true,
           items: [
             "integrations/snowflake",
-            "integrations/postgresql",
             "integrations/redshift",
+            "integrations/postgresql",
+            "integrations/bigquery",
           ]
         },
         {

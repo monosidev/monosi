@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Alarm, Book, Collection, GearFill, HouseDoor, PersonCircle } from 'react-bootstrap-icons';
+import { Alarm, Book, Collection, ExclamationTriangleFill, GearFill, HouseDoor, PersonCircle } from 'react-bootstrap-icons';
 
 const Navigation: React.FC<{selectedTab: string}> = ({selectedTab}: any) => {
 
@@ -31,6 +31,11 @@ const Navigation: React.FC<{selectedTab: string}> = ({selectedTab}: any) => {
             <li>
               <a href="/monitors" className={classSelector('monitors')} title="Monitors" data-bs-toggle="tooltip" data-bs-placement="right">
                 <Collection className="bi" width={24} height={24} />
+              </a>
+            </li>
+            <li>
+              <a href="/issues" className={classSelector('issues')} title="Issues" data-bs-toggle="tooltip" data-bs-placement="right">
+                <ExclamationTriangleFill className="bi" width={24} height={24} />
               </a>
             </li>
             <li>

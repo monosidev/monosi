@@ -22,9 +22,10 @@ tracker = Tracker(
     app_id="monosi",
 )
 
-def set_user_id(user_id):
+def set_user_id(user_id, email=None):
     subject = Subject()
     subject.set_user_id(user_id)
+    subject.set_domain_user_id(email)
     tracker.set_subject(subject)
 
 def track_event(*args, **kwargs):

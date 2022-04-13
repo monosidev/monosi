@@ -4,6 +4,7 @@ WORKDIR /app
 COPY ./requirements.txt ./
 COPY ./requirements.api.txt ./
 COPY ./src .
+RUN rm -rf ./src/ui
 RUN pip install -r ./requirements.txt
 RUN pip install -r ./requirements.api.txt
 

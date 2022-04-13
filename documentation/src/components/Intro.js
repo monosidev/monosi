@@ -8,7 +8,7 @@ function SDKs() {
       <div className="flex items-center space-x-4">
         <svg
           width="13"
-          className="mb-4 h-10 w-10 rounded-lg bg-[color:var(--ifm-color)] p-2 text-[color:var(--ifm-background-color)]"
+          className="mb-4 h-10 w-10 rounded-lg bg-[color:var(--ifm-color-highlight)] p-2 text-[color:var(--ifm-background-color)]"
           height="14"
           viewBox="0 0 13 14"
           fill="none"
@@ -50,14 +50,14 @@ function SDKs() {
         <li className="">
           <Link
             className="flex items-center space-x-3 hover:underline"
-            to={useBaseUrl("/docs/integrations/postgresql")}
+            to={useBaseUrl("/docs/integrations/bigquery")}
           >
             <img
               className="h-8 w-8 transition hover:scale-110"
-              src="/img/postgresql.svg"
-              alt="PostgreSQL logo"
+              src="/img/bigquery.svg"
+              alt="BigQuery logo"
             />
-            <p className="font-semibold">PostgreSQL</p>
+            <p className="font-semibold">BigQuery</p>
           </Link>
         </li>
 
@@ -93,7 +93,7 @@ function Server() {
     <div className="flex flex-col rounded-lg bg-[color:var(--ifm-card-background-color)] p-5 shadow">
       <div className="flex items-center space-x-4">
         <svg
-          className="mb-4 h-10 w-10 rounded-lg bg-[color:var(--ifm-color)] p-2 text-[color:var(--ifm-background-color)]"
+          className="mb-4 h-10 w-10 rounded-lg bg-[color:var(--ifm-color-highlight)] p-2 text-[color:var(--ifm-background-color)]"
           width="16"
           height="13"
           viewBox="0 0 16 13"
@@ -172,7 +172,7 @@ function Tools() {
     <div className="flex flex-col rounded-lg bg-[color:var(--ifm-card-background-color)] p-5 shadow">
       <div className="flex items-center space-x-4">
         <svg
-          className="mb-4 h-10 w-10 rounded-lg bg-[color:var(--ifm-color)] p-2 text-[color:var(--ifm-background-color)]"
+          className="mb-4 h-10 w-10 rounded-lg bg-[color:var(--ifm-color-highlight)] p-2 text-[color:var(--ifm-background-color)]"
           viewBox="0 0 15 15"
           fill="currentColor"
           xmlns="http://www.w3.org/2000/svg"

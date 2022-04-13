@@ -38,11 +38,12 @@ const MonitorsTable: React.FC<{
       dataField: 'metrics',
       text: "Status",
       formatter: (cell: any, row: any) => {
-        if (row.timestamp_field === null) {
-                return (
-                  <span className="badge rounded-pill bg-danger">Disabled</span>
-                )
-        } else if (row.metrics == 0) {
+        // if (row.timestamp_field === null) {
+        //         return (
+        //           <span className="badge rounded-pill bg-danger">Disabled</span>
+        //         )
+        // } else 
+        if (row.metrics == 0) {
                 return (
                   <span className="badge rounded-pill bg-warning">Pending</span>
                 );
@@ -114,15 +115,15 @@ const MonitorsTable: React.FC<{
 
     switch (filterType) {
       case MonitorFilters.PENDING: { 
-        filteredMonitors = monitors.filter(m => m.metrics === 0 && m.timestamp_field !== null)
+        filteredMonitors = monitors.filter(m => m.metrics === 0)
         break; 
      } 
      case MonitorFilters.DISABLED: {
-        filteredMonitors = monitors.filter(m => m.timestamp_field === null)
+        filteredMonitors = []
         break; 
      } 
      default: { 
-        filteredMonitors = monitors.filter(m => m.timestamp_field !== null && m.metrics !== 0)
+        filteredMonitors = monitors.filter(m => m.metrics !== 0)
         break; 
      } 
     }

@@ -201,6 +201,7 @@ class SQLAlchemyExtractor(Extractor):
 class ColumnMetricType(Enum):
     APPROX_DISTINCTNESS = '_approx_distinctness'
     COMPLETENESS = '_completeness'
+    FRESHNESS = '_freshness'
     ZERO_RATE = '_zero_rate'
     NEGATIVE_RATE = '_negative_rate'
     NUMERIC_MEAN = '_numeric_mean'
@@ -243,12 +244,18 @@ class ColumnMetricType(Enum):
             cls.TEXT_UUID_RATE,
             cls.TEXT_ALL_SPACES_RATE,
             cls.TEXT_NULL_KEYWORD_RATE,
+            cls.FRESHNESS,
         ]
 
     @classmethod
     def default_for(cls, data_type): 
         data_type = data_type.lower()
-        if 'num' in data_type or 'int' in data_type:
+
+        num_types = ['num', 'int', 'float']
+        text_types = ['text', 'character', 'string']
+        date_types = ['date', 'timestamp']
+
+        if any(n in data_type for n in num_types):
             return [
                 cls.ZERO_RATE,
                 cls.NEGATIVE_RATE,
@@ -259,7 +266,7 @@ class ColumnMetricType(Enum):
                 cls.COMPLETENESS,
                 cls.APPROX_DISTINCTNESS,
             ]
-        elif 'text' in data_type or 'character' in data_type:
+        elif any(t in data_type for t in text_types):
             return [
                 cls.APPROX_DISTINCT_COUNT,
                 cls.MEAN_LENGTH,
@@ -273,6 +280,10 @@ class ColumnMetricType(Enum):
                 cls.TEXT_NULL_KEYWORD_RATE,
                 cls.COMPLETENESS,
                 cls.APPROX_DISTINCTNESS,
+            ]
+        elif any(d in data_type for d in date_types):
+            return [
+                cls.FRESHNESS,
             ]
         else:
             return [
@@ -289,7 +300,26 @@ class MetricsQueryBuilder:
         self.ddata = ddata
         self.minutes_ago = minutes_ago
 
-    def _base_query(self, select_sql, table, timestamp_field):
+    def _base_query_sample(self, select_sql):
+        return """
+            SELECT 
+                CURRENT_TIMESTAMP as "WINDOW_START", 
+                CURRENT_TIMESTAMP as "WINDOW_END", 
+                COUNT(*) as "ROW_COUNT", 
+                '{table}' as "TABLE_NAME",
+                '{database}' as "DATABASE_NAME",
+                '{schema}' as "SCHEMA_NAME",
+
+                {select_sql}
+            FROM {table};
+        """.format(
+            select_sql=select_sql,
+            table=self.monitor['table_name'],
+            schema=self.monitor['schema'],
+            database=self.monitor['database'],
+        )
+
+    def _base_query_backfill(self, select_sql, table, timestamp_field): # TODO
         return """
             SELECT 
                 DATE_TRUNC('HOUR', {timestamp_field}) as "WINDOW_START", 
@@ -378,14 +408,16 @@ class MetricsQueryBuilder:
         select_sql = self._select_sql(table_cols)
         for table_name, cols in select_sql.items():
             cols_sql = cols['sql']
-            timestamp_field = self.monitor['timestamp_field']
+            metrics_queries.append(self._base_query_sample(cols_sql))
 
-            if timestamp_field is not None:
-                metrics_queries.append(self._base_query(
-                    cols_sql,
-                    table_name,
-                    timestamp_field,
-                ))
+            # timestamp_field = self.monitor['timestamp_field']
+
+            # if timestamp_field is not None:
+            #     metrics_queries.append(self._base_query(
+            #         cols_sql,
+            #         table_name,
+            #         timestamp_field,
+            #     ))
 
         return metrics_queries
 
@@ -398,6 +430,10 @@ class SQLAlchemySourceDialect:
     @classmethod
     def _approx_distinctness(cls):
         return "{} / CAST(COUNT(*) AS NUMERIC)".format(cls._approx_distinct_count())
+
+    @classmethod
+    def _freshness(cls):
+        return "TIMEDIFF(minutes, MAX({}), CURRENT_TIMESTAMP)"
 
     @classmethod
     def _numeric_mean(cls):
