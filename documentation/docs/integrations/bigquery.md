@@ -8,7 +8,7 @@ Monosi supports BigQuery data warehouse connections. Currently, only authenticat
 
 If you require other forms of authentication, please [open an issue](https://github.com/monosidev/monosi/issues/new?assignees=&labels=&template=feature_request.md).
 
-<img src="/img/integrations/bigquery_connection.png" alt="BigQuery Integration" />
+<img src="/img/datasource/bigquery_connection.png" alt="BigQuery Integration" />
 
 ## Configuration Details
 
