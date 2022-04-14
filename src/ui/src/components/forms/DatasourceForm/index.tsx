@@ -16,6 +16,13 @@ import {
   EuiPageHeader,
 } from '@elastic/eui';
 
+import {
+  Form,
+  Button
+} from 'react-bootstrap';
+
+import './sourceform.css'
+
 import { BigQueryLogo } from 'images';
 import datasourceService from 'services/datasources';
 
@@ -123,6 +130,7 @@ const DatasourceForm = () => {
 
   return (
     <div>
+      
       <EuiFlexGrid columns={3}>
         <EuiFlexItem>
           <EuiCard
@@ -184,55 +192,77 @@ const DatasourceForm = () => {
             description="Connect to PostgreSQL Database"
           />
           <EuiHorizontalRule />
-          <EuiFormRow label="Name for Data Source">
-            <EuiFieldText
-              placeholder="Company Data Warehouse"
-              onChange={(e) => setDatasourceName(e.target.value)}
-              value={datasourceName}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="User">
-            <EuiFieldText
-              placeholder="MONOSI_USER"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Password">
-            <EuiFieldPassword
-              placeholder="password123"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Host">
-            <EuiFieldText
-              placeholder="host"
-              onChange={(e) => setHost(e.target.value)}
-              value={host}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Port">
-            <EuiFieldText
-              placeholder="5432"
-              onChange={(e) => setPort(e.target.value)}
-              value={port}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Database (case-sensitive)">
-            <EuiFieldText
-              placeholder="postgres"
-              onChange={(e) => setDatabase(e.target.value)}
-              value={database}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Schema (case-sensitive)">
-            <EuiFieldText
-              placeholder="public"
-              onChange={(e) => setSchema(e.target.value)}
-              value={schema}
-            />
-          </EuiFormRow>
+
+          <Form >
+            <Form.Group className="formGroup">
+              <Form.Label className="formLabel">Name for Data Source</Form.Label>
+                <Form.Control
+                  className="formFieldText"
+                  placeholder="Company Data Warehouse" 
+                  onChange={(e) => setDatasourceName(e.target.value)}
+                  value={datasourceName}
+                   />
+              </Form.Group>
+            <Form.Group className="formGroup" >
+              <Form.Label className="formLabel">User</Form.Label>
+              <Form.Control
+              className="formFieldText"
+                placeholder="MONOSI_USER" 
+                onChange={(e) => setUser(e.target.value)}
+                value={user}
+                  />
+            </Form.Group>
+            <Form.Group className="formGroup" controlId="formBasicPassword">
+              <Form.Label className="formLabel">Password</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                type="password"
+                placeholder="password123" 
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                  />
+            </Form.Group>
+            <Form.Group className="formGroup" >
+              <Form.Label className="formLabel">Host</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="host" 
+                onChange={(e) => setHost(e.target.value)}
+                value={host}
+                  />
+            </Form.Group>
+            <Form.Group className="formGroup" >
+              <Form.Label className="formLabel">Port</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="port" 
+                onChange={(e) => setPort(e.target.value)}
+                value={port}
+                  />
+            </Form.Group>
+            
+            <Form.Group className="formGroup">
+              <Form.Label className="formLabel">Database</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="postgres"    
+                onChange={(e) => setDatabase(e.target.value)}
+                value={database}
+                  />
+            </Form.Group>
+            <Form.Group className="formGroup">
+              <Form.Label className="formLabel">Schema (case-sensitive)</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="public" 
+                onChange={(e) => setSchema(e.target.value)}
+                value={schema}
+                  />
+            </Form.Group>
+          
+          </Form>
+
+          
         </div>
       )}
       {datasourceType === DataSourceTypes.REDSHIFT && (
@@ -397,15 +427,17 @@ const DatasourceForm = () => {
       <EuiSpacer />
 
       <div>
-        <EuiFormRow>
-          <EuiButton
-            fill
-            onClick={submitForm}
+          <Button 
+            variant="primary" 
+            type="submit" 
+            className="formButton formButton--primary formButton--fill"
+            style={{"float": "left"}}
             disabled={process.env.REACT_APP_IS_DEMO === 'true'}
-          >
-            Save
-          </EuiButton>
-        </EuiFormRow>
+            onClick={submitForm}
+            >
+              Save
+          </Button>
+        
       </div>
     </div>
   );
