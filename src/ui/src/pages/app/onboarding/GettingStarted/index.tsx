@@ -28,7 +28,7 @@ const OnboardingGettingStarted: React.FC = () => {
         <div className="col-md-4 mx-auto">
           <div className="h-100 p-5 border rounded-3" style={{backgroundColor: 'white'}}>
           <div className="text-center">
-            <h2>Welcome to MonoSi</h2>
+            <h2>Welcome to Monosi</h2>
             <p className="lead">OSS Data Observability</p>
           </div>
           <Form className="mb-5" onSubmit={handleSubmit}>
