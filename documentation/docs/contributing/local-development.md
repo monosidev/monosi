@@ -15,7 +15,7 @@ Monosi can be installed either through docker or through a local dependency setu
 1. Ensure that you have installed docker and it is running on your machine
 2. In a terminal, navigate to the cloned repository
 3. Run `make compose-build` from the base of the directory to build a local instance of Monosi
-4. Run `make compose-run` from the base of the directory to run the local build
+4. Run `make compose-up` from the base of the directory to run the local build
 5. Navigate to `http://localhost:3000` and you will see the Monosi UI
 
 For any changes you make to the code locally, you can test them by re-running steps 3 & 4.
