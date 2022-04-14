@@ -80,3 +80,144 @@
     background-color: #006bb4;
     border-color: #006bb4;
 }
+
+.horizonalRule {
+    border: none;
+    height: 1px;
+    background-color: #d3dae6;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+}
+.horizontalRule--marginLarge {
+    margin: 24px 0;
+}
+.horizontalRule--full {
+    width: 100%;
+}
+
+.cardIcon {
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+    fill: currentColor;
+    -webkit-transform: translate(0);
+    transform: translate(0);
+    margin-top: 8px;
+}
+.cardIcon--xLarge {
+    width: 32px;
+    height: 32px;
+}
+.cardIcon--isLoaded {
+    -webkit-animation: euiIconLoading .25s ease-in 0s 1 forwards;
+    animation: euiIconLoading .25s ease-in 0s 1 forwards;
+}
+
+.cardSelect {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 40px!important;
+    width: 100%;
+    overflow: hidden;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    font-weight: 700;
+    border: none
+}
+.card-footer {
+    padding: none;
+    background-color: inherit;
+    border-top: none;
+}
+.cardSelect--success:enabled {
+    background-color: #e6f2f1;
+    color: #01776d;
+}
+.cardSelect--disabled {
+    background-color: #f5f7fa;
+    color: #343741;
+}
+.buttonEmpty {
+    display: inline-block;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    white-space: nowrap;
+    max-width: 100%;
+    vertical-align: middle;
+    font-family: "Inter UI",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-weight: 400;
+    letter-spacing: -.005em;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -webkit-font-kerning: normal;
+    font-feature-settings: "kern";
+    font-kerning: normal;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-decoration: none;
+    border: 1px solid transparent;
+    background-color: transparent;
+    box-shadow: none;
+    -webkit-transform: none!important;
+    transform: none!important;
+    -webkit-animation: none!important;
+    animation: none!important;
+    transition-timing-function: ease-in;
+    transition-duration: .15s;
+}
+.buttonEmpty--text {
+    color: #343741;
+}
+
+.sourceCard {
+    background-color: #fff;
+    padding: 56px;
+    display: flex;
+    margin:12px;
+}
+.sourceCard:hover {
+    transform: scaleY(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+}
+.sourceCard--isClickable {
+    display: -webkit-flex;
+    width: 100%;
+    transition: all .15s cubic-bezier(.694,.0482,.335,1);
+}
+.sourceCard--isClickable :hover :focus {
+    box-shadow: 0 4px 8px 0 rgba(152,162,179,.15),0 2px 2px -1px rgba(152,162,179,.3);
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+.sourceCard--hasShadow {
+    box-shadow: 0 2px 2px -1px rgba(152,162,179,.3),0 1px 5px -2px rgba(152,162,179,.3);
+    border: 1px solid #d3dae6;
+}
+.sourceCard--centerAligned {
+    text-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.cardGroup {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+.cardGroup--large {
+    margin: -12px;
+    -webkit-align-items: stretch;
+    align-items: stretch;
+}

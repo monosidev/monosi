@@ -18,12 +18,14 @@ import {
 
 import {
   Form,
-  Button
+  Button,
+  Card,
+  CardGroup
 } from 'react-bootstrap';
 
 import './sourceform.css'
 
-import { BigQueryLogo } from 'images';
+import { BigQueryLogo, PostGresLogo, RedShiftLogo, SnowFlakeLogo} from 'images';
 import datasourceService from 'services/datasources';
 
 enum DataSourceTypes {
@@ -131,7 +133,46 @@ const DatasourceForm = () => {
   return (
     <div>
       
+      <CardGroup className="cardGroup cardGroup--large">
+          <Card className="sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned" onClick={() => onChange(DataSourceTypes.SNOWFLAKE)}>
+            <SnowFlakeLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
+            <Card.Body>
+              <Card.Title>Snowflake</Card.Title>
+              <Card.Text>
+                Connect to Snowflake Data Warehouse
+              </Card.Text>
+            </Card.Body>
+            <Card.Footer>
+              {(datasourceType === DataSourceTypes.SNOWFLAKE)? <Button className="cardSelect cardSelect--success" >Selected</Button> : <Button className="cardSelect cardSelect--disabled" >Select</Button> }
+            </Card.Footer>
+          </Card>
+          <Card className="sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned" onClick={() => onChange(DataSourceTypes.POSTGRESQL)}>
+            <PostGresLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
+            <Card.Body>
+              <Card.Title>PostgreSQL</Card.Title>
+              <Card.Text>
+                Connect to PostgreSQL Database
+              </Card.Text>
+            </Card.Body>
+            <Card.Footer>
+              {(datasourceType === DataSourceTypes.POSTGRESQL)? <Button className="cardSelect cardSelect--success" >Selected</Button> : <Button className="cardSelect cardSelect--disabled" >Select</Button> }
+            </Card.Footer>
+          </Card>
+          <Card className="sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned" onClick={() => onChange(DataSourceTypes.REDSHIFT)}>
+            <RedShiftLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
+            <Card.Body>
+              <Card.Title>Redshift</Card.Title>
+              <Card.Text>
+                Connect to AWS Redshift Data Warehouse
+              </Card.Text>
+            </Card.Body>
+            <Card.Footer>
+              {(datasourceType === DataSourceTypes.REDSHIFT)? <Button className="cardSelect cardSelect--success" >Selected</Button> : <Button className="cardSelect cardSelect--disabled" >Select</Button> }
+            </Card.Footer>
+          </Card>
+      </CardGroup>
       <EuiFlexGrid columns={3}>
+        
         <EuiFlexItem>
           <EuiCard
             icon={<EuiIcon type={DataSourceTypes.SNOWFLAKE} size="xl" />}
@@ -144,6 +185,7 @@ const DatasourceForm = () => {
             description="Connect to Snowflake Data Warehouse"
           />
         </EuiFlexItem>
+
         <EuiFlexItem>
           <EuiCard
             selectable={{
@@ -182,7 +224,7 @@ const DatasourceForm = () => {
         </EuiFlexItem>
       </EuiFlexGrid>
 
-      <EuiHorizontalRule />
+      <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
 
       {datasourceType === DataSourceTypes.POSTGRESQL && (
         <div>
@@ -191,7 +233,7 @@ const DatasourceForm = () => {
             pageTitle="PostgreSQL"
             description="Connect to PostgreSQL Database"
           />
-          <EuiHorizontalRule />
+          <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
 
           <Form >
             <Form.Group className="formGroup">
@@ -206,7 +248,7 @@ const DatasourceForm = () => {
             <Form.Group className="formGroup" >
               <Form.Label className="formLabel">User</Form.Label>
               <Form.Control
-              className="formFieldText"
+                className="formFieldText"
                 placeholder="MONOSI_USER" 
                 onChange={(e) => setUser(e.target.value)}
                 value={user}
@@ -259,7 +301,6 @@ const DatasourceForm = () => {
                 value={schema}
                   />
             </Form.Group>
-          
           </Form>
 
           
@@ -272,7 +313,7 @@ const DatasourceForm = () => {
             pageTitle="Redshift"
             description="Connect to Redshift Data Warehouse"
           />
-          <EuiHorizontalRule />
+          <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
           <EuiFormRow label="Name for Data Source">
             <EuiFieldText
               placeholder="Company Data Warehouse"
@@ -331,7 +372,7 @@ const DatasourceForm = () => {
             pageTitle="Snowflake"
             description="Connect to Snowflake Data Warehouse"
           />
-          <EuiHorizontalRule />
+          <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
           <EuiFormRow label="Name for Data Source">
             <EuiFieldText
               placeholder="Company Data Warehouse"
@@ -390,7 +431,7 @@ const DatasourceForm = () => {
             pageTitle="BigQuery"
             description="Connect to Google BigQuery Data Warehouse"
           />
-          <EuiHorizontalRule />
+          <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
           <EuiFormRow label="Name for Data Source">
             <EuiFieldText
               placeholder="Company Data Warehouse"
