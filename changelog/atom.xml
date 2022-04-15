@@ -2,16 +2,28 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://docs.monosi.dev/changelog</id>
     <title>Monosi Documentation Blog</title>
-    <updated>2022-04-01T00:00:00.000Z</updated>
+    <updated>2022-04-13T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://docs.monosi.dev/changelog"/>
     <subtitle>Monosi Documentation Blog</subtitle>
     <icon>https://docs.monosi.dev/img/favicon.png</icon>
     <rights>Copyright © 2022 Vocable Inc. dba Monosi</rights>
     <entry>
+        <title type="html"><![CDATA[v0.1.1 Release]]></title>
+        <id>v011-release</id>
+        <link href="https://docs.monosi.dev/changelog/v011-release"/>
+        <updated>2022-04-13T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Monosi v0.1.1 Release]]></summary>
+        <content type="html"><![CDATA[<p>Monosi v0.1.1 Release</p><hr/><p>Monosi&#x27;s v0.1.1 release brings BigQuery support, UI updates, new metrics &amp; integrations, and much more.</p><h3>BigQuery Support</h3><p>The highly requested feature for BigQuery support has finally been added. You can now connect Monosi up to your BigQuery instance and start monitoring your datawarehouse. More information can be found <a href="/docs/integrations/bigquery">here</a>. </p><img src="/img/datasource/bigquery_connection.png" alt="BigQuery Integration"/><h2>UI Updates</h2><p>We have added a new Issues page to the UI to have an easier view of any anomalies that occur within your data. Also, an onboarding form has been added and appears only the first time the application is launched. </p><img src="/img/changelog/v011/issues_page.png" alt="Issues Page"/><img src="/img/changelog/v011/onboarding_form.png" alt="Onboarding Form"/><h2>New metrics functionality</h2><p>A new metric &quot;Freshness&quot; has been added to the table health metric arsenal. This checks the freshness of data in table timestamp columns. More information can be found <a href="/docs/user-guide/table-health">here</a>.</p><p>Furthermore, the way Monosi looks at previous data has been changed. Previously, we required a timestamp column in order to look back at a day of data. Now, we perfrom a sampling of existing data to understand trends. This results in Monosi working on any table, even ones without a timestamp. </p><h2>Integration Support</h2><p>The Slack alerting integration has been improved and anomaly messages have been condensed into one singular message.
+We have also added support for webhook alerts. More information can be found <a href="/docs/integrations/webhooks">here</a>.</p><img src="/img/integrations/webhook_alert.png" alt="Webhook Alert"/><h3>Documentation</h3><p>We are constantly improving the project documentation. With this releas we have added Algolia search and more content about the project. </p><p>If you have any questions about the documentation, please <a href="https://github.com/monosidev/monosi/issues">open an issue</a> or message us in <a href="https://monosi.dev/slack">Slack</a>.</p><h3>Testing &amp; Bug fixes</h3><p>With this release we decreased the docker file size, making it faster to download and/or build locally. </p><p>Also, we have solved a few bugs surrounding execution timestamps and zscore calculations. Further, more tests have been added to ensure the reliability of the code.</p>]]></content>
+        <author>
+            <name>Ivan Porollo</name>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[v0.1.0 Release]]></title>
-        <id>latest-release</id>
-        <link href="https://docs.monosi.dev/changelog/latest-release"/>
+        <id>v010-release</id>
+        <link href="https://docs.monosi.dev/changelog/v010-release"/>
         <updated>2022-04-01T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Monosi v0.1.0 Release]]></summary>
         <content type="html"><![CDATA[<p>Monosi v0.1.0 Release</p><hr/><p>Monosi&#x27;s v0.1.0 release brings a new UI, ease of use &amp; deployment, and much more.</p><h3>Web Application &amp; UI</h3><p>In order to use the Monosi application, a web frontend and server are provided to add data sources, receive alerts, and view data quality analysis of the monitors that are running.</p><img alt="Monosi Release" class="case-study-header" src="/img/example.gif"/><h2>Automatic Scheduler</h2><p>Built-in scheduling is provided out of the box with Monosi so that you can set it and forget it - until you receive an alert - or choose to view regularly up-to-date data at any time.</p><h2>Profiler</h2><p>Built-in profiling allows for the automatic creation of data monitors and quality checks when a data source is added.</p><h3>Deployment</h3><p>Deploying has been simplified with Docker and Docker Compose. All the necessary dependencies for Monosi to run are managed through Docker Compose, making it easy to start with just 3 commands:</p><pre><code>git clone https://github.com/monosidev/monosi.git

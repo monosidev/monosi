@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmonosi_documentation=self.webpackChunkmonosi_documentation||[]).push([[1201],{8781:function(e){e.exports=JSON.parse('{"allTagsPath":"/changelog/tags","slug":"/changelog/tags/releases","name":"releases","count":2,"permalink":"/changelog/tags/releases"}')}}]);
