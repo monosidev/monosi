@@ -7,12 +7,12 @@
     line-height: 1.5;
     margin-bottom: 4px;
 }
-
 .formLabel:focus {
     border-bottom-color: #006bb4;
 }
+
+
 .formFieldText {
-    
     max-width: 400px;
     width: 100%;
     height: 40px;
@@ -38,6 +38,7 @@
 .formFieldText:focus {
     border-bottom-color: #006bb4;
 }
+
 .formGroup {
     margin-top: 16px;
 }
@@ -71,11 +72,9 @@
     border-radius: 4px;
     min-width: 112px;
 }
-
 .formButton--primary{
     color: #fff;
 }
-
 .formButton--fill {
     background-color: #006bb4;
     border-color: #006bb4;
@@ -97,6 +96,7 @@
     width: 100%;
 }
 
+
 .cardIcon {
     -webkit-flex-shrink: 0;
     flex-shrink: 0;
@@ -107,13 +107,34 @@
     transform: translate(0);
     margin-top: 8px;
 }
+.cardIcon--selected {
+    color:#01776d;
+    margin-top: 0;
+}
 .cardIcon--xLarge {
     width: 32px;
     height: 32px;
 }
+.cardIcon--small {
+    width: 12px;
+    height: 12px;
+}
 .cardIcon--isLoaded {
     -webkit-animation: euiIconLoading .25s ease-in 0s 1 forwards;
     animation: euiIconLoading .25s ease-in 0s 1 forwards;
+}
+.cardicon--zindex-5 {
+    z-index: 5
+}
+
+.buttonContent {
+    height: 100%;
+    width: 100%;
+    vertical-align: middle;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
 }
 
 .cardSelect {
@@ -126,12 +147,13 @@
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
     font-weight: 700;
-    border: none
+    border: none;
+    justify-content: center;
+    align-items: center;
 }
-.card-footer {
-    padding: none;
+.cardSelect :hover {
     background-color: inherit;
-    border-top: none;
+    text-decoration: underline;
 }
 .cardSelect--success:enabled {
     background-color: #e6f2f1;
@@ -141,49 +163,20 @@
     background-color: #f5f7fa;
     color: #343741;
 }
-.buttonEmpty {
-    display: inline-block;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    cursor: pointer;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    white-space: nowrap;
-    max-width: 100%;
-    vertical-align: middle;
-    font-family: "Inter UI",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-    font-weight: 400;
-    letter-spacing: -.005em;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    -webkit-font-kerning: normal;
-    font-feature-settings: "kern";
-    font-kerning: normal;
-    font-size: 16px;
-    font-size: 1rem;
-    line-height: 1.5;
-    text-decoration: none;
-    border: 1px solid transparent;
-    background-color: transparent;
-    box-shadow: none;
-    -webkit-transform: none!important;
-    transform: none!important;
-    -webkit-animation: none!important;
-    animation: none!important;
-    transition-timing-function: ease-in;
-    transition-duration: .15s;
-}
-.buttonEmpty--text {
-    color: #343741;
+
+.card-footer {
+    padding: none;
+    background-color: inherit;
+    border-top: none;
 }
 
 .sourceCard {
     background-color: #fff;
-    padding: 56px;
+    padding: 16px;
     display: flex;
     margin:12px;
+    border-radius: 4px;
+    padding-bottom: 56px;
 }
 .sourceCard:hover {
     transform: scaleY(1.05);
@@ -209,6 +202,48 @@
     -webkit-align-items: center;
     align-items: center;
 }
+.sourceCard--border-enabled {
+    border-color: #017d73!important;
+}
+.cardText {
+    margin-bottom:1em;
+    color: #343741;
+    font-weight: 400;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: inherit;
+    clear: both;
+    line-height: 1.5rem;
+}
+.cardText--small {
+    font-size: 14px;
+    font-size: .875rem;
+    line-height: 1.3125rem;
+}
+
+.buttonContent > .buttonText {
+    font-weight: 700;
+}
+
+.buttonText {
+    margin-inline-start: 8px;
+}
+.buttonText--success {
+    background-color: #e6f2f1;
+    color: #01776d;
+}
+
+
+
+.card-body {
+    padding: 0;
+}
+.card-body .card-title {
+    margin: 1em;
+}
+
+
 .cardGroup {
     display: -webkit-flex;
     display: flex;
@@ -221,3 +256,10 @@
     -webkit-align-items: stretch;
     align-items: stretch;
 }
+.cardGroup > .sourceCard {
+    margin:12px
+}
+
+/* .euiCard--isSelectable--success.euiCard-isSelected:not(.euiCard-isDisabled) {
+    border-color: #017d73!important;
+} */

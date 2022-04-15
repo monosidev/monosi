@@ -25,7 +25,7 @@ import {
 
 import './sourceform.css'
 
-import { BigQueryLogo, PostGresLogo, RedShiftLogo, SnowFlakeLogo} from 'images';
+import { BigQueryLogo, PostGresLogo, RedShiftLogo, SnowFlakeLogo, GreenTickLogo} from 'images';
 import datasourceService from 'services/datasources';
 
 enum DataSourceTypes {
@@ -52,7 +52,15 @@ const DatasourceForm = () => {
   const [project, setProject] = useState<string>('');
   const [dataset, setDataset] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
-
+  const commonCardClass = "sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned"
+  const buttonSelectStatus = "buttonContent cardSelect"
+  const [sourceClass, setSourceClass] = useState({
+                                                  "snowflakeclass":[ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+                                                  "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+                                                  "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+                                                  "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
+                                                })
+ 
   const submitForm = async () => {
 
     let config = {}
@@ -67,6 +75,7 @@ const DatasourceForm = () => {
         database: database,
         schema: schema,
       };
+      
     } else if (
       datasourceType === DataSourceTypes.POSTGRESQL ||
       datasourceType === DataSourceTypes.REDSHIFT
@@ -79,6 +88,7 @@ const DatasourceForm = () => {
         database: database,
         schema: schema
       };
+      
     } else if (datasourceType === DataSourceTypes.BIGQUERY) {
       // TODO: Implement better validation
       if(!datasourceName || !project || !dataset || !file) return;
@@ -90,6 +100,7 @@ const DatasourceForm = () => {
         schema: dataset,
         credentials_base64,
       };
+        
     }
 
     const body = {
@@ -105,6 +116,37 @@ const DatasourceForm = () => {
   };
 
   const onChange = (value: any) => {
+    if(value === DataSourceTypes.SNOWFLAKE){
+      setSourceClass({
+        "snowflakeclass":[ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ],
+        "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
+      })
+    }
+    else if( value === DataSourceTypes.POSTGRESQL){
+      setSourceClass({
+        "snowflakeclass":[ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "postgresclass": [ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ],
+        "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
+      })
+    }else if( value === DataSourceTypes.REDSHIFT){
+      setSourceClass({
+        "snowflakeclass":[ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "redshiftclass": [ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ],
+        "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
+      })
+    }
+    else if( value === DataSourceTypes.BIGQUERY){
+      setSourceClass({
+        "snowflakeclass":[ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "bigqueryclass": [ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ]
+      })
+    }
     setDatasourceType(value);
   };
 
@@ -132,43 +174,62 @@ const DatasourceForm = () => {
 
   return (
     <div>
-      
       <CardGroup className="cardGroup cardGroup--large">
-          <Card className="sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned" onClick={() => onChange(DataSourceTypes.SNOWFLAKE)}>
+          <Card 
+            className={sourceClass["snowflakeclass"][0]}
+            onClick={() => onChange(DataSourceTypes.SNOWFLAKE)}>
             <SnowFlakeLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
             <Card.Body>
               <Card.Title>Snowflake</Card.Title>
-              <Card.Text>
+              <Card.Text className="cardText cardText--small">
                 Connect to Snowflake Data Warehouse
               </Card.Text>
             </Card.Body>
-            <Card.Footer>
-              {(datasourceType === DataSourceTypes.SNOWFLAKE)? <Button className="cardSelect cardSelect--success" >Selected</Button> : <Button className="cardSelect cardSelect--disabled" >Select</Button> }
-            </Card.Footer>
+            <button className={sourceClass["snowflakeclass"][1]}>
+              {(datasourceType === DataSourceTypes.SNOWFLAKE)? 
+                  <>
+                    <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
+                    <button className="buttonText cardSelect--success" >Selected</button> 
+                  </>
+                  : 
+                  <button className="buttonText" >Select</button> }
+            </button>
           </Card>
-          <Card className="sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned" onClick={() => onChange(DataSourceTypes.POSTGRESQL)}>
+          <Card className={sourceClass["postgresclass"][0]} onClick={() => onChange(DataSourceTypes.POSTGRESQL)}>
             <PostGresLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
             <Card.Body>
               <Card.Title>PostgreSQL</Card.Title>
-              <Card.Text>
+              <Card.Text className="cardText cardText--small">
                 Connect to PostgreSQL Database
               </Card.Text>
             </Card.Body>
-            <Card.Footer>
-              {(datasourceType === DataSourceTypes.POSTGRESQL)? <Button className="cardSelect cardSelect--success" >Selected</Button> : <Button className="cardSelect cardSelect--disabled" >Select</Button> }
-            </Card.Footer>
+            <button className={sourceClass["postgresclass"][1]}>
+              {(datasourceType === DataSourceTypes.POSTGRESQL)? 
+                  <>
+                    <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
+                    <button className="buttonText cardSelect--success" >Selected</button> 
+                  </>
+                  : 
+                  <button className="buttonText" >Select</button> }
+            </button>
           </Card>
-          <Card className="sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned" onClick={() => onChange(DataSourceTypes.REDSHIFT)}>
+          <Card className={sourceClass["redshiftclass"][0]} onClick={() => onChange(DataSourceTypes.REDSHIFT)}>
             <RedShiftLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
             <Card.Body>
               <Card.Title>Redshift</Card.Title>
-              <Card.Text>
+              <Card.Text className="cardText cardText--small">
                 Connect to AWS Redshift Data Warehouse
               </Card.Text>
             </Card.Body>
-            <Card.Footer>
-              {(datasourceType === DataSourceTypes.REDSHIFT)? <Button className="cardSelect cardSelect--success" >Selected</Button> : <Button className="cardSelect cardSelect--disabled" >Select</Button> }
-            </Card.Footer>
+            <button className={sourceClass["redshiftclass"][1]}>
+              {(datasourceType === DataSourceTypes.REDSHIFT)? 
+                  <>
+                    <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
+                    <button className="buttonText cardSelect--success" >Selected</button> 
+                  </>
+                  : 
+                  <button className="buttonText cardSelect--disabled" >Select</button> }
+            </button>
           </Card>
       </CardGroup>
       <EuiFlexGrid columns={3}>
