@@ -1,48 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import { CpuFill, Collection, CloudDownloadFill, PersonCircle } from 'react-bootstrap-icons';
-import BootstrapTable from "react-bootstrap-table-next";
-import paginationFactory from "react-bootstrap-table2-paginator";
+import { Collection, CloudDownloadFill, PersonCircle } from 'react-bootstrap-icons';
 
 import Page from 'components/Page';
-import IntegrationService from 'services/integrations';
-
 import Flyout from 'components/Flyout';
 import IntegrationForm from 'components/forms/IntegrationForm';
-
-import { format } from 'date-fns';
-import { formatTimestamp } from 'utils/timestampFormatting';
 
 import IntegrationsTable from './components/IntegrationsTable';
 
 const IntegrationsSettings: React.FC = () => {
-  const [integrations, setIntegrations] = useState([]);
-
   let flyout = <Flyout name="Integration" form={<IntegrationForm />} />
-
-  useEffect(() => {
-    async function loadIntegrations() {
-      let res = await IntegrationService.getAll();
-      if (res !== null && res.integrations) {
-        setIntegrations(res.integrations);
-      }
-    }
-    loadIntegrations();
-  }, []);
-
-  const handleDelete = (id: any) => {
-    async function deleteIntegration(id: string) {
-        let res = await IntegrationService.delete(id);
-        if (res !== null && res.datasource) {
-          // success
-        } else {
-          //fail
-        }
-    }
-    deleteIntegration(id);
-    window.location.reload();
-  }
-
 
   return (
       <Page selectedTab="settings">
