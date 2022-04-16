@@ -13,6 +13,8 @@ import IntegrationForm from 'components/forms/IntegrationForm';
 import { format } from 'date-fns';
 import { formatTimestamp } from 'utils/timestampFormatting';
 
+import IntegrationsTable from './components/IntegrationsTable';
+
 const IntegrationsSettings: React.FC = () => {
   const [integrations, setIntegrations] = useState([]);
 
@@ -41,57 +43,6 @@ const IntegrationsSettings: React.FC = () => {
     window.location.reload();
   }
 
-
-  const columns = [
-    {
-      dataField: "status",
-      text: "Status",
-      formatter: (cell: any, row: any) => {
-        return (
-          <span className="badge rounded-pill bg-success">Enabled</span>
-        );
-      },
-    },
-    {
-      dataField: "type",
-      text: "Type",
-    },
-    {
-      dataField: "name",
-      text: "Name",
-      formatter: (cell: any, row: any) => {
-         return (
-            <div>
-               <a href="#" style={{textDecoration: 'none'}}>{row.name}</a>
-               <small className="d-block">{row.description}</small>
-            </div>
-         )
-      }
-    },
-    {
-      dataField: "created_at",
-      text: "Created At",
-      formatter: (cell: any, row: any) => {
-        return formatTimestamp(row.created_at);
-      },
-    },
-    {
-      text: "",
-      dataField: "id",
-      formatter: (cell: any, row: any) => {
-        return (
-          <button
-            onClick={() => handleDelete(row.id)}
-            type="button" 
-            className="btn btn-sm btn-outline-danger"
-            disabled={process.env.REACT_APP_IS_DEMO === 'true'}
-          >
-              Delete
-          </button>
-        );
-      },
-    },
-  ];
 
   return (
       <Page selectedTab="settings">
@@ -141,15 +92,7 @@ const IntegrationsSettings: React.FC = () => {
                               </div>
                            </div>
                            <hr className="mb-4" />
-                           <div className="table-responsive custom-table custom-table-responsive">
-                             <BootstrapTable
-                               keyField="id"
-                               data={integrations}
-                               columns={columns}
-                               bordered={false}
-                               pagination={paginationFactory({ sizePerPage: 10 })}
-                             />
-                           </div>
+                           <IntegrationsTable />
                         </div>
                      </div>
                   </div>
