@@ -1,140 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-import { CpuFill, Collection, ArrowRepeat, CloudDownloadFill, PersonCircle } from 'react-bootstrap-icons';
-import BootstrapTable from "react-bootstrap-table-next";
-import paginationFactory from "react-bootstrap-table2-paginator";
-
-import datasourceService from 'services/datasources';
+import { Collection, CloudDownloadFill, PersonCircle } from 'react-bootstrap-icons';
 import Page from 'components/Page';
 
 import Flyout from 'components/Flyout';
 import DatasourceForm from 'components/forms/DatasourceForm';
-import { ToastContainer, Toast } from 'react-bootstrap';
-import { format } from 'date-fns'
-import { formatTimestamp } from "utils/timestampFormatting";
+import SourcesTable from './components/SourcesTable';
 
 const SourcesSettings: React.FC = () => {
-  const [datasources, setDatasources] = useState<any[]>([]);
-  const [testLoading, setTestLoading] = useState<boolean>(false);
-  // TODO: Componentize this
-  const [toastVisible, setToastVisible] = useState<boolean>(false);
-
   let flyout = <Flyout name="Data Source" form={<DatasourceForm />} />
-
-  useEffect(() => {
-    async function loadDatasources() {
-      let res = await datasourceService.getAll();
-      if (res !== null && res.datasources) {
-        setDatasources(res.datasources);
-      }
-    }
-    loadDatasources();
-  }, []);
-
-  const handleTest = (ds_id: number) => {
-    setTestLoading(true);
-    setToastVisible(true);
-    async function testDatasource(ds_id: any) {
-        let res = await datasourceService.test(ds_id);
-        if (res !== null && res.datasource) {
-          if (res.datasource.connection) {
-            alert("Connection was successful.");
-          } else {
-            alert("Connection was unsuccessful.");
-          }
-        } else {
-          alert("Connection was unsuccessful.");
-        }
-        setTestLoading(false);
-        setToastVisible(false);
-    }
-    testDatasource(ds_id);
-  }
-
-  const handleDelete = (ds_id: any) => {
-    async function deleteDatasource(ds_id: string) {
-        let res = await datasourceService.delete(ds_id);
-        if (res !== null && res.datasource) {
-          // success
-        } else {
-          //fail
-        }
-    }
-    deleteDatasource(ds_id);
-    window.location.reload();
-  }
-
-  const columns = [
-    {
-      dataField: "status",
-      text: "Status",
-      formatter: (cell: any, row: any) => {
-        return (
-          <span className="badge rounded-pill bg-success">Enabled</span>
-        );
-      },
-    },
-    {
-      dataField: "type",
-      text: "Type",
-    },
-    {
-      dataField: "name",
-      text: "Name",
-      formatter: (cell: any, row: any) => {
-         return (
-            <div>
-               <span style={{textDecoration: 'none'}}>{row.name}</span>
-               <small className="d-block">{row.description}</small>
-            </div>
-         )
-      }
-    },
-    {
-      dataField: "created_at",
-      text: "Created At",
-      formatter: (cell: any, row: any) => {
-        return formatTimestamp(row.created_at);
-      },
-    },
-    {
-      text: "",
-      dataField: "id",
-      formatter: (cell: any, row: any) => {
-        return (
-          <div className="btn-group">
-                  <button 
-                    onClick={() => handleTest(row.id)} 
-                    type="button" 
-                    className="btn btn-sm btn-outline-secondary"
-                    disabled={process.env.REACT_APP_IS_DEMO === 'true'}
-                  >
-                        Test
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(row.id)}
-                    type="button" 
-                    className="btn btn-sm btn-outline-danger"
-                    disabled={process.env.REACT_APP_IS_DEMO === 'true'}
-                  >
-                        Delete
-                  </button>
-          </div>
-        );
-      },
-    },
-  ];
-
-  const SourceToasts = () => (
-    <ToastContainer position={"top-end"} style={{paddingTop: 10}}>
-      <Toast onClose={() => setToastVisible(false)}>
-        <Toast.Header>
-          <ArrowRepeat className="bi" width="24" height="24"/>
-          <strong className="me-auto" style={{paddingLeft: 12}}>Testing Connection</strong>
-        </Toast.Header>
-      </Toast>
-    </ToastContainer>
-  );
 
   return (
       <Page selectedTab="settings">
@@ -184,15 +58,7 @@ const SourcesSettings: React.FC = () => {
                               </div>
                            </div>
                            <hr className="mb-4" />
-                           <div className="table-responsive custom-table custom-table-responsive">
-                             <BootstrapTable
-                               keyField="id"
-                               data={datasources}
-                               columns={columns}
-                               bordered={false}
-                               pagination={paginationFactory({ sizePerPage: 10 })}
-                             />
-                           </div>
+                           <SourcesTable />
                         </div>
                      </div>
                   </div>
@@ -200,7 +66,6 @@ const SourcesSettings: React.FC = () => {
              </main>
            </div>
          </div>
-         {toastVisible && <SourceToasts />}
       </Page>
   );
 };
