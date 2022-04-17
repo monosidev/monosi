@@ -16,7 +16,16 @@ import {
   EuiPageHeader,
 } from '@elastic/eui';
 
-import { BigQueryLogo } from 'images';
+import {
+  Form,
+  Button,
+  Card,
+  CardGroup
+} from 'react-bootstrap';
+
+import './sourceform.css'
+
+import { BigQueryLogo, PostGresLogo, RedShiftLogo, SnowFlakeLogo, GreenTickLogo} from 'images';
 import datasourceService from 'services/datasources';
 
 enum DataSourceTypes {
@@ -43,7 +52,15 @@ const DatasourceForm = () => {
   const [project, setProject] = useState<string>('');
   const [dataset, setDataset] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
-
+  const commonCardClass = "sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned sourceCard--thirds"
+  const buttonSelectStatus = "buttonContent cardSelect"
+  const [sourceClass, setSourceClass] = useState({
+                                                  "snowflakeclass":[ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ],
+                                                  "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+                                                  "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+                                                  "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
+                                                })
+ 
   const submitForm = async () => {
 
     let config = {}
@@ -58,6 +75,7 @@ const DatasourceForm = () => {
         database: database,
         schema: schema,
       };
+      
     } else if (
       datasourceType === DataSourceTypes.POSTGRESQL ||
       datasourceType === DataSourceTypes.REDSHIFT
@@ -70,6 +88,7 @@ const DatasourceForm = () => {
         database: database,
         schema: schema
       };
+      
     } else if (datasourceType === DataSourceTypes.BIGQUERY) {
       // TODO: Implement better validation
       if(!datasourceName || !project || !dataset || !file) return;
@@ -81,6 +100,7 @@ const DatasourceForm = () => {
         schema: dataset,
         credentials_base64,
       };
+        
     }
 
     const body = {
@@ -96,6 +116,37 @@ const DatasourceForm = () => {
   };
 
   const onChange = (value: any) => {
+    if(value === DataSourceTypes.SNOWFLAKE){
+      setSourceClass({
+        "snowflakeclass":[ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ],
+        "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
+      })
+    }
+    else if( value === DataSourceTypes.POSTGRESQL){
+      setSourceClass({
+        "snowflakeclass":[ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "postgresclass": [ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ],
+        "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
+      })
+    }else if( value === DataSourceTypes.REDSHIFT){
+      setSourceClass({
+        "snowflakeclass":[ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "redshiftclass": [ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ],
+        "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
+      })
+    }
+    else if( value === DataSourceTypes.BIGQUERY){
+      setSourceClass({
+        "snowflakeclass":[ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+        "bigqueryclass": [ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ]
+      })
+    }
     setDatasourceType(value);
   };
 
@@ -123,7 +174,84 @@ const DatasourceForm = () => {
 
   return (
     <div>
+      <CardGroup className="cardGroup cardGroup--large">
+          <Card 
+            className={sourceClass["snowflakeclass"][0]}
+            onClick={() => onChange(DataSourceTypes.SNOWFLAKE)}>
+            <SnowFlakeLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
+            <Card.Body>
+              <Card.Title>Snowflake</Card.Title>
+              <Card.Text className="cardText cardText--small">
+                Connect to Snowflake Data Warehouse
+              </Card.Text>
+            </Card.Body>
+            <button className={sourceClass["snowflakeclass"][1]}>
+              {(datasourceType === DataSourceTypes.SNOWFLAKE)? 
+                  <>
+                    <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
+                    <button className="buttonText cardSelect--success" >Selected</button> 
+                  </>
+                  : 
+                  <button className="buttonText" >Select</button> }
+            </button>
+          </Card>
+          <Card className={sourceClass["postgresclass"][0]} onClick={() => onChange(DataSourceTypes.POSTGRESQL)}>
+            <PostGresLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
+            <Card.Body>
+              <Card.Title>PostgreSQL</Card.Title>
+              <Card.Text className="cardText cardText--small">
+                Connect to PostgreSQL Database
+              </Card.Text>
+            </Card.Body>
+            <button className={sourceClass["postgresclass"][1]}>
+              {(datasourceType === DataSourceTypes.POSTGRESQL)? 
+                  <>
+                    <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
+                    <button className="buttonText cardSelect--success" >Selected</button> 
+                  </>
+                  : 
+                  <button className="buttonText" >Select</button> }
+            </button>
+          </Card>
+          <Card className={sourceClass["redshiftclass"][0]} onClick={() => onChange(DataSourceTypes.REDSHIFT)}>
+            <RedShiftLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
+            <Card.Body>
+              <Card.Title>Redshift</Card.Title>
+              <Card.Text className="cardText cardText--small">
+                Connect to AWS Redshift Data Warehouse
+              </Card.Text>
+            </Card.Body>
+            <button className={sourceClass["redshiftclass"][1]}>
+              {(datasourceType === DataSourceTypes.REDSHIFT)? 
+                  <>
+                    <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
+                    <button className="buttonText cardSelect--success" >Selected</button> 
+                  </>
+                  : 
+                  <button className="buttonText cardSelect--disabled" >Select</button> }
+            </button>
+          </Card>
+          <Card className={sourceClass["bigqueryclass"][0]} onClick={() => onChange(DataSourceTypes.BIGQUERY)}>
+            <RedShiftLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
+            <Card.Body>
+              <Card.Title>BigQuery</Card.Title>
+              <Card.Text className="cardText cardText--small">
+                  Connect to Google BigQuery Data Warehouse
+              </Card.Text>
+            </Card.Body>
+            <button className={sourceClass["bigqueryclass"][1]}>
+              {(datasourceType === DataSourceTypes.BIGQUERY)? 
+                  <>
+                    <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
+                    <button className="buttonText cardSelect--success" >Selected</button> 
+                  </>
+                  : 
+                  <button className="buttonText cardSelect--disabled" >Select</button> }
+            </button>
+          </Card>
+      </CardGroup>
       <EuiFlexGrid columns={3}>
+        
         <EuiFlexItem>
           <EuiCard
             icon={<EuiIcon type={DataSourceTypes.SNOWFLAKE} size="xl" />}
@@ -136,6 +264,7 @@ const DatasourceForm = () => {
             description="Connect to Snowflake Data Warehouse"
           />
         </EuiFlexItem>
+
         <EuiFlexItem>
           <EuiCard
             selectable={{
@@ -174,7 +303,7 @@ const DatasourceForm = () => {
         </EuiFlexItem>
       </EuiFlexGrid>
 
-      <EuiHorizontalRule />
+      <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
 
       {datasourceType === DataSourceTypes.POSTGRESQL && (
         <div>
@@ -183,56 +312,77 @@ const DatasourceForm = () => {
             pageTitle="PostgreSQL"
             description="Connect to PostgreSQL Database"
           />
-          <EuiHorizontalRule />
-          <EuiFormRow label="Name for Data Source">
-            <EuiFieldText
-              placeholder="Company Data Warehouse"
-              onChange={(e) => setDatasourceName(e.target.value)}
-              value={datasourceName}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="User">
-            <EuiFieldText
-              placeholder="MONOSI_USER"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Password">
-            <EuiFieldPassword
-              placeholder="password123"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Host">
-            <EuiFieldText
-              placeholder="host"
-              onChange={(e) => setHost(e.target.value)}
-              value={host}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Port">
-            <EuiFieldText
-              placeholder="5432"
-              onChange={(e) => setPort(e.target.value)}
-              value={port}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Database (case-sensitive)">
-            <EuiFieldText
-              placeholder="postgres"
-              onChange={(e) => setDatabase(e.target.value)}
-              value={database}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Schema (case-sensitive)">
-            <EuiFieldText
-              placeholder="public"
-              onChange={(e) => setSchema(e.target.value)}
-              value={schema}
-            />
-          </EuiFormRow>
+          <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
+
+          <Form >
+            <Form.Group className="formGroup">
+              <Form.Label className="formLabel">Name for Data Source</Form.Label>
+                <Form.Control
+                  className="formFieldText"
+                  placeholder="Company Data Warehouse" 
+                  onChange={(e) => setDatasourceName(e.target.value)}
+                  value={datasourceName}
+                   />
+              </Form.Group>
+            <Form.Group className="formGroup" >
+              <Form.Label className="formLabel">User</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="MONOSI_USER" 
+                onChange={(e) => setUser(e.target.value)}
+                value={user}
+                  />
+            </Form.Group>
+            <Form.Group className="formGroup" controlId="formBasicPassword">
+              <Form.Label className="formLabel">Password</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                type="password"
+                placeholder="password123" 
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                  />
+            </Form.Group>
+            <Form.Group className="formGroup" >
+              <Form.Label className="formLabel">Host</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="host" 
+                onChange={(e) => setHost(e.target.value)}
+                value={host}
+                  />
+            </Form.Group>
+            <Form.Group className="formGroup" >
+              <Form.Label className="formLabel">Port</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="port" 
+                onChange={(e) => setPort(e.target.value)}
+                value={port}
+                  />
+            </Form.Group>
+            
+            <Form.Group className="formGroup">
+              <Form.Label className="formLabel">Database</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="postgres"    
+                onChange={(e) => setDatabase(e.target.value)}
+                value={database}
+                  />
+            </Form.Group>
+            <Form.Group className="formGroup">
+              <Form.Label className="formLabel">Schema (case-sensitive)</Form.Label>
+              <Form.Control
+                className="formFieldText"
+                placeholder="public" 
+                onChange={(e) => setSchema(e.target.value)}
+                value={schema}
+                  />
+            </Form.Group>
+          </Form>
+
+          
         </div>
       )}
       {datasourceType === DataSourceTypes.REDSHIFT && (
@@ -242,7 +392,7 @@ const DatasourceForm = () => {
             pageTitle="Redshift"
             description="Connect to Redshift Data Warehouse"
           />
-          <EuiHorizontalRule />
+          <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
           <EuiFormRow label="Name for Data Source">
             <EuiFieldText
               placeholder="Company Data Warehouse"
@@ -301,7 +451,7 @@ const DatasourceForm = () => {
             pageTitle="Snowflake"
             description="Connect to Snowflake Data Warehouse"
           />
-          <EuiHorizontalRule />
+          <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
           <EuiFormRow label="Name for Data Source">
             <EuiFieldText
               placeholder="Company Data Warehouse"
@@ -360,7 +510,7 @@ const DatasourceForm = () => {
             pageTitle="BigQuery"
             description="Connect to Google BigQuery Data Warehouse"
           />
-          <EuiHorizontalRule />
+          <hr className="horizonalRule horizontalRule--marginLarge horizontalRule--full" />
           <EuiFormRow label="Name for Data Source">
             <EuiFieldText
               placeholder="Company Data Warehouse"
@@ -397,15 +547,17 @@ const DatasourceForm = () => {
       <EuiSpacer />
 
       <div>
-        <EuiFormRow>
-          <EuiButton
-            fill
-            onClick={submitForm}
+          <Button 
+            variant="primary" 
+            type="submit" 
+            className="formButton formButton--primary formButton--fill"
+            style={{"float": "left"}}
             disabled={process.env.REACT_APP_IS_DEMO === 'true'}
-          >
-            Save
-          </EuiButton>
-        </EuiFormRow>
+            onClick={submitForm}
+            >
+              Save
+          </Button>
+        
       </div>
     </div>
   );
