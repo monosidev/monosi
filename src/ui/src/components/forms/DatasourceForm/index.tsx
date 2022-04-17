@@ -52,10 +52,10 @@ const DatasourceForm = () => {
   const [project, setProject] = useState<string>('');
   const [dataset, setDataset] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
-  const commonCardClass = "sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned"
+  const commonCardClass = "sourceCard sourceCard--isClickable sourceCard--hasShadow sourceCard--centerAligned sourceCard--thirds"
   const buttonSelectStatus = "buttonContent cardSelect"
   const [sourceClass, setSourceClass] = useState({
-                                                  "snowflakeclass":[ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
+                                                  "snowflakeclass":[ commonCardClass+" sourceCard--border-enabled", buttonSelectStatus+" cardSelect--success" ],
                                                   "postgresclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
                                                   "redshiftclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ],
                                                   "bigqueryclass": [ commonCardClass, buttonSelectStatus+" cardSelect--disabled" ]
@@ -223,6 +223,24 @@ const DatasourceForm = () => {
             </Card.Body>
             <button className={sourceClass["redshiftclass"][1]}>
               {(datasourceType === DataSourceTypes.REDSHIFT)? 
+                  <>
+                    <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
+                    <button className="buttonText cardSelect--success" >Selected</button> 
+                  </>
+                  : 
+                  <button className="buttonText cardSelect--disabled" >Select</button> }
+            </button>
+          </Card>
+          <Card className={sourceClass["bigqueryclass"][0]} onClick={() => onChange(DataSourceTypes.BIGQUERY)}>
+            <RedShiftLogo style="cardIcon cardIcon--xLarge cardIcon--isLoaded" />
+            <Card.Body>
+              <Card.Title>BigQuery</Card.Title>
+              <Card.Text className="cardText cardText--small">
+                  Connect to Google BigQuery Data Warehouse
+              </Card.Text>
+            </Card.Body>
+            <button className={sourceClass["bigqueryclass"][1]}>
+              {(datasourceType === DataSourceTypes.BIGQUERY)? 
                   <>
                     <GreenTickLogo style="cardIcon cardIcon--small cardIcon--isLoaded cardIcon--selected cardicon--zindex-5"/>
                     <button className="buttonText cardSelect--success" >Selected</button> 
