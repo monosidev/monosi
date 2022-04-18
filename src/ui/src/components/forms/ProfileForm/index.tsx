@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import UserService from 'services/users';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -9,7 +9,18 @@ import {
 
 
 const ProfileForm: React.FC = () => {
-  const [email, _] = useState('');
+  const [email, setEmail] = useState<string>('');
+
+  useEffect(() => {
+    async function loadEmail() {
+      let res = await UserService.getAll();
+      if (res !== null && res.user && res.user.email) {
+        setEmail(res.user.email);
+      }
+    }
+
+    loadEmail();
+  }, []);
 
   return (
     <div>
