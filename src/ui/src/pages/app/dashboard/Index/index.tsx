@@ -23,47 +23,47 @@ const DashboardIndex: React.FC = () => {
               <div className="col">
                 <div className="card mb-3" >
                   <a href="/monitors" className="text-decoration-none text-reset">
-                    <div className="row g-0" style={{height: '241px'}}>
-                      <div className="col-md-6 d-flex flex-column" style={{backgroundImage: "url('unsplash-photo-2.jpg')"}}>
-                      <div className="card card-cover text-white bg-dark rounded-5 shadow-lg" style={{height: '100%', textAlign: 'center', justifyContent: 'center'}}>
-                          <div className="align-items-center me-3ml-2 text-white">
-                          <h2 className="mb-2 display-8 lh-1 fw-bold">Data Quality</h2>
-                            <small>Centralize & Monitor</small>
-                            <ChevronRight className="bi me-2 pt-1" width={'1em'} height={'1em'} />
-                          </div>
+                  <div className="row g-0" style={{height: '241px'}}>
+                    <div className="col-md-6 d-flex flex-column" style={{backgroundImage: "url('unsplash-photo-2.jpg')"}}>
+                    <div className="card card-cover text-white bg-dark rounded-5 shadow-lg" style={{height: '100%', textAlign: 'center', justifyContent: 'center'}}>
+                        <h2 className="mb-2 display-8 lh-1 fw-bold">Data Quality</h2>
+                        <div className="align-items-center me-3ml-2 text-white">
+                          <small>Centralize & Monitor</small>
+                          <ChevronRight className="bi me-2 pt-1" width={'1em'} height={'1em'} />
                         </div>
                       </div>
-                      <div className="col-md-6 d-flex">
-                        <div className="card-body" style={{alignSelf: 'center'}}>
-                          <h4>Monitor, Alert, Analyze</h4>
-                          <p className="card-text">Get insights on the quality of your data through automatic monitoring and alerting.</p>
-                        </div>
+                    </div>
+                    <div className="col-md-6 d-flex">
+                      <div className="card-body" style={{alignSelf: 'center'}}>
+                        <h4>Monitor, Alert, Analyze</h4>
+                        <p className="card-text">Get insights on the quality of your data through automatic monitoring and alerting.</p>
                       </div>
-                    </a>
+                    </div>
                   </div>
+                  </a>
                 </div>
               </div>
 
               <div className="col">
                 <div className="card mb-3" >
                   <a href="https://docs.monosi.dev" target="_blank" className="text-decoration-none text-reset">
-                    <div className="row g-0" style={{height: '241px'}}>
-                      <div className="col-md-6 d-flex flex-column" style={{backgroundImage: "url('unsplash-photo-2.jpg')"}}>
-                      <div className="card card-cover text-white bg-dark rounded-5 shadow-lg" style={{height: '100%', textAlign: 'center', justifyContent: 'center'}}>
-                          <h2 className="mb-2 display-8 lh-1 fw-bold">Documentation</h2>
-                          <div className="align-items-center me-3ml-2 text-white text-decoration-none">
-                            <small>Read the docs</small>
-                            <ChevronRight className="bi me-2 pt-1" width={'1em'} height={'1em'} />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-6 d-flex">
-                        <div className="card-body" style={{alignSelf: 'center'}}>
-                          <h4>Learn & Join the Community</h4>
-                          <p className="card-text">Learn the best practices for data quality, how to instrument Monosi, and talk and contribute with others.</p>
+                  <div className="row g-0" style={{height: '241px'}}>
+                    <div className="col-md-6 d-flex flex-column" style={{backgroundImage: "url('unsplash-photo-2.jpg')"}}>
+                    <div className="card card-cover text-white bg-dark rounded-5 shadow-lg" style={{height: '100%', textAlign: 'center', justifyContent: 'center'}}>
+                        <h2 className="mb-2 display-8 lh-1 fw-bold">Documentation</h2>
+                        <div className="align-items-center me-3ml-2 text-white">
+                          <small>Read the docs</small>
+                          <ChevronRight className="bi me-2 pt-1" width={'1em'} height={'1em'} />
                         </div>
                       </div>
                     </div>
+                    <div className="col-md-6 d-flex">
+                      <div className="card-body" style={{alignSelf: 'center'}}>
+                        <h4>Learn & Join the Community</h4>
+                        <p className="card-text">Learn the best practices for data quality, how to instrument Monosi, and talk and contribute with others.</p>
+                      </div>
+                    </div>
+                  </div>
                   </a>
                 </div>
               </div>
@@ -117,4 +117,3 @@ const DashboardIndex: React.FC = () => {
 };
 
 export default DashboardIndex;
-
