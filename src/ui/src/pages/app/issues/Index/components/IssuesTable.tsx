@@ -101,7 +101,7 @@ const IssuesTable: React.FC = () => {
                       <BootstrapTable
                         { ...props.baseProps }
                         bordered={false}
-                        pagination={paginationFactory({ sizePerPage: 10 })}
+                        pagination={issues.length < 10 ? undefined : paginationFactory({ sizePerPage: 10 })}
                       />
                     </div>
                   </div>

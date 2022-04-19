@@ -126,7 +126,7 @@ const MonitorsDetail: React.FC = () => {
                       <BootstrapTable
                         { ...props.baseProps }
                         bordered={false}
-                        pagination={paginationFactory({ sizePerPage: 10 })}
+                        pagination={metrics.length < 10 ? undefined : paginationFactory({ sizePerPage: 10 })}
                       />
                     </div>
                   </div>

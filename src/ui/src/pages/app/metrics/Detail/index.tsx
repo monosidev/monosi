@@ -209,7 +209,7 @@ const MetricsDetail: React.FC = () => {
                 data={metrics}
                 columns={columns}
                 bordered={false}
-                pagination={paginationFactory({ sizePerPage: 10 })}
+                pagination={metrics.length < 10 ? undefined : paginationFactory({ sizePerPage: 10 })}
               />
             </div>
           </main>

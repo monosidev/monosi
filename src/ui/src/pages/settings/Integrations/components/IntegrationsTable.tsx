@@ -98,7 +98,7 @@ const IntegrationsTable: React.FC = () => {
     )
   }
 
-  if (integrations.length == 0) { return emptyState() }
+  if (integrations.length === 0) { return emptyState() }
 
   return (
    <div className="table-responsive custom-table custom-table-responsive">
@@ -107,7 +107,7 @@ const IntegrationsTable: React.FC = () => {
        data={integrations}
        columns={columns}
        bordered={false}
-       pagination={paginationFactory({ sizePerPage: 10 })}
+       pagination={integrations.length < 10 ? undefined : paginationFactory({ sizePerPage: 10 })}
      />
    </div>
   );

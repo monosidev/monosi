@@ -146,7 +146,7 @@ const SourcesTable: React.FC = () => {
        data={datasources}
        columns={columns}
        bordered={false}
-       pagination={paginationFactory({ sizePerPage: 10 })}
+       pagination={datasources.length < 10 ? undefined : paginationFactory({ sizePerPage: 10 })}
      />
      {toastVisible && <SourceToasts />}
    </div>
