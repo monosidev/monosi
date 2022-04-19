@@ -77,7 +77,7 @@ const JobsTable: React.FC = () => {
                 <BootstrapTable
                   { ...props.baseProps }
                   bordered={false}
-                  pagination={paginationFactory({ sizePerPage: 10 })}
+                  pagination={jobs.length < 10 ? undefined : paginationFactory({ sizePerPage: 10 })}
                 />
               </div>
            )
