@@ -22,14 +22,15 @@ const DashboardIndex: React.FC = () => {
             <div className="row row-cols-1 row-cols-lg-2 align-items-stretch g-4 py-2">
               <div className="col">
                 <div className="card mb-3" >
+                  <a href="/monitors" className="text-decoration-none text-reset">
                   <div className="row g-0" style={{height: '241px'}}>
                     <div className="col-md-6 d-flex flex-column" style={{backgroundImage: "url('unsplash-photo-2.jpg')"}}>
                     <div className="card card-cover text-white bg-dark rounded-5 shadow-lg" style={{height: '100%', textAlign: 'center', justifyContent: 'center'}}>
                         <h2 className="mb-2 display-8 lh-1 fw-bold">Data Quality</h2>
-                        <a href="/monitors" className="align-items-center me-3ml-2 text-white text-decoration-none">
+                        <div className="align-items-center me-3ml-2 text-white">
                           <small>Centralize & Monitor</small>
                           <ChevronRight className="bi me-2 pt-1" width={'1em'} height={'1em'} />
-                        </a>
+                        </div>
                       </div>
                     </div>
                     <div className="col-md-6 d-flex">
@@ -39,19 +40,21 @@ const DashboardIndex: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                  </a>
                 </div>
               </div>
 
               <div className="col">
                 <div className="card mb-3" >
+                  <a href="https://docs.monosi.dev" target="_blank" className="text-decoration-none text-reset">
                   <div className="row g-0" style={{height: '241px'}}>
                     <div className="col-md-6 d-flex flex-column" style={{backgroundImage: "url('unsplash-photo-2.jpg')"}}>
                     <div className="card card-cover text-white bg-dark rounded-5 shadow-lg" style={{height: '100%', textAlign: 'center', justifyContent: 'center'}}>
                         <h2 className="mb-2 display-8 lh-1 fw-bold">Documentation</h2>
-                        <a href="https://docs.monosi.dev" target="_blank" className="align-items-center me-3ml-2 text-white text-decoration-none">
+                        <div className="align-items-center me-3ml-2 text-white">
                           <small>Read the docs</small>
                           <ChevronRight className="bi me-2 pt-1" width={'1em'} height={'1em'} />
-                        </a>
+                        </div>
                       </div>
                     </div>
                     <div className="col-md-6 d-flex">
@@ -61,6 +64,7 @@ const DashboardIndex: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                  </a>
                 </div>
               </div>
             </div>
@@ -113,4 +117,3 @@ const DashboardIndex: React.FC = () => {
 };
 
 export default DashboardIndex;
-
