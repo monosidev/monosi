@@ -4,13 +4,17 @@ title: BigQuery Integration
 sidebar_label: BigQuery
 ---
 
-Monosi supports BigQuery data warehouse connections. Currently, only authentication through a `service_account.json` file is supported. If you do not have a service account, please follow the instructions to create one [here](https://cloud.google.com/docs/authentication/getting-started).
+Monosi supports BigQuery data warehouse connections through the [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) package (along with the BigQuery adapter).
+
+Currently, only authentication through a `service_account.json` file is supported. If you do not have a service account, please follow the instructions to create one [here](https://cloud.google.com/docs/authentication/getting-started).
 
 If you require other forms of authentication, please [open an issue](https://github.com/monosidev/monosi/issues/new?assignees=&labels=&template=feature_request.md).
 
 <img src="/img/datasource/bigquery_connection.png" alt="BigQuery Integration" />
 
 ## Configuration Details
+
+The following configuration details are necessary for a BigQuery connection.
 
 | Key             | Description                                              | Required |
 | --------------- | -------------------------------------------------------- | -------- |

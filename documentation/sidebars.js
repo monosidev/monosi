@@ -9,7 +9,7 @@ module.exports = {
         {
           type: "category",
           label: "Introduction",
-          collapsible: false,
+          collapsible: true,
           collapsed: false,
           items: [
             "user-guide/introduction",
@@ -34,10 +34,8 @@ module.exports = {
           label: "Deployment",
           collapsed: true,
           items: [
-            "user-guide/local-deployment",
+            "user-guide/docker-deployment",
             "user-guide/terraform-deployment",
-            "user-guide/aws-ec2",
-            "user-guide/kubernetes",
             "user-guide/hybrid-deployment",
           ]
         },
@@ -46,9 +44,10 @@ module.exports = {
           label: "Data Warehouses",
           collapsed: true,
           items: [
+            "integrations/datasource-overview",
             "integrations/snowflake",
-            "integrations/redshift",
             "integrations/postgresql",
+            "integrations/redshift",
             "integrations/bigquery",
           ]
         },
@@ -60,6 +59,7 @@ module.exports = {
             "integrations/slack",
             "integrations/webhooks",
             "integrations/email",
+            "integrations/pagerduty",
           ]
         },
         {

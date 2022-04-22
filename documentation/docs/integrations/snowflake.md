@@ -4,7 +4,13 @@ title: Snowflake Integration
 sidebar_label: Snowflake
 ---
 
+Monosi uses the [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) package (along with the Snowflake adapter)  to connect to Snowflake. In order to create a connection, the following data source form needs to be filled out.
+
+<img src="/img/datasource/snowflake_connection.png" alt="Snowflake Form" width="850"/>
+
 ## Configuration Details
+
+The following configuration details are necessary for a Snowflake connection.
 
 | Key       | Description                                             | Required |
 |-----------|---------------------------------------------------------|----------|

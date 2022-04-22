@@ -15,6 +15,9 @@ In order to use Monosi successfully, you will need to complete the following ste
 
 
 ## 1. Deploy Monosi
+
+The fastest way to get up and running with Monosi is through Docker.
+
 1. Install Docker on your computer, and ensure that you have Docker Compose v2 installed.
 2. Run the following commands
 
@@ -23,7 +26,7 @@ git clone https://github.com/monosidev/monosi.git
 cd monosi
 make compose
 ```
-Navigate to http://localhost:3000 to access the web application once it has started.
+Navigate to <a href="http://localhost:3000">http://localhost:3000</a> to access the web application once it has started.
 
 
 ## 2. Connect a Data Source
@@ -37,7 +40,7 @@ Then, click the button “Create Data Source” in order to enter the details fo
 <img src="/img/datasource/create-1.png" height="700" alt="Create datasource 1" />
 <img src="/img/datasource/create-2.png" height="700" alt="Create datasource 2" />
 
-More detailed information about connecting to your specific data source and a list of supported integrations can be found <a href="/docs/integrations/snowflake">here</a>.
+More detailed information about connecting to your specific data source and a list of supported integrations can be found <a href="/integrations">here</a>.
 
 ## 3. Connect Alerts
 
@@ -59,6 +62,7 @@ If you've previously connected a datasource, you should see a list of created mo
 
 <img src="/img/monitors/monitors_index.png" height="700" alt="Monitor Index" />
 
+When Monosi detects anomalies, it will send them to all connected alert destinations and surface them on the Issues page.
 
-
+<img src="/img/issues/issues.png" height="700" alt="Issues" />
 

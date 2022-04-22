@@ -116,14 +116,6 @@ function Server() {
       <ul className="flex list-disc flex-col space-y-2 pl-4">
         <li className="list-disc">
           <Link
-            to={useBaseUrl("/docs/user-guide/getting-started")}
-            className="hover:underline"
-          >
-            <p className="font-semibold">Getting Started</p>
-          </Link>
-        </li>
-        <li className="list-disc">
-          <Link
             to={useBaseUrl("/docs/user-guide/table-health")}
             className="hover:underline"
           >
@@ -156,7 +148,7 @@ function Server() {
         </li> */}
       </ul>
       <Link
-        to={useBaseUrl("/docs/user-guide/local-deployment")}
+        to={useBaseUrl("/docs/user-guide/docker-deployment")}
         className="mt-2 -ml-2 hover:underline"
       >
         <p className="font-semibold">
@@ -200,7 +192,7 @@ function Tools() {
       </p>
       <div className="flex flex-col space-y-2">
         <Link
-          to={useBaseUrl("/docs/user-guide/introduction")}
+          to={useBaseUrl("/docs/user-guide/getting-started")}
           className="flex space-x-3 font-semibold hover:underline"
         >
           <svg
@@ -215,24 +207,12 @@ function Tools() {
               clipRule="evenodd"
             />
           </svg>
-          <div className="">Web UI</div>
+          <div className="">Initial Walkthrough</div>
         </Link>
         <Link
           to={useBaseUrl("/docs/user-guide/table-health")}
           className="flex space-x-3 font-semibold hover:underline"
         >
-          <svg
-            className="h-6 w-6 transition hover:scale-110"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z"
-              clipRule="evenodd"
-            />
-          </svg>
           <div className="">Table Health Monitoring</div>
         </Link>
           {/* <Link
