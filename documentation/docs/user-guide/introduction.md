@@ -9,6 +9,7 @@ Monosi is a stand-alone platform for data observability and monitoring. Monosi e
 
 <img src="/img/example.gif" alt="Example GIF" width="850"/>
 
+
 Monosi is on a mission to operationalize metadata and use it to improve existing data systems.
 
 - **Profile & setup basic data quality monitors in minutes.** Built-in logic to detect common data quality issues and the ability to extend checks.
@@ -16,3 +17,5 @@ Monosi is on a mission to operationalize metadata and use it to improve existing
 - **Automated, built-in scheduler & jobs.** Connect your data sources and start monitoring immediately. No complicated processes or setup.
 - **Integrate & monitor your entire data stack.** Contribute and add to our growing number of integrations to collect & monitor your stack or use the existing ones.
 - **Own your (meta)data.** Keep control of your data (no security compliance process as Monosi is self-hosted), own and use the metadata collected by Monosi for any custom processes or analyses.
+
+Read more about the project's future vision in our post about [Activating Observability](https://www.monosi.dev/activating_observability.html).

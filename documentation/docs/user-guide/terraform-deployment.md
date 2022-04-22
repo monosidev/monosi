@@ -1,7 +1,7 @@
 ---
 id: terraform-deployment
-title: Deploying MonoSi with Terraform
-sidebar_label: Terraform
+title: Deploying MonoSi with Terraform (AWS)
+sidebar_label: Terraform (AWS)
 ---
 
 MonoSi provides a starting point for deploying the application via Terraform. You can find the Terraform files in the `deployment/terraform` subdirectory.

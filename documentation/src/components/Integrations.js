@@ -39,6 +39,13 @@ export const Integrations = () => {
           <p className="text-lg">Redshift</p>
         </Link>
         <Link
+          className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
+          to={useBaseUrl("/docs/integrations/bigquery")}
+          >
+          <img className="h-16 w-16" src="/img/bigquery.svg" alt="BigQuery logo" />
+          <p className="text-lg">Google BigQuery</p>
+        </Link>
+        <Link
           to={useBaseUrl("/docs/integrations/slack")}
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
@@ -58,13 +65,6 @@ export const Integrations = () => {
         >
           <img className="h-16 w-16" src="/img/email.png" alt="Email logo" />
           <p className="text-lg">Email</p>
-        </Link>
-        <Link
-          className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
-          disabled
-          >
-          <img className="h-16 w-16" src="/img/bigquery.svg" alt="BigQuery logo" />
-          <p className="text-lg">Google BigQuery</p>
         </Link>
         <Link
           disabled
