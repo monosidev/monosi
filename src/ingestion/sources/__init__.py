@@ -12,6 +12,7 @@ from .postgresql import PostgreSQLSource, PostgreSQLSourceConfiguration
 from .snowflake import SnowflakeSource, SnowflakeSourceConfiguration
 from .redshift import RedshiftSource, RedshiftSourceConfiguration
 from .bigquery import BigQuerySource, BigQuerySourceConfiguration
+from .mssql import MSSQLSource, MSSQLSourceConfiguration
 
 class SourceFactory:
     @classmethod
@@ -25,6 +26,8 @@ class SourceFactory:
             return RedshiftSourceConfiguration
         elif config_type == 'bigquery':
             return BigQuerySourceConfiguration
+        elif config_type == 'mssql':
+            return MSSQLSourceConfiguration            
         else:
             raise Exception("Error: Unknown source type.")
 
@@ -39,6 +42,8 @@ class SourceFactory:
             return RedshiftSource
         elif config_type == 'bigquery':
             return BigQuerySource
+        elif config_type == 'mssql':
+            return MSSQLSource            
         else:
             raise Exception("Error: Unknown source type.")
 
