@@ -67,6 +67,10 @@ function Footer() {
           label: "Redshift",
           to: "/docs/integrations/redshift",
         },
+        {
+          label: "MSSQL",
+          to: "/docs/integrations/mssql",
+        },        
       ],
     },
     {
