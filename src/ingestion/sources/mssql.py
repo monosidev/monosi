@@ -16,8 +16,8 @@ class MSSQLMetricsQueryBuilder(MetricsQueryBuilder):
     def _base_query_backfill(self, select_sql, table, timestamp_field): # TODO
         return """
             SELECT 
-                DATE_TRUNC('HOUR', {timestamp_field}) as "WINDOW_START", 
-                DATE_TRUNC('HOUR', {timestamp_field}) + interval '1 hour' as "WINDOW_END",
+                DATEPART(HOUR, {timestamp_field}) as "WINDOW_START", 
+                DATEPART(HOUR, {timestamp_field}) + interval '1 hour' as "WINDOW_END",
                 COUNT(*) as "ROW_COUNT",
                 '{table}' as "TABLE_NAME",
                 '{database}' as "DATABASE_NAME",
@@ -26,7 +26,7 @@ class MSSQLMetricsQueryBuilder(MetricsQueryBuilder):
                 {select_sql}
             FROM {table} as c
             WHERE 
-                DATE_TRUNC('HOUR', {timestamp_field}) >= CURRENT_TIMESTAMP + interval '{minutes_ago} minutes' 
+                DATEPART(HOUR, {timestamp_field}) >= CURRENT_TIMESTAMP + interval '{minutes_ago} minutes' 
             GROUP BY "WINDOW_START", "WINDOW_END" 
             ORDER BY "WINDOW_START" ASC;
         """.format(
@@ -82,7 +82,43 @@ class MSSQLSourceConfiguration(SourceConfiguration):
 class MSSQLSourceDialect(SQLAlchemySourceDialect):
     @classmethod
     def _freshness(cls):
-        return "(DATE_PART('day', CURRENT_TIMESTAMP - MAX({0})) * 24 + DATE_PART('hour', CURRENT_TIMESTAMP - MAX({0}))) * 60 + DATE_PART('minute', CURRENT_TIMESTAMP - MAX({0}))"
+        return "(DATEPART(day, CURRENT_TIMESTAMP - MAX({0})) * 24 + DATEPART(hour, CURRENT_TIMESTAMP - MAX({0}))) * 60 + DATEPART(minute, CURRENT_TIMESTAMP - MAX({0}))"
+
+    @classmethod
+    def _numeric_std(cls):
+        return "STDDEV(CAST({} as double precision))"
+    
+    @classmethod
+    def _text_int_rate(cls):
+        return "SUM(CASE WHEN CAST({} AS varchar) ~ '^([-+]?[0-9]+)$' THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+
+    @classmethod
+    def _text_number_rate(cls):
+        return "SUM(CASE WHEN CAST({} AS varchar) ~ '^([-+]?[0-9]*[.]?[0-9]+([eE][-+]?[0-9]+)?)$' THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+
+    @classmethod
+    def _text_uuid_rate(cls):
+        return "SUM(CASE WHEN CAST({} AS varchar) ~ '^([0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}})$' THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+
+    @classmethod
+    def _text_all_spaces_rate(cls):
+        return "SUM(CASE WHEN CAST({} AS varchar) ~ '^(\\\\s+)$' THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+
+    @classmethod
+    def _text_null_keyword_rate(cls):
+        return "SUM(CASE WHEN UPPER(CAST({} as varchar)) IN ('NULL', 'NONE', 'NIL', 'NOTHING') THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+
+    @classmethod
+    def _zero_rate(cls): # TODO: ?
+        return "SUM(CASE WHEN UPPER(CAST({} as varchar)) IN ('NULL', 'NONE', 'NIL', 'NOTHING') THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+
+    @classmethod
+    def _negative_rate(cls):
+        return "SUM(CASE WHEN {} < 0 THEN 1 ELSE 0 END) / CAST(COUNT(*) AS NUMERIC)"
+
+    @classmethod
+    def _completeness(cls):
+        return "COUNT({}) / CAST(COUNT(*) AS NUMERIC)"
 
     @classmethod
     def schema_tables_query(cls, database_name, schema_name):
