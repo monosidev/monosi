@@ -11,14 +11,14 @@ sys.path.append(path)
 
 VERSION = '0.1.0'
 
-with open('README.md') as f:
+with open('README.md', "r", encoding='UTF8') as f:
     readme = f.read()
 
-with open('LICENSE') as f:
+with open('LICENSE', "r", encoding='UTF8') as f:
     license = f.read()
 
 install_requires = []
-with open(os.path.abspath("requirements.txt"), "r") as f:
+with open(os.path.abspath("requirements.txt"), "r", encoding='UTF8') as f:
     requirements_txt = f.readlines()
     install_requires = [
         str(requirement)
