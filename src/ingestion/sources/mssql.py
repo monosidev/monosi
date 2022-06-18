@@ -65,7 +65,7 @@ class MSSQLSourceConfiguration(SourceConfiguration):
         configuration = json.loads(self.configuration)
         connection_string_prefix = self._connection_string_prefix()
 
-        return '{prefix}://{user}:{password}@{host}:{port}/{database}'.format(
+        return '{prefix}://{user}:{password}@{host}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server")'.format(
             prefix=connection_string_prefix,
             user=configuration.get('user'),
             password=configuration.get('password'),
