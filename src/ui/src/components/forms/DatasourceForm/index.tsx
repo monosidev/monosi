@@ -410,7 +410,7 @@ const DatasourceForm = () => {
       {datasourceType === DataSourceTypes.MSSQL && (
         <div>
           <EuiPageHeader
-            iconType="logoPostgres"
+            iconType="logoMSSQL"
             pageTitle="MSSQL"
             description="Connect to MSSQL Database"
           />

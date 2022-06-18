@@ -14,4 +14,3 @@ snowplow-tracker==0.10.0
 sqlalchemy-bigquery==1.4.3
 sqlalchemy-redshift==0.8.9
 sqlalchemy-utils==0.38.2
-pyodbc==4.0.32
