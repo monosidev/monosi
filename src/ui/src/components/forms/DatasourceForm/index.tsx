@@ -17,6 +17,7 @@ import {
 } from '@elastic/eui';
 
 import { BigQueryLogo } from 'images';
+import { logoMSSQL } from 'images';
 import datasourceService from 'services/datasources';
 
 enum DataSourceTypes {
@@ -181,7 +182,7 @@ const DatasourceForm = () => {
               isSelected: datasourceType === DataSourceTypes.MSSQL,
               isDisabled: false,
             }}
-            icon={<EuiIcon type="logoPostgres" size="xl" />}
+            icon={<EuiIcon type={logoMSSQL} size="xl" />}
             title="MSSQL"
             description="Connect to MSSQL Database"
           />
@@ -410,7 +411,7 @@ const DatasourceForm = () => {
       {datasourceType === DataSourceTypes.MSSQL && (
         <div>
           <EuiPageHeader
-            iconType="logoMSSQL"
+            iconType={logoMSSQL}
             pageTitle="MSSQL"
             description="Connect to MSSQL Database"
           />

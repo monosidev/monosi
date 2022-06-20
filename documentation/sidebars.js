@@ -50,6 +50,7 @@ module.exports = {
             "integrations/redshift",
             "integrations/postgresql",
             "integrations/bigquery",
+            "integrations/mssql",
           ]
         },
         {

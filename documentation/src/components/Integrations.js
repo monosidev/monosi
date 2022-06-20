@@ -112,6 +112,13 @@ export const Integrations = () => {
           disabled
           className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
         >
+          <img className="h-16 w-16" src="/img/mssql.png" alt="MS SQL logo" />
+          <p className="text-lg">MS SQL</p>
+        </Link>        
+        <Link
+          disabled
+          className=" scale flex flex-col items-center justify-center space-y-3 rounded-lg bg-[color:var(--ifm-card-background-color)] p-6 text-center shadow-lg"
+        >
           <img className="h-16 w-16" src="/img/airflow.png" alt="Airflow logo" />
           <p className="text-lg">Airflow</p>
         </Link>

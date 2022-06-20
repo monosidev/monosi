@@ -124,7 +124,9 @@ class SQLAlchemyExtractor(Extractor):
             raise
 
     def _retrieve_results(self, cs):
-        columns = [d.name for d in cs.cursor.description]
+        columns = []
+        for elem in cs.cursor.description:
+            columns.append(elem[0])
         rows = [dict(zip(columns, row)) for row in cs.fetchall()]
 
         return {
