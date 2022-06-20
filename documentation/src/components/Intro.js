@@ -76,6 +76,23 @@ function SDKs() {
             </div>
           </Link>
         </li>
+
+        <li className="">
+          <Link
+            className="flex items-center space-x-5"
+            to={useBaseUrl("/docs/integrations/mssql")}
+          >
+            <div className="flex items-center space-x-3 hover:underline">
+              <img
+                className="h-8 w-8 transition hover:scale-110"
+                src="/img/mssql.png"
+                alt="MS SQL logo"
+              />
+              <p className="font-semibold">Redshift</p>{" "}
+            </div>
+          </Link>
+        </li>
+
         <li className="">
           <Link to={useBaseUrl("/integrations")}>
             <div className="flex space-x-3 hover:underline" style={{justifyContent: 'right'}}>

@@ -1,9 +1,8 @@
 import json
 from typing import Any
 from urllib.parse import quote
-
 from ingestion.task import TaskUnit
-
+import logging
 from .base import (
     MetricsQueryBuilder,
     SourceConfiguration,
@@ -59,21 +58,22 @@ class MSSQLSourceConfiguration(SourceConfiguration):
         }
     
     def _connection_string_prefix(self):
-        return "mssql+pyodbc"
+        return "mssql+pymssql"
 
     def connection_string(self) -> str:
         configuration = json.loads(self.configuration)
         connection_string_prefix = self._connection_string_prefix()
 
-        return '{prefix}://{user}:{password}@{host}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server")'.format(
+        connectionstring = '{prefix}://{user}:{password}@{host}:{port}/{database}?charset=utf8'.format(
             prefix=connection_string_prefix,
             user=configuration.get('user'),
             password=configuration.get('password'),
             host=configuration.get('host'),
             port=configuration.get('port'),
             database=configuration.get('database'),
-            schema=configuration.get('schema'),
         )
+        
+        return connectionstring
 
     @property
     def type(self):
