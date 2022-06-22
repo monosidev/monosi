@@ -17,13 +17,15 @@ import {
 } from '@elastic/eui';
 
 import { BigQueryLogo } from 'images';
+import { logoMSSQL } from 'images';
 import datasourceService from 'services/datasources';
 
 enum DataSourceTypes {
   SNOWFLAKE = 'snowflake',
   POSTGRESQL = 'postgresql',
   REDSHIFT = 'redshift',
-  BIGQUERY = 'bigquery'
+  BIGQUERY = 'bigquery',
+  MSSQL = 'mssql',
 }
 
 const DatasourceForm = () => {
@@ -60,6 +62,7 @@ const DatasourceForm = () => {
       };
     } else if (
       datasourceType === DataSourceTypes.POSTGRESQL ||
+      datasourceType === DataSourceTypes.MSSQL ||      
       datasourceType === DataSourceTypes.REDSHIFT
     ) {
       config = {
@@ -172,6 +175,18 @@ const DatasourceForm = () => {
             description="Connect to Google BigQuery Data Warehouse"
           />
         </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiCard
+            selectable={{
+              onClick: () => onChange(DataSourceTypes.MSSQL),
+              isSelected: datasourceType === DataSourceTypes.MSSQL,
+              isDisabled: false,
+            }}
+            icon={<EuiIcon type={logoMSSQL} size="xl" />}
+            title="MSSQL"
+            description="Connect to MSSQL Database"
+          />
+        </EuiFlexItem>        
       </EuiFlexGrid>
 
       <EuiHorizontalRule />
@@ -393,6 +408,65 @@ const DatasourceForm = () => {
           </EuiFormRow>
         </div>
       )}
+      {datasourceType === DataSourceTypes.MSSQL && (
+        <div>
+          <EuiPageHeader
+            iconType={logoMSSQL}
+            pageTitle="MSSQL"
+            description="Connect to MSSQL Database"
+          />
+          <EuiHorizontalRule />
+          <EuiFormRow label="Name for Data Source">
+            <EuiFieldText
+              placeholder="Company Data Warehouse"
+              onChange={(e) => setDatasourceName(e.target.value)}
+              value={datasourceName}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="User">
+            <EuiFieldText
+              placeholder="MONOSI_USER"
+              onChange={(e) => setUser(e.target.value)}
+              value={user}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Password">
+            <EuiFieldPassword
+              placeholder="password123"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Host">
+            <EuiFieldText
+              placeholder="host"
+              onChange={(e) => setHost(e.target.value)}
+              value={host}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Port">
+            <EuiFieldText
+              placeholder="1433"
+              onChange={(e) => setPort(e.target.value)}
+              value={port}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Database (case-sensitive)">
+            <EuiFieldText
+              placeholder="mssql"
+              onChange={(e) => setDatabase(e.target.value)}
+              value={database}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Schema (case-sensitive)">
+            <EuiFieldText
+              placeholder="public"
+              onChange={(e) => setSchema(e.target.value)}
+              value={schema}
+            />
+          </EuiFormRow>
+        </div>
+      )}      
 
       <EuiSpacer />
 
