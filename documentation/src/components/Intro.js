@@ -88,7 +88,7 @@ function SDKs() {
                 src="/img/mssql.png"
                 alt="MS SQL logo"
               />
-              <p className="font-semibold">Redshift</p>{" "}
+              <p className="font-semibold">MS SQL</p>{" "}
             </div>
           </Link>
         </li>
