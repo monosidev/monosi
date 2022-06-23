@@ -13,6 +13,7 @@ from .snowflake import SnowflakeSource, SnowflakeSourceConfiguration
 from .redshift import RedshiftSource, RedshiftSourceConfiguration
 from .bigquery import BigQuerySource, BigQuerySourceConfiguration
 from .mssql import MSSQLSource, MSSQLSourceConfiguration
+from .clickhouse import ClickhouseSource, ClickhouseSourceConfiguration
 
 class SourceFactory:
     @classmethod
@@ -27,7 +28,9 @@ class SourceFactory:
         elif config_type == 'bigquery':
             return BigQuerySourceConfiguration
         elif config_type == 'mssql':
-            return MSSQLSourceConfiguration            
+            return MSSQLSourceConfiguration
+        elif config_type == 'clickhouse':
+            return ClickhouseSourceConfiguration              
         else:
             raise Exception("Error: Unknown source type.")
 
@@ -43,7 +46,9 @@ class SourceFactory:
         elif config_type == 'bigquery':
             return BigQuerySource
         elif config_type == 'mssql':
-            return MSSQLSource            
+            return MSSQLSource
+        elif config_type == 'clickhouse':
+            return ClickhouseSource 
         else:
             raise Exception("Error: Unknown source type.")
 

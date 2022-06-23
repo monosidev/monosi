@@ -26,6 +26,7 @@ enum DataSourceTypes {
   REDSHIFT = 'redshift',
   BIGQUERY = 'bigquery',
   MSSQL = 'mssql',
+  CLICKHOUSE = 'clickhouse'
 }
 
 const DatasourceForm = () => {
@@ -50,7 +51,8 @@ const DatasourceForm = () => {
 
     let config = {}
 
-    if (datasourceType === DataSourceTypes.SNOWFLAKE) {
+    if (datasourceType === DataSourceTypes.SNOWFLAKE || 
+      datasourceType === DataSourceTypes.CLICKHOUSE) {
       config = {
         driver: datasourceType,
         account: account,
@@ -186,7 +188,19 @@ const DatasourceForm = () => {
             title="MSSQL"
             description="Connect to MSSQL Database"
           />
-        </EuiFlexItem>        
+        </EuiFlexItem>   
+        <EuiFlexItem>
+          <EuiCard
+            icon={<EuiIcon type={DataSourceTypes.CLICKHOUSE} size="xl" />}
+            selectable={{
+              onClick: () => onChange(DataSourceTypes.CLICKHOUSE),
+              isSelected: datasourceType === DataSourceTypes.CLICKHOUSE,
+              isDisabled: false,
+            }}
+            title="Clickhouse"
+            description="Connect to Clickhouse Data Warehouse"
+          />
+        </EuiFlexItem>             
       </EuiFlexGrid>
 
       <EuiHorizontalRule />
@@ -466,7 +480,66 @@ const DatasourceForm = () => {
             />
           </EuiFormRow>
         </div>
-      )}      
+      )}  
+      {datasourceType === DataSourceTypes.CLICKHOUSE && (
+        <div>
+          <EuiPageHeader
+            iconType="clickhouse"
+            pageTitle="Clickhouse"
+            description="Connect to Clickhouse Data Warehouse"
+          />
+          <EuiHorizontalRule />
+          <EuiFormRow label="Name for Data Source">
+            <EuiFieldText
+              placeholder="Company Data Warehouse"
+              onChange={(e) => setDatasourceName(e.target.value)}
+              value={datasourceName}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Account">
+            <EuiFieldText
+              placeholder="abc123"
+              onChange={(e) => setAccount(e.target.value)}
+              value={account}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Warehouse">
+            <EuiFieldText
+              placeholder="COMPUTE_WH"
+              onChange={(e) => setWarehouse(e.target.value)}
+              value={warehouse}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="User">
+            <EuiFieldText
+              placeholder="MONOSI_USER"
+              onChange={(e) => setUser(e.target.value)}
+              value={user}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Password">
+            <EuiFieldPassword
+              placeholder="password123"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Database (case-sensitive)">
+            <EuiFieldText
+              placeholder="CLICKHOUSE_SAMPLE_DATA"
+              onChange={(e) => setDatabase(e.target.value)}
+              value={database}
+            />
+          </EuiFormRow>
+          <EuiFormRow label="Schema (case-sensitive)">
+            <EuiFieldText
+              placeholder="tpch_sf1000"
+              onChange={(e) => setSchema(e.target.value)}
+              value={schema}
+            />
+          </EuiFormRow>
+        </div>
+      )}          
 
       <EuiSpacer />
 
