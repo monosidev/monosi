@@ -13,9 +13,6 @@ from .base import (
 
 class MSSQLMetricsQueryBuilder(MetricsQueryBuilder):
 
-    def _timestamp_field(self, cols): # TODO: Improve
-        return None
-
     def _base_query_sample(self, select_sql):
         return """
             SELECT 
