@@ -23,29 +23,30 @@ class ClickhouseSourceConfiguration(SourceConfiguration):
             "properties": {
                 "user": { "type": "string" },
                 "password": { "type": "string" },
-                "account": { "type": "string" },
+                "host": { "type": "string" },
+                "port": { "type": "string" },
                 "database": { "type": "string" },
-                "warehouse": { "type": "string" },
-                "schema": { "type": "string" },
             },
             "secret": [ "password" ],
         }
+    
+    def _connection_string_prefix(self):
+        return "clickhouse+native"
 
     def connection_string(self) -> str:
         configuration = json.loads(self.configuration)
+        connection_string_prefix = self._connection_string_prefix()
 
-        return 'clickhouse://{user}:{password}@{account}/{database}/{schema}?warehouse={warehouse}'.format(
+        connectionstring = '{prefix}://{user}:{password}@{host}:{port}/{database}'.format(
+            prefix=connection_string_prefix,
             user=configuration.get('user'),
-            password=quote(configuration.get('password')),
-            account=configuration.get('account'),
+            password=configuration.get('password'),
+            host=configuration.get('host'),
+            port=configuration.get('port'),
             database=configuration.get('database'),
-            warehouse=configuration.get('warehouse'),
-            schema=configuration.get('schema'),
         )
-
-    @property
-    def type(self):
-        return "clickhouse"
+        
+        return connectionstring
 
 class ClickhouseSourceDialect(SQLAlchemySourceDialect):
     @classmethod

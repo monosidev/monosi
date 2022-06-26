@@ -18,6 +18,7 @@ import {
 
 import { BigQueryLogo } from 'images';
 import { logoMSSQL } from 'images';
+import { logoClickhouse } from 'images';
 import datasourceService from 'services/datasources';
 
 enum DataSourceTypes {
@@ -51,8 +52,7 @@ const DatasourceForm = () => {
 
     let config = {}
 
-    if (datasourceType === DataSourceTypes.SNOWFLAKE || 
-      datasourceType === DataSourceTypes.CLICKHOUSE) {
+    if (datasourceType === DataSourceTypes.SNOWFLAKE) {
       config = {
         driver: datasourceType,
         account: account,
@@ -85,6 +85,14 @@ const DatasourceForm = () => {
         database: project,
         schema: dataset,
         credentials_base64,
+      };
+    } else if (datasourceType === DataSourceTypes.CLICKHOUSE) {
+      config = {
+        user: user,
+        password: password,
+        host: host,
+        port: parseInt(port),
+        database: database,
       };
     }
 
@@ -191,12 +199,12 @@ const DatasourceForm = () => {
         </EuiFlexItem>   
         <EuiFlexItem>
           <EuiCard
-            icon={<EuiIcon type={DataSourceTypes.CLICKHOUSE} size="xl" />}
             selectable={{
               onClick: () => onChange(DataSourceTypes.CLICKHOUSE),
               isSelected: datasourceType === DataSourceTypes.CLICKHOUSE,
               isDisabled: false,
-            }}
+            }}         
+            icon={<EuiIcon type={logoClickhouse} size="xl" />}             
             title="Clickhouse"
             description="Connect to Clickhouse Data Warehouse"
           />
@@ -483,62 +491,55 @@ const DatasourceForm = () => {
       )}  
       {datasourceType === DataSourceTypes.CLICKHOUSE && (
         <div>
-          <EuiPageHeader
-            iconType="clickhouse"
-            pageTitle="Clickhouse"
-            description="Connect to Clickhouse Data Warehouse"
+        <EuiPageHeader
+          iconType={logoClickhouse}
+          pageTitle="Clickhouse"
+          description="Connect to Clickhouse Database"
+        />
+        <EuiHorizontalRule />
+        <EuiFormRow label="Name for Data Source">
+          <EuiFieldText
+            placeholder="Company Data Warehouse"
+            onChange={(e) => setDatasourceName(e.target.value)}
+            value={datasourceName}
           />
-          <EuiHorizontalRule />
-          <EuiFormRow label="Name for Data Source">
-            <EuiFieldText
-              placeholder="Company Data Warehouse"
-              onChange={(e) => setDatasourceName(e.target.value)}
-              value={datasourceName}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Account">
-            <EuiFieldText
-              placeholder="abc123"
-              onChange={(e) => setAccount(e.target.value)}
-              value={account}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Warehouse">
-            <EuiFieldText
-              placeholder="COMPUTE_WH"
-              onChange={(e) => setWarehouse(e.target.value)}
-              value={warehouse}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="User">
-            <EuiFieldText
-              placeholder="MONOSI_USER"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Password">
-            <EuiFieldPassword
-              placeholder="password123"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Database (case-sensitive)">
-            <EuiFieldText
-              placeholder="CLICKHOUSE_SAMPLE_DATA"
-              onChange={(e) => setDatabase(e.target.value)}
-              value={database}
-            />
-          </EuiFormRow>
-          <EuiFormRow label="Schema (case-sensitive)">
-            <EuiFieldText
-              placeholder="tpch_sf1000"
-              onChange={(e) => setSchema(e.target.value)}
-              value={schema}
-            />
-          </EuiFormRow>
-        </div>
+        </EuiFormRow>
+        <EuiFormRow label="User">
+          <EuiFieldText
+            placeholder="MONOSI_USER"
+            onChange={(e) => setUser(e.target.value)}
+            value={user}
+          />
+        </EuiFormRow>
+        <EuiFormRow label="Password">
+          <EuiFieldPassword
+            placeholder="password123"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+          />
+        </EuiFormRow>
+        <EuiFormRow label="Host">
+          <EuiFieldText
+            placeholder="host"
+            onChange={(e) => setHost(e.target.value)}
+            value={host}
+          />
+        </EuiFormRow>
+        <EuiFormRow label="Port">
+          <EuiFieldText
+            placeholder="9000"
+            onChange={(e) => setPort(e.target.value)}
+            value={port}
+          />
+        </EuiFormRow>
+        <EuiFormRow label="Database (case-sensitive)">
+          <EuiFieldText
+            placeholder="default"
+            onChange={(e) => setDatabase(e.target.value)}
+            value={database}
+          />
+        </EuiFormRow>
+      </div>
       )}          
 
       <EuiSpacer />
