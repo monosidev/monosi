@@ -11,6 +11,10 @@ from .base import (
     SQLAlchemyExtractor
 )
 
+from clickhouse_sqlalchemy import (
+    Table, make_session, get_declarative_base, types, engines
+)
+
 class ClickhouseSourceConfiguration(SourceConfiguration):
     @classmethod
     def validate(cls, configuration):
