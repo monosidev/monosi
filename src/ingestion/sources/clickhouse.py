@@ -8,12 +8,52 @@ from .base import (
     SourceConfiguration,
     SQLAlchemySourceDialect,
     SQLAlchemySource,
-    SQLAlchemyExtractor
+    MetricsQueryBuilder
 )
 
-from clickhouse_sqlalchemy import (
-    Table, make_session, get_declarative_base, types, engines
-)
+class ClickhouseMetricsQueryBuilder(MetricsQueryBuilder):
+    def _base_query_sample(self, select_sql):
+        return """
+            SELECT 
+                NOW() as WINDOW_START, 
+                NOW() as WINDOW_END, 
+                COUNT(*) as ROW_COUNT, 
+                '{table}' as TABLE_NAME,
+                '{database}' as DATABASE_NAME,
+                '{database}' as SCHEMA_NAME,
+
+                {select_sql}
+            FROM {table};
+        """.format(
+            select_sql=select_sql,
+            table=self.monitor['table_name'],
+            schema=self.monitor['schema'],
+            database=self.monitor['database'],
+        )
+    
+    def _base_query_backfill(self, select_sql, table, timestamp_field):
+        return """
+            SELECT 
+                DATE_TRUNC({timestamp_field}, HOUR) as WINDOW_START, 
+                TIMESTAMP_ADD(DATE_TRUNC({timestamp_field}, HOUR), INTERVAL 1 HOUR) as WINDOW_END, 
+                COUNT(*) as ROW_COUNT, 
+                {table} as TABLE_NAME,
+                {database} as DATABASE_NAME,
+                {database} as SCHEMA_NAME,
+
+                {select_sql}
+            FROM {table} as c
+            WHERE 
+                DATE_TRUNC({timestamp_field}, HOUR) >= TIMESTAMP_ADD(NOW(), INTERVAL {minutes_ago} MINUTE)
+            GROUP BY WINDOW_START, WINDOW_END
+            ORDER BY WINDOW_START ASC;
+        """.format(
+            select_sql=select_sql,
+            table=table,
+            timestamp_field=timestamp_field,
+            minutes_ago=self.minutes_ago,
+            database=self.monitor['database']
+        )
 
 class ClickhouseSourceConfiguration(SourceConfiguration):
     @classmethod
@@ -30,6 +70,7 @@ class ClickhouseSourceConfiguration(SourceConfiguration):
                 "host": { "type": "string" },
                 "port": { "type": "string" },
                 "database": { "type": "string" },
+                "schema": { "type": "string" },                
             },
             "secret": [ "password" ],
         }
@@ -48,6 +89,7 @@ class ClickhouseSourceConfiguration(SourceConfiguration):
             host=configuration.get('host'),
             port=configuration.get('port'),
             database=configuration.get('database'),
+            schema=configuration.get('database')
         )
         
         return connectionstring
@@ -85,27 +127,13 @@ class ClickhouseSourceDialect(SQLAlchemySourceDialect):
     def _completeness(cls):
         return "COUNT({}) / CAST(COUNT(*) AS NUMERIC)"
 
+    @classmethod
+    def _freshness(cls):
+        return "(DATE_PART('day', NOW() - MAX({0})) * 24 + DATE_PART('hour', NOW() - MAX({0}))) * 60 + DATE_PART('minute', NOW() - MAX({0}))"        
 
     @classmethod
     def schema_tables_query(cls, database_name, schema_name):
-        return """
-            SELECT 
-              TABLE_CATALOG, 
-              TABLE_SCHEMA,
-              TABLE_NAME, 
-              TABLE_OWNER, 
-              TABLE_TYPE, 
-              IS_TRANSIENT, 
-              RETENTION_TIME, 
-              AUTO_CLUSTERING_ON, 
-              COMMENT 
-            FROM {database_name}.information_schema.tables 
-            WHERE 
-              table_schema NOT IN ('INFORMATION_SCHEMA') 
-              AND TABLE_TYPE NOT IN ('VIEW', 'EXTERNAL TABLE') 
-              AND LOWER( TABLE_SCHEMA ) = LOWER('{schema_name}')
-            ORDER BY TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME;
-        """.format(database_name=database_name, schema_name=schema_name)
+        raise NotImplementedError
 
     @classmethod
     def schema_columns_query(cls, database_name, schema_name):
@@ -114,78 +142,27 @@ class ClickhouseSourceDialect(SQLAlchemySourceDialect):
                 lower(c.table_name) AS NAME,
                 lower(c.column_name) AS COL_NAME,
                 lower(c.data_type) AS COL_TYPE,
-                c.comment AS COL_DESCRIPTION,
-                lower(c.ordinal_position) AS COL_SORT_ORDER,
+                c.ordinal_position AS COL_SORT_ORDER,
                 lower(c.table_catalog) AS DATABASE,
                 lower(c.table_schema) AS SCHEMA,
-                t.comment AS DESCRIPTION,
-                decode(lower(t.table_type), 'view', 'true', 'false') AS IS_VIEW
+                if(t.table_type in (2), 'true', 'false') AS IS_VIEW
             FROM
-                {database_name}.INFORMATION_SCHEMA.COLUMNS AS c
+                INFORMATION_SCHEMA.COLUMNS AS c
             LEFT JOIN
-                {database_name}.INFORMATION_SCHEMA.TABLES t
-                    ON c.TABLE_NAME = t.TABLE_NAME
-                    AND c.TABLE_SCHEMA = t.TABLE_SCHEMA
-            WHERE LOWER( schema ) = LOWER('{schema_name}')
-        """.format(database_name=database_name, schema_name=schema_name)
+                INFORMATION_SCHEMA.TABLES t
+                    ON c.table_name = t.table_name
+                    AND c.table_schema = t.table_schema
+            WHERE LOWER(c.table_schema) = LOWER('{database_name}')
+                AND LOWER(c.table_catalog) = LOWER('{database_name}')
+        """.format(database_name=database_name)
 
     @classmethod
-    def access_logs_query(cls):
-        return """
-            SELECT 
-                "QUERY_TEXT", 
-                "DATABASE_NAME", 
-                "SCHEMA_NAME", 
-                "QUERY_TYPE", 
-                "USER_NAME", 
-                "ROLE_NAME", 
-                "EXECUTION_STATUS", 
-                "START_TIME", 
-                "END_TIME", 
-                "TOTAL_ELAPSED_TIME", 
-                "BYTES_SCANNED", 
-                "ROWS_PRODUCED", 
-                "SESSION_ID", 
-                "QUERY_ID", 
-                "QUERY_TAG", 
-                "WAREHOUSE_NAME", 
-                "ROWS_INSERTED", 
-                "ROWS_UPDATED", 
-                "ROWS_DELETED", 
-                "ROWS_UNLOADED" 
-            FROM clickhouse.account_usage.query_history 
-            WHERE 
-                start_time BETWEEN to_timestamp_ltz('2021-01-01 00:00:00.000000+00:00') AND to_timestamp_ltz('2021-01-01 01:00:00.000000+00:00') 
-                AND QUERY_TYPE NOT IN ('DESCRIBE', 'SHOW') 
-                AND (DATABASE_NAME IS NULL OR DATABASE_NAME NOT IN ('UTIL_DB', 'CLICKHOUSE')) 
-                AND ERROR_CODE is NULL 
-            ORDER BY start_time DESC;
-        """
+    def query_access_logs_query(cls):
+        raise NotImplementedError
         
     @classmethod
-    def copy_and_load_logs_query(cls):
-        return """
-            SELECT 
-                "FILE_NAME", 
-                "STAGE_LOCATION", 
-                "LAST_LOAD_TIME", 
-                "ROW_COUNT", 
-                "FILE_SIZE", 
-                "ERROR_COUNT", 
-                "STATUS", 
-                "TABLE_CATALOG_NAME", 
-                "TABLE_SCHEMA_NAME", 
-                "TABLE_NAME", 
-                "PIPE_CATALOG_NAME", 
-                "PIPE_SCHEMA_NAME", 
-                "PIPE_NAME", 
-                "PIPE_RECEIVED_TIME" 
-            FROM clickhouse.account_usage.copy_history 
-            WHERE 
-                LAST_LOAD_TIME between to_timestamp_ltz('2021-01-01 00:00:00.000000+00:00') AND to_timestamp_ltz('2021-01-01 01:00:00.000000+00:00')
-                AND STATUS != 'load failed' 
-            ORDER BY LAST_LOAD_TIME DESC;
-        """
+    def query_copy_logs_query(cls):
+        raise NotImplementedError
 
 class ClickhouseSource(SQLAlchemySource):
     def __init__(self, configuration: ClickhouseSourceConfiguration):
@@ -196,7 +173,7 @@ class ClickhouseSource(SQLAlchemySource):
         return TaskUnit(
             request=ClickhouseSourceDialect.schema_columns_query(
                 database_name=self.configuration.database(),
-                schema_name=self.configuration.schema(),
+                schema_name=self.configuration.schema(),                
             )
         )
 
