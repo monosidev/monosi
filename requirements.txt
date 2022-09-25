@@ -16,3 +16,4 @@ sqlalchemy-redshift==0.8.9
 sqlalchemy-utils==0.38.2
 pymssql==2.2.5
 debugpy==1.6.0
+clickhouse-sqlalchemy==0.2.2
