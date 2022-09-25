@@ -97,43 +97,53 @@ class ClickhouseSourceConfiguration(SourceConfiguration):
 class ClickhouseSourceDialect(SQLAlchemySourceDialect):
     @classmethod
     def _text_int_rate(cls):
-        return "SUM(IFF(REGEXP_COUNT(TO_VARCHAR({}), '^([-+]?[0-9]+)$', 1, 'i') != 0, 1, 0)) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(IF(CAST({} AS varchar) LIKE '^([-+]?[0-9]+)$', 1, 0)) / CAST(COUNT(*) AS INT)"
 
     @classmethod
     def _text_number_rate(cls):
-        return "SUM(IFF(REGEXP_COUNT(TO_VARCHAR({}), '^([-+]?[0-9]*[.]?[0-9]+([eE][-+]?[0-9]+)?)$', 1, 'i') != 0, 1, 0)) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(IF(CAST({} AS varchar) LIKE  '^([-+]?[0-9]*[.]?[0-9]+([eE][-+]?[0-9]+)?)$', 1, 0)) / CAST(COUNT(*) AS INT)"
 
     @classmethod
     def _text_uuid_rate(cls):
-        return "SUM(IFF(REGEXP_COUNT(TO_VARCHAR({}), '^([0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}})$', 1, 'i') != 0, 1, 0)) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(IF(CAST({} AS varchar) LIKE  '^([0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}})$', 1, 0)) / CAST(COUNT(*) AS INT)"
 
     @classmethod
     def _text_all_spaces_rate(cls):
-        return "SUM(IFF(REGEXP_COUNT(TO_VARCHAR({}), '^(\\\\s+)$', 1, 'i') != 0, 1, 0)) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(IF(CAST({} AS varchar) LIKE  '^(\\\\s+)$', 1, 0)) / CAST(COUNT(*) AS INT)"
 
     @classmethod
     def _text_null_keyword_rate(cls):
-        return "SUM(IFF(UPPER({}) IN ('NULL', 'NONE', 'NIL', 'NOTHING'), 1, 0)) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(IF(ISNULL({}), 1, 0)) / CAST(COUNT(*) AS INT)"
 
     @classmethod
     def _zero_rate(cls):
-        return "SUM(IFF(UPPER({}) IN ('NULL', 'NONE', 'NIL', 'NOTHING'), 1, 0)) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(IF(ISNULL({}), 1, 0)) / CAST(COUNT(*) AS INT)"
 
     @classmethod
     def _negative_rate(cls):
-        return "SUM(IFF({} < 0, 1, 0)) / CAST(COUNT(*) AS NUMERIC)"
+        return "SUM(IF({} < 0, 1, 0)) / CAST(COUNT(*) AS INT)"
 
     @classmethod
     def _completeness(cls):
-        return "COUNT({}) / CAST(COUNT(*) AS NUMERIC)"
+        return "COUNT({}) / CAST(COUNT(*) AS INT)"
 
     @classmethod
-    def _freshness(cls):
-        return "(DATE_PART('day', NOW() - MAX({0})) * 24 + DATE_PART('hour', NOW() - MAX({0}))) * 60 + DATE_PART('minute', NOW() - MAX({0}))"        
+    def _freshness(cls):       
+        return "date_diff(minute, MAX({}), NOW())"
+
+    @classmethod
+    def _approx_distinctness(cls):
+        return "{} / CAST(COUNT(*) AS INT)".format(cls._approx_distinct_count())
 
     @classmethod
     def schema_tables_query(cls, database_name, schema_name):
         raise NotImplementedError
+
+    @classmethod
+    def table_metrics_query(cls, monitor, discovery_data, minutes_ago):
+        builder = ClickhouseMetricsQueryBuilder(cls, monitor, discovery_data, minutes_ago)
+        query = builder.compile()
+        return query        
 
     @classmethod
     def schema_columns_query(cls, database_name, schema_name):

@@ -93,6 +93,7 @@ const DatasourceForm = () => {
         host: host,
         port: parseInt(port),
         database: database,
+        schema: database,        
       };
     }
 
