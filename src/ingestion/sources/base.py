@@ -251,6 +251,10 @@ class ColumnMetricType(Enum):
     def default_for(cls, data_type): 
         data_type = data_type.lower()
 
+        # Nested values support null counts, not scalar numeric/text/date metrics.
+        if data_type.startswith(('array<', 'struct<')):
+            return [cls.COMPLETENESS]
+
         num_types = ['num', 'int', 'float']
         text_types = ['text', 'character', 'string']
         date_types = ['date', 'timestamp']
@@ -380,7 +384,7 @@ class MetricsQueryBuilder:
         if col_sql is not None:
             select_body[table_name]['sql'].append(col_sql)
         # TODO: Better handling of date / time types is needed 
-        if col_type == 'date' or "timestamp" in col_type:
+        if ColumnMetricType.FRESHNESS in ColumnMetricType.default_for(col_type):
             select_body[table_name]['timestamp_fields'].append(col_name)
 
     def _select_sql(self, ddata):
@@ -567,4 +571,3 @@ class SQLAlchemySource(Source):
                 units.append(MultiTaskUnit(request=self._metrics(discovered_data, monitor.definition)))
 
         return units
-
